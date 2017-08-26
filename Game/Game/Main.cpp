@@ -1,6 +1,7 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <stdio.h>
+#include <SDL_thread.h>
 
 int BG[32][32] = {
 	{ 7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7 },
@@ -9,7 +10,7 @@ int BG[32][32] = {
 	{ 7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,640,641,642,643,644,645,646,647,1,1,1,1,1,1,7 },
 	{ 7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,648,649,650,651,652,653,654,655,1,1,1,1,1,1,7 },
 	{ 7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,656,657,658,659,660,661,662,663,1,1,1,1,1,1,7 },
-	{ 7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,7 },//{ 7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,664,665,666,667,668,669,670,671,1,1,1,1,1,1,7 },
+	{ 7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,7 },
 	{ 7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,7 },
 	{ 7,1,1,1,1,1,1,21248,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,7 },
 	{ 7,1,1,1,1,1,1,1,1,1,1,1,13,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,7 },
@@ -41,8 +42,20 @@ int BG[32][32] = {
 	{ 7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7 }
 };
 
+int threadFunction(void* data)
+{
+	printf("Running thread with value = %d\n", (int)data);
+	return 0;
+}
+
 int main(int argc, char* args[])
 {
+
+	int data = 101;
+	SDL_Thread* threadID = SDL_CreateThread(threadFunction, "LazyThread", (void*)data);
+	
+
+
 	SDL_Window* window = NULL;
 	SDL_Renderer* renderer = NULL;
 
@@ -60,6 +73,7 @@ int main(int argc, char* args[])
 		printf("Renderer could not be created! SDL Error: %s\n", SDL_GetError()); return -1;
 	}
 
+	Uint32 time;
 	int resolutionX = 640;
 	int resolutionY = (resolutionX / 4) * 3;
 	SDL_RenderSetLogicalSize(renderer, resolutionX, resolutionY);//(renderer, 320, 240);
@@ -85,6 +99,7 @@ int main(int argc, char* args[])
 	SDL_Event e;
 	while (!quit)
 	{
+		time = SDL_GetTicks();
 		while (SDL_PollEvent(&e) != 0)
 		{
 			if (e.type == SDL_QUIT)
@@ -132,33 +147,6 @@ int main(int argc, char* args[])
 				else if (curPos.x < 0)curPos.x += 512;
 				if (curPos.y >= 512)curPos.y -= 512;
 				else if (curPos.y < 0)curPos.y += 512;
-				/*destRect.x = (resolutionX / 2) - (512 / 2) + curPos.x;
-				destRect.y = (resolutionY / 2) - (512 / 2) + curPos.y;
-				SDL_RenderClear(renderer);
-				for (int i = 0; i < 32; i++) {
-					for (int j = 0; j < 32; j++) {
-						tileNum = BG[i][j];
-
-						if (tileNum < 664) {//664 erstes anim tile
-							srcRect.y = 16 * (tileNum / 8);
-							srcRect.x = 16 * (tileNum % 8);
-						}
-						else {//format: byte 4 3 2 (zeilennummer), 1 (bit 7/6/ 543 (tileno) 210 (pause count) )
-							tileNum = (tileNum & 0xffffffc0) | (++tileNum & 0x3f);
-							BG[i][j] = tileNum;
-							srcRect.y = 16 * (tileNum >> 8);
-							srcRect.x = 16 * ((tileNum >> 3) & 0x7);
-						}
-						
-						SDL_RenderCopy(renderer, texture, &srcRect, &destRect);
-						destRect.x += 16;
-						if (destRect.x >= wrapAroundRight) destRect.x = wrapAroundLeft + (destRect.x - wrapAroundRight);
-					}
-					destRect.y += 16;
-					if (destRect.y >= wrapAroundBottom) destRect.y = wrapAroundTop + (destRect.y - wrapAroundBottom);
-				}
-				SDL_RenderPresent(renderer);
-				SDL_Delay(10);*/
 			}
 		}
 		destRect.x = (resolutionX / 2) - (512 / 2) + curPos.x;
@@ -187,9 +175,11 @@ int main(int argc, char* args[])
 			if (destRect.y >= wrapAroundBottom) destRect.y = wrapAroundTop + (destRect.y - wrapAroundBottom);
 		}
 		SDL_RenderPresent(renderer);
-		SDL_Delay(30);
+
+		if (20 > (SDL_GetTicks() - time)) SDL_Delay(20 - (SDL_GetTicks() - time)); //SDL_Delay pauses the execution.
 	}
 	SDL_DestroyWindow(window);
+	SDL_WaitThread(threadID, NULL);
 	SDL_Quit();
 	return 0;
 }
