@@ -3,7 +3,54 @@
 #include <stdio.h>
 #include <SDL_thread.h>
 
-int BG[32][32] = {
+const char map1breite = 50, map1hoehe = 20, map1border = 13;
+char map1tiledata[map1hoehe][map1breite] = {
+	{ 7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7 },
+	{ 7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,7 },
+	{ 7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,7 },
+	{ 7,1,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,7 },
+	{ 7,1,1,1,1,0,8,8,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,7 },
+	{ 7,1,1,1,1,0,8,8,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,7 },
+	{ 7,1,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,7 },
+	{ 7,1,1,1,1,120,121,122,123,124,125,126,127,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,7 },
+	{ 7,1,1,1,1,128,129,130,131,132,133,134,135,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,7 },
+	{ 7,1,1,1,1,136,137,138,139,140,141,142,143,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,7 },
+	{ 7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,7 },
+	{ 7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,7 },
+	{ 7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,7 },
+	{ 7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,7 },
+	{ 7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,7 },
+	{ 7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,7 },
+	{ 7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,7 },
+	{ 7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,7 },
+	{ 7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,7 },
+	{ 7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7 }
+};
+
+char map1walkdata[map1hoehe][map1breite] = {
+	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+	{ 0,0,0,0,0,24,24,24,24,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+	{ 0,0,0,0,0,24,24,24,24,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+	{ 0,0,0,0,0,24,24,24,24,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+	{ 0,0,0,0,0,24,24,24,24,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+	{ 0,0,0,0,0,8,8,8,8,8,8,8,8,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+	{ 0,0,0,0,0,8,8,8,8,8,8,8,8,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+	{ 0,0,0,0,0,8,8,8,8,8,8,8,8,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
+};
+
+/*int BG[32][32] = {
 	{ 7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7 },
 	{ 7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,626,627,628,629,1,1,1,1,1,1,1,1,7 },
 	{ 7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,632,633,634,635,636,637,638,639,1,1,1,1,1,1,7 },
@@ -40,36 +87,34 @@ int BG[32][32] = {
 	//{ 7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,7 },
 	//{ 7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,7 },
 	{ 7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7 }
-};
+};*/
 
-int threadFunction(void* data)
+/*int threadFunction(void* data)
 {
 	printf("Running thread with value = %d\n", (int)data);
 	return 0;
-}
+}*/
 
 int main(int argc, char* args[])
 {
 
-	int data = 101;
-	SDL_Thread* threadID = SDL_CreateThread(threadFunction, "LazyThread", (void*)data);
-	
-
+	//int data = 101;
+	//SDL_Thread* threadID = SDL_CreateThread(threadFunction, "LazyThread", (void*)data);
 
 	SDL_Window* window = NULL;
 	SDL_Renderer* renderer = NULL;
 
-	if (SDL_Init(SDL_INIT_VIDEO) < 0){
+	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
 		printf("SDL could not initialize! SDL Error: %s\n", SDL_GetError()); return -1;
 	}
-	
+
 	window = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480, SDL_WINDOW_SHOWN);
-	if (window == NULL){
+	if (window == NULL) {
 		printf("Window could not be created! SDL Error: %s\n", SDL_GetError()); return -1;
 	}
 
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-	if (renderer == NULL){
+	if (renderer == NULL) {
 		printf("Renderer could not be created! SDL Error: %s\n", SDL_GetError()); return -1;
 	}
 
@@ -80,21 +125,18 @@ int main(int argc, char* args[])
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 
 	SDL_Surface *surface = SDL_LoadBMP("tilesAnim.bmp");
-	if (surface == NULL){
+	if (surface == NULL) {
 		printf("load bmp error: %s\n", SDL_GetError()); return -1;
 	}
-	SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer,surface);
-	SDL_FreeSurface(surface);	
+	SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
+	SDL_FreeSurface(surface);
 	SDL_SetRenderDrawColor(renderer, 100, 50, 150, 20);
 
-	SDL_Rect curPos = { 0,0,0,0 }, srcRect = { 0,0,16,16 }, destRect = { 0,0,16,16 };
-	int tileNum;
-		
-	int wrapAroundRight = (512 / 2) + (resolutionX / 2);
-	int wrapAroundLeft = (-512 / 2) + (resolutionX / 2);
-	int wrapAroundTop = (-512 / 2) + (resolutionY / 2);
-	int wrapAroundBottom = (512 / 2) + (resolutionY / 2);
+	SDL_Rect playerPos = { 0,0,0,0 }, srcRect = { 0,0,16,16 }, destRect = { 0,0,16,16 };
+	int tileBlockNum, tileNum;
+	int mapTopLeftX, mapTopLeftY, playerXOffset = 0, playerYOffset = 0, walkData, tileData;
 
+	char i, j;
 	bool quit = 0;
 	SDL_Event e;
 	while (!quit)
@@ -111,19 +153,35 @@ int main(int argc, char* args[])
 				switch (e.key.keysym.sym)
 				{
 				case SDLK_UP:
-					curPos.y += 2;
+					playerYOffset += 2;
+					if (playerYOffset > 15) {
+						playerYOffset = 0;
+						playerPos.y--;
+					}
 					break;
 
 				case SDLK_DOWN:
-					curPos.y -= 2;
+					playerYOffset -= 2;
+					if (playerYOffset < 0) {
+						playerYOffset = 14;
+						playerPos.y++;
+					}
 					break;
 
 				case SDLK_LEFT:
-					curPos.x += 2;
+					playerXOffset += 2;
+					if (playerXOffset > 15) {
+						playerXOffset = 0;
+						playerPos.x--;
+					}
 					break;
 
 				case SDLK_RIGHT:
-					curPos.x -= 2;
+					playerXOffset -= 2;
+					if (playerXOffset < 0) {
+						playerXOffset = 14;
+						playerPos.x++;
+					}
 					break;
 
 				case SDLK_KP_PLUS:
@@ -133,53 +191,61 @@ int main(int argc, char* args[])
 					resolutionX += 12;
 					resolutionY = (resolutionX / 4) * 3;
 					SDL_RenderSetLogicalSize(renderer, resolutionX, resolutionY);
-					wrapAroundRight = (512 / 2) + (resolutionX / 2);
-					wrapAroundLeft = (-512 / 2) + (resolutionX / 2);
-					wrapAroundTop = (-512 / 2) + (resolutionY / 2);
-					wrapAroundBottom = (512 / 2) + (resolutionY / 2);
 					break;
 
 				default:
 					break;
 				}
-
-				if (curPos.x >= 512)curPos.x -= 512;
-				else if (curPos.x < 0)curPos.x += 512;
-				if (curPos.y >= 512)curPos.y -= 512;
-				else if (curPos.y < 0)curPos.y += 512;
 			}
 		}
-		destRect.x = (resolutionX / 2) - (512 / 2) + curPos.x;
-		destRect.y = (resolutionY / 2) - (512 / 2) + curPos.y;
+		destRect.x = (resolutionX / 2) - (512 / 2) + playerXOffset;
+		destRect.y = (resolutionY / 2) - (512 / 2) + playerYOffset;
 		SDL_RenderClear(renderer);
-		for (int i = 0; i < 32; i++) {
-			for (int j = 0; j < 32; j++) {
-				tileNum = BG[i][j];
+		for (i = 0; i < 32; i++) {
+			mapTopLeftY = playerPos.y - 16 + i;
+			mapTopLeftX = playerPos.x - 16;
+			for (j = 0; j < 32; j++) {
+				++mapTopLeftX;
+				tileData = map1tiledata[mapTopLeftY][mapTopLeftX];
+				walkData = map1walkdata[mapTopLeftY][mapTopLeftX];
 
-				if (tileNum < 664) {//664 erstes anim tile
-					srcRect.y = 16 * (tileNum / 8);
-					srcRect.x = 16 * (tileNum % 8);
+				if (mapTopLeftX >= map1breite || mapTopLeftX < 0 || mapTopLeftY >= map1hoehe || mapTopLeftY < 0) {
+					tileNum = map1border;
+					tileBlockNum = 0;
 				}
-				else {//format: byte 4 3 2 (zeilennummer), 1 (bit 7/6/ 543 (tileno) 210 (pause count) )
-					tileNum = (tileNum & 0xffffff00) | (tileNum + 1 & 0x3f);
-					BG[i][j] = tileNum;
-					srcRect.y = 16 * (tileNum >> 8);
-					srcRect.x = 16 * ((tileNum >> 3) & 0x7);
+				else {
+					tileNum = tileData;
+					tileBlockNum = (walkData >> 3) & 0x3;
+				}
+
+				srcRect.y = tileBlockNum * 512 + 16 * (tileNum / 8);
+				srcRect.x = 16 * (tileNum % 8);
+
+				if (tileBlockNum > 2) {//format: bit 7 6 5 (walk data), 4 3 (tile block num) 2 1 0 (pause count) )
+					if (((walkData + 1) & 0x7) == 0) {
+						if ((++tileData % 8) == 0)
+							map1tiledata[mapTopLeftY][mapTopLeftX] -= 7;
+						else
+							map1tiledata[mapTopLeftY][mapTopLeftX] = tileData;
+						map1walkdata[mapTopLeftY][mapTopLeftX] &= 0xf8;
+					}
+					else {
+						map1walkdata[mapTopLeftY][mapTopLeftX] = (walkData & 0xf8) | ((walkData + 1) & 0x7);
+					}
 				}
 
 				SDL_RenderCopy(renderer, texture, &srcRect, &destRect);
 				destRect.x += 16;
-				if (destRect.x >= wrapAroundRight) destRect.x = wrapAroundLeft + (destRect.x - wrapAroundRight);
 			}
+			destRect.x = (resolutionX / 2) - (512 / 2) + playerXOffset;
 			destRect.y += 16;
-			if (destRect.y >= wrapAroundBottom) destRect.y = wrapAroundTop + (destRect.y - wrapAroundBottom);
 		}
 		SDL_RenderPresent(renderer);
 
-		if (20 > (SDL_GetTicks() - time)) SDL_Delay(20 - (SDL_GetTicks() - time)); //SDL_Delay pauses the execution.
+		if (20 > (SDL_GetTicks() - time)) SDL_Delay(20 - (SDL_GetTicks() - time));
 	}
 	SDL_DestroyWindow(window);
-	SDL_WaitThread(threadID, NULL);
+	//SDL_WaitThread(threadID, NULL);
 	SDL_Quit();
 	return 0;
 }
