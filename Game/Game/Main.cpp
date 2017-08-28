@@ -35,9 +35,9 @@ char map1walkdata[map1hoehe][map1breite] = {
 	{ 0,0,0,0,0,24,24,24,24,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
 	{ 0,0,0,0,0,24,24,24,24,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
 	{ 0,0,0,0,0,24,24,24,24,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-	{ 0,0,0,0,0,8,8,8,8,8,8,8,8,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-	{ 0,0,0,0,0,8,8,8,8,8,8,8,8,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-	{ 0,0,0,0,0,8,8,8,8,8,8,8,8,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
 	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
 	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
 	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
@@ -139,10 +139,56 @@ int main(int argc, char* args[])
 	char i, j;
 	bool quit = 0;
 	SDL_Event e;
+	const Uint8* keystates;
 	while (!quit)
 	{
 		time = SDL_GetTicks();
 		while (SDL_PollEvent(&e) != 0)
+		{
+			if (e.type == SDL_QUIT)
+			{
+				quit = true;
+			}
+		}
+		keystates = SDL_GetKeyboardState(NULL);
+		if (keystates[SDL_SCANCODE_UP]) {
+			playerYOffset += 2;
+			if (playerYOffset > 15) {
+				playerYOffset = 0;
+				playerPos.y--;
+			}
+		}else if (keystates[SDL_SCANCODE_DOWN]) {
+			playerYOffset -= 2;
+			if (playerYOffset < 0) {
+				playerYOffset = 14;
+				playerPos.y++;
+			}
+		}
+		else if(keystates[SDL_SCANCODE_LEFT]) {
+			playerXOffset += 2;
+			if (playerXOffset > 15) {
+				playerXOffset = 0;
+				playerPos.x--;
+			}
+		}
+		else if(keystates[SDL_SCANCODE_RIGHT]) {
+			playerXOffset -= 2;
+			if (playerXOffset < 0) {
+				playerXOffset = 14;
+				playerPos.x++;
+			}
+		}
+		else if (keystates[SDL_SCANCODE_KP_PLUS]) {
+			resolutionX -= 12;
+			resolutionY = (resolutionX / 4) * 3;
+			SDL_RenderSetLogicalSize(renderer, resolutionX, resolutionY);
+		}
+		else if (keystates[SDL_SCANCODE_KP_MINUS]) {
+			resolutionX += 12;
+			resolutionY = (resolutionX / 4) * 3;
+			SDL_RenderSetLogicalSize(renderer, resolutionX, resolutionY);
+		}
+		/*while (SDL_PollEvent(&e) != 0)
 		{
 			if (e.type == SDL_QUIT)
 			{
@@ -197,7 +243,7 @@ int main(int argc, char* args[])
 					break;
 				}
 			}
-		}
+		}*/
 		destRect.x = (resolutionX / 2) - (512 / 2) + playerXOffset;
 		destRect.y = (resolutionY / 2) - (512 / 2) + playerYOffset;
 		SDL_RenderClear(renderer);
