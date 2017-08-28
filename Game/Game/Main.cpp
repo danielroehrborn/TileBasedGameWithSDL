@@ -3,6 +3,9 @@
 #include <stdio.h>
 #include <SDL_thread.h>
 
+SDL_Window* window = NULL;
+SDL_Renderer* renderer = NULL;
+
 const char map1breite = 50, map1hoehe = 20, map1border = 13;
 unsigned char map1tiledata[map1hoehe][map1breite] = {
 	{ 7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7 },
@@ -49,45 +52,86 @@ unsigned char map1walkdata[map1hoehe][map1breite] = {
 	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
 	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
 };
+const char* pathHiroSprite = "HiroSprites.png";
+const char spriteHiroAnimNum = 2;
+const SDL_Rect spriteHiroAnimPositions[] = { {1,1,32,33},{1,34,32,33} };//hwxy
+const char spriteHiroFramesPerAnim[] = { 3,3 };
 
-/*int BG[32][32] = {
-	{ 7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7 },
-	{ 7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,626,627,628,629,1,1,1,1,1,1,1,1,7 },
-	{ 7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,632,633,634,635,636,637,638,639,1,1,1,1,1,1,7 },
-	{ 7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,640,641,642,643,644,645,646,647,1,1,1,1,1,1,7 },
-	{ 7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,648,649,650,651,652,653,654,655,1,1,1,1,1,1,7 },
-	{ 7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,656,657,658,659,660,661,662,663,1,1,1,1,1,1,7 },
-	{ 7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,7 },
-	{ 7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,7 },
-	{ 7,1,1,1,1,1,1,21248,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,7 },
-	{ 7,1,1,1,1,1,1,1,1,1,1,1,13,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,7 },
-	{ 7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,7 },
-	{ 7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,7 },
-	{ 7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,7 },
-	{ 7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,7 },
-	{ 7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,600,601,1,1,1,7 },
-	{ 7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,608,609,1,1,1,7 },
-	{ 7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,616,617,1,1,1,7 },
-	{ 7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,7 },
-	{ 7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,7 },
-	{ 7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,7 },
-	{ 7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,7 },
-	{ 7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,7 },
-	{ 7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,7 },
-	{ 7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,7 },
-	{ 7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,7 },
-	{ 7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,7 },
-	{ 7,21256,21264,21296,21248,21264,21296,21248,21248,21248,21248,21296,21296,21248,21248,21248,21248,21248,21248,21248,21248,21248,21248,21248,21248,21248,21248,21248,21248,21248,21248,7 },
-	{ 7,21256,21256,21248,21248,21264,21264,21248,21248,21248,21248,21296,21296,21248,21248,21248,21248,21248,21248,21248,21248,21248,21248,21248,21248,21248,21248,21248,21248,21248,21248,7 },
-	{ 7,21248,21248,21248,21248,21248,21248,21248,21248,21248,21248,21248,21248,21248,21248,21248,21248,21248,21248,21248,21248,21248,21248,21248,21248,21248,21248,21248,21248,21248,21248,7 },
-	{ 7,21504,21504,21504,21504,21504,21504,21504,21504,21504,21504,21504,21504,21504,21504,21504,21504,21504,21504,21504,21504,21504,21504,21504,21504,21504,21504,21504,21504,21504,21504,7 },
-	{ 7,21504,21504,21504,21504,21504,21504,21504,21504,21504,21504,21504,21504,21504,21504,21504,21504,21504,21504,21504,21504,21504,21504,21504,21504,21504,21504,21504,21504,21504,21504,7 },
-	//{ 7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,7 },
-	//{ 7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,7 },
-	//{ 7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,7 },
-	//{ 7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,7 },
-	{ 7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7 }
-};*/
+class Sprite {
+public:
+	const char* spriteImagePath;
+	char numberOfAnimations;
+	const SDL_Rect* animationPositions;
+	const char* framesPerAnimation;
+	Sprite() {
+		spriteImagePath = NULL;
+		numberOfAnimations = NULL;
+		animationPositions = NULL;
+		framesPerAnimation = NULL;
+		curAnimPos = NULL;
+		inUse = NULL;
+		animated = NULL;
+	}
+	void init(const char* path, const char &animNum, const SDL_Rect* animPos, const char* framesPerAnim) {
+		spriteImagePath = path;
+		numberOfAnimations = animNum;
+		animationPositions = animPos;
+		framesPerAnimation = framesPerAnim;
+		curAnimPos = 0;
+		inUse = true;
+		animated = false;
+
+		SDL_Surface* tmpSurface = IMG_Load(path);
+		spriteTexture = SDL_CreateTextureFromSurface(renderer, tmpSurface);
+		if (spriteTexture == NULL) {
+			printf("Unable to create texture from %s! SDL Error: %s\n", path, SDL_GetError());
+		}
+		SDL_FreeSurface(tmpSurface);
+	};
+	SDL_Texture* spriteTexture = NULL;
+
+	void setAnim(const char& index) {
+		framePos = animationPositions[index];
+		mapPos = framePos;
+		curFrame = 0;
+	}
+	void setPos(const char& x, const char&y) {
+		mapPos.x = x;
+		mapPos.y = y;
+	}
+	const SDL_Rect& getFrameCoord() {
+		/*if (animated) {
+			++frameCnt %= 8;
+			if (frameCnt == 0) {
+				++curFrame %= framesPerAnimation[curAnimPos];
+				if (curFrame == 0) {
+					framePos.x = animationPositions[curAnimPos].x;
+				}
+				else {
+					framePos.x += framePos.w;
+				}
+			}
+		}
+		else */return framePos;
+		
+	}
+	const SDL_Rect& getSpriteMapCoord() {
+		return mapPos;
+	}
+
+	~Sprite() {
+		SDL_DestroyTexture(spriteTexture);
+	};
+	SDL_Rect mapPos;
+	SDL_Rect framePos;
+	char curAnimPos;
+	bool inUse;
+	char curFrame;
+	char frameCnt;
+	bool animated;
+
+};
+Sprite sprites[10];
 
 /*int threadFunction(void* data)
 {
@@ -97,12 +141,8 @@ unsigned char map1walkdata[map1hoehe][map1breite] = {
 
 int main(int argc, char* args[])
 {
-
 	//int data = 101;
 	//SDL_Thread* threadID = SDL_CreateThread(threadFunction, "LazyThread", (void*)data);
-
-	SDL_Window* window = NULL;
-	SDL_Renderer* renderer = NULL;
 
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
 		printf("SDL could not initialize! SDL Error: %s\n", SDL_GetError()); return -1;
@@ -117,6 +157,7 @@ int main(int argc, char* args[])
 	if (renderer == NULL) {
 		printf("Renderer could not be created! SDL Error: %s\n", SDL_GetError()); return -1;
 	}
+	IMG_Init(IMG_INIT_PNG);
 
 	Uint32 time;
 	int resolutionX = 640;
@@ -135,6 +176,14 @@ int main(int argc, char* args[])
 	SDL_Rect playerPos = { 0,0,0,0 }, srcRect = { 0,0,16,16 }, destRect = { 0,0,16,16 };
 	int tileBlockNum, tileNum;
 	int mapTopLeftX, mapTopLeftY, playerXOffset = 0, playerYOffset = 0, walkData, tileData;
+
+
+	//sprite init - load map part
+	sprites[0].init(pathHiroSprite, spriteHiroAnimNum, spriteHiroAnimPositions, spriteHiroFramesPerAnim);
+	sprites[0].mapPos.x = 0;
+	sprites[0].mapPos.y = 0;
+	sprites[0].setAnim(0);
+	sprites[0].setPos(100, 100);
 
 	char i, j;
 	bool quit = 0;
@@ -157,21 +206,22 @@ int main(int argc, char* args[])
 				playerYOffset = 0;
 				playerPos.y--;
 			}
-		}else if (keystates[SDL_SCANCODE_DOWN]) {
+		}
+		else if (keystates[SDL_SCANCODE_DOWN]) {
 			playerYOffset -= 2;
 			if (playerYOffset < 0) {
 				playerYOffset = 14;
 				playerPos.y++;
 			}
 		}
-		else if(keystates[SDL_SCANCODE_LEFT]) {
+		else if (keystates[SDL_SCANCODE_LEFT]) {
 			playerXOffset += 2;
 			if (playerXOffset > 15) {
 				playerXOffset = 0;
 				playerPos.x--;
 			}
 		}
-		else if(keystates[SDL_SCANCODE_RIGHT]) {
+		else if (keystates[SDL_SCANCODE_RIGHT]) {
 			playerXOffset -= 2;
 			if (playerXOffset < 0) {
 				playerXOffset = 14;
@@ -229,12 +279,21 @@ int main(int argc, char* args[])
 			destRect.x = (resolutionX / 2) - (512 / 2) + playerXOffset;
 			destRect.y += 16;
 		}
+		/*add sprites to BG*/
+		for (i = 0; i < 10; i++) {
+			if (sprites[i].inUse) {
+				//SDL_RenderCopy(renderer, sprites[i].spriteTexture, &sprites[i].getFrameCoord(), &sprites[i].getSpriteMapCoord());
+				SDL_RenderCopy(renderer, sprites[i].spriteTexture, &sprites[i].framePos, &sprites[i].mapPos);
+			}
+		}
+
 		SDL_RenderPresent(renderer);
 
 		if (20 > (SDL_GetTicks() - time)) SDL_Delay(20 - (SDL_GetTicks() - time));
 	}
 	SDL_DestroyWindow(window);
 	//SDL_WaitThread(threadID, NULL);
+	IMG_Quit();
 	SDL_Quit();
 	return 0;
 }
