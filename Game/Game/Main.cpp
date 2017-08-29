@@ -57,6 +57,7 @@ const char spriteHiroAnimNum = 2;
 const SDL_Rect spriteHiroAnimPositions[] = { {1,1,32,33},{1,34,32,33} };//hwxy
 const char spriteHiroFramesPerAnim[] = { 3,3 };
 
+
 class Sprite {
 public:
 	const char* spriteImagePath;
@@ -80,7 +81,9 @@ public:
 		curAnimPos = 0;
 		inUse = true;
 		animated = false;
+		movementSpeed = 2;
 
+		if (spriteTexture != NULL) SDL_DestroyTexture(spriteTexture);
 		SDL_Surface* tmpSurface = IMG_Load(path);
 		spriteTexture = SDL_CreateTextureFromSurface(renderer, tmpSurface);
 		if (spriteTexture == NULL) {
@@ -129,7 +132,7 @@ public:
 	char curFrame;
 	char frameCnt;
 	bool animated;
-
+	char movementSpeed;
 };
 Sprite sprites[10];
 
@@ -180,10 +183,12 @@ int main(int argc, char* args[])
 
 	//sprite init - load map part
 	sprites[0].init(pathHiroSprite, spriteHiroAnimNum, spriteHiroAnimPositions, spriteHiroFramesPerAnim);
-	sprites[0].mapPos.x = 0;
-	sprites[0].mapPos.y = 0;
 	sprites[0].setAnim(0);
 	sprites[0].setPos(100, 100);
+	Sprite *curSprite = &sprites[0];
+	sprites[1].init(pathHiroSprite, spriteHiroAnimNum, spriteHiroAnimPositions, spriteHiroFramesPerAnim);
+	sprites[1].setAnim(0);
+	sprites[1].setPos(0, 0);
 
 	char i, j;
 	bool quit = 0;
@@ -201,32 +206,36 @@ int main(int argc, char* args[])
 		}
 		keystates = SDL_GetKeyboardState(NULL);
 		if (keystates[SDL_SCANCODE_UP]) {
-			playerYOffset += 2;
+			curSprite->mapPos.y -= curSprite->movementSpeed;
+			/*playerYOffset += 2;
 			if (playerYOffset > 15) {
 				playerYOffset = 0;
 				playerPos.y--;
-			}
+			}*/
 		}
 		else if (keystates[SDL_SCANCODE_DOWN]) {
-			playerYOffset -= 2;
+			curSprite->mapPos.y += curSprite->movementSpeed;
+			/*playerYOffset -= 2;
 			if (playerYOffset < 0) {
 				playerYOffset = 14;
 				playerPos.y++;
-			}
+			}*/
 		}
 		else if (keystates[SDL_SCANCODE_LEFT]) {
-			playerXOffset += 2;
+			curSprite->mapPos.x -= curSprite->movementSpeed;
+			/*playerXOffset += 2;
 			if (playerXOffset > 15) {
 				playerXOffset = 0;
 				playerPos.x--;
-			}
+			}*/
 		}
 		else if (keystates[SDL_SCANCODE_RIGHT]) {
-			playerXOffset -= 2;
+			curSprite->mapPos.x += curSprite->movementSpeed;
+			/*playerXOffset -= 2;
 			if (playerXOffset < 0) {
 				playerXOffset = 14;
 				playerPos.x++;
-			}
+			}*/
 		}
 		else if (keystates[SDL_SCANCODE_KP_PLUS]) {
 			resolutionX -= 12;
@@ -238,12 +247,12 @@ int main(int argc, char* args[])
 			resolutionY = (resolutionX / 4) * 3;
 			SDL_RenderSetLogicalSize(renderer, resolutionX, resolutionY);
 		}
-		destRect.x = (resolutionX / 2) - (512 / 2) + playerXOffset;
-		destRect.y = (resolutionY / 2) - (512 / 2) + playerYOffset;
+		destRect.x = (resolutionX / 2) - (512 / 2) - curSprite->mapPos.x % 16;//destRect.x = (resolutionX / 2) - (512 / 2) + playerXOffset;
+		destRect.y = (resolutionY / 2) - (512 / 2) - curSprite->mapPos.y % 16;//destRect.y = (resolutionY / 2) - (512 / 2) + playerYOffset;
 		SDL_RenderClear(renderer);
 		for (i = 0; i < 32; i++) {
-			mapTopLeftY = playerPos.y - 16 + i;
-			mapTopLeftX = playerPos.x - 16;
+			mapTopLeftY = (curSprite->mapPos.y / 16) - 16 + i;//mapTopLeftY = playerPos.y - 16 + i;
+			mapTopLeftX = (curSprite->mapPos.x / 16) - 16;//mapTopLeftX = playerPos.x - 16;
 			for (j = 0; j < 32; j++) {
 				++mapTopLeftX;
 
@@ -276,14 +285,24 @@ int main(int argc, char* args[])
 				SDL_RenderCopy(renderer, texture, &srcRect, &destRect);
 				destRect.x += 16;
 			}
-			destRect.x = (resolutionX / 2) - (512 / 2) + playerXOffset;
+			destRect.x = (resolutionX / 2) - (512 / 2) - curSprite->mapPos.x % 16;//destRect.x = (resolutionX / 2) - (512 / 2) + playerXOffset;
 			destRect.y += 16;
 		}
 		/*add sprites to BG*/
 		for (i = 0; i < 10; i++) {
 			if (sprites[i].inUse) {
+				int bildmitteX = (resolutionX / 2);
+				int bildmitteY = (resolutionY / 2);
+				int ursprungX = bildmitteX - curSprite->mapPos.x;
+				int ursprungY = bildmitteY - curSprite->mapPos.y;
+				SDL_Rect tmp;
+				tmp.h = curSprite->mapPos.h;
+				tmp.w = curSprite->mapPos.w;
+				tmp.x = ursprungX + sprites[i].mapPos.x;
+				tmp.y = ursprungY + sprites[i].mapPos.y;
+
 				//SDL_RenderCopy(renderer, sprites[i].spriteTexture, &sprites[i].getFrameCoord(), &sprites[i].getSpriteMapCoord());
-				SDL_RenderCopy(renderer, sprites[i].spriteTexture, &sprites[i].framePos, &sprites[i].mapPos);
+				SDL_RenderCopy(renderer, sprites[i].spriteTexture, &sprites[i].framePos, &tmp);// &sprites[i].mapPos);
 			}
 		}
 
