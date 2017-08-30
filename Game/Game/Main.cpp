@@ -87,6 +87,19 @@ const SpriteData Hiro = {
 	&HiroWalkLeft, &HiroLookRight, &HiroWalkRight, &HiroRunDown, &HiroRunUp, &HiroRunLeft, &HiroRunRight, &HiroAngelDown }
 };
 
+const SpriteData::AnimAndTimingList CommandosLookDown = { 4,{ { { 599,452,30,41 },20,0 },{ { 631,452,30,41 },20,0 },{ { 663,452,30,41 },20,0 },{ { 631,452,30,41 },20,0 } } };
+const SpriteData::AnimAndTimingList CommandosWalkDown = { 8,{ { { 2,192,24,43 },6,1 },{ { 30,192,24,43 },8,1 },{ { 58,192,24,43 },10,1 },{ { 86,192,24,43 },6,1 },{ { 114,192,24,43 },8,1 },{ { 142,192,24,43 },6,1 },{ { 170,192,24,43 },10,1 },{ { 198,192,24,43 },10,1 } } };
+const SpriteData::AnimAndTimingList CommandosLookUp = { 4,{ { { 588,315,31,39 },20,0 },{ { 620,315,31,39 },20,0 },{ { 652,315,31,39 },20,0 },{ { 620,315,31,39 },20,0 } } };
+const SpriteData::AnimAndTimingList CommandosWalkUp = { 8,{ { { 1,7,24,43 },6,1 },{ { 29,7,24,43 },8,1 },{ { 57,7,24,43 },8,1 },{ { 85,7,24,43 },6,1 },{ { 113,7,24,43 },8,1 },{ { 141,7,24,43 },6,1 },{ { 169,7,24,43 },10,1 },{ { 197,7,24,43 },10,1 } } };
+const SpriteData::AnimAndTimingList CommandosLookLeft = { 4,{ { { 600,355,17,49 },20,0 },{ { 632,355,17,49 },20,0 },{ { 664,355,17,49 },20,0 },{ { 632,355,17,49 },20,0 } } };
+const SpriteData::AnimAndTimingList CommandosWalkLeft = { 8,{ { { 1,99,25,48 },6,1 },{ { 29,99,25,48 },8,1 },{ { 57,99,25,48 },10,1 },{ { 85,99,25,48 },6,1 },{ { 113,99,25,48 },8,1 },{ { 141,99,25,48 },6,1 },{ { 169,99,25,48 },10,1 },{ { 197,99,25,48 },8,1 } } };
+const SpriteData::AnimAndTimingList CommandosLookRight = { 3,{ { { 600,355,17,49 },20,0 },{ { 632,355,17,49 },20,0 },{ { 664,355,17,49 },20,0 },{ { 632,355,17,49 },20,0 } } };
+const SpriteData::AnimAndTimingList CommandosWalkRight = { 8,{ { { 1,99,25,48 },6,1 },{ { 29,99,25,48 },8,1 },{ { 57,99,25,48 },10,1 },{ { 85,99,25,48 },6,1 },{ { 113,99,25,48 },8,1 },{ { 141,99,25,48 },6,1 },{ { 169,99,25,48 },10,1 },{ { 197,99,25,48 },8,1 } } };
+const SpriteData Commandos = {
+	"Commandos.png",8,{ &CommandosLookDown, &CommandosWalkDown, &CommandosLookUp, &CommandosWalkUp, &CommandosLookLeft,
+	&CommandosWalkLeft, &CommandosLookRight, &CommandosWalkRight, &HiroRunDown, &HiroRunUp, &HiroRunLeft, &HiroRunRight, &HiroAngelDown }
+};
+
 class Sprite {
 public:
 	const SpriteData* sData;
@@ -209,7 +222,7 @@ int main(int argc, char* args[])
 	sprites[0].setAnim(0);
 	sprites[0].setPos(100, 100);
 	Sprite *curSprite = &sprites[0];
-	sprites[1].init(&Hiro);
+	sprites[1].init(&Commandos);
 	sprites[1].setAnim(0);
 	sprites[1].setPos(0, 0);
 
@@ -234,7 +247,7 @@ int main(int argc, char* args[])
 			tmpLastDir = 1;
 			if (!animSet) {
 				animSet = 1;
-				curSprite->setAnim(9);//3
+				curSprite->setAnim(3);//3
 				curSprite->animate(true);
 			}
 		}
@@ -243,7 +256,7 @@ int main(int argc, char* args[])
 			tmpLastDir = 0;
 			if (!animSet) {
 				animSet = 1;
-				curSprite->setAnim(8);//0
+				curSprite->setAnim(1);//1
 				curSprite->animate(true);
 			}
 		}
@@ -252,7 +265,7 @@ int main(int argc, char* args[])
 			tmpLastDir = 2;
 			if (!animSet) {
 				animSet = 1;
-				curSprite->setAnim(10);//5
+				curSprite->setAnim(5);//5
 				curSprite->animate(true);
 			}
 		}
@@ -261,7 +274,7 @@ int main(int argc, char* args[])
 			tmpLastDir = 3;
 			if (!animSet) {
 				animSet = 1;
-				curSprite->setAnim(11);//7
+				curSprite->setAnim(7);//7
 				curSprite->animate(true);
 			}
 		}
@@ -305,6 +318,7 @@ int main(int argc, char* args[])
 		else {
 			if (animSet) {
 				curSprite->setAnim(tmpLastDir * 2);
+				curSprite->animate(true, false);
 				animSet = 0;
 			}
 		}
