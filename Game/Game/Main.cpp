@@ -78,8 +78,13 @@ const SpriteData::AnimAndTimingList HiroWalkLeft = { 4,{ {{34,67,32,32},12,1 }, 
 const SpriteData::AnimAndTimingList HiroLookRight = { 1,{ {{1,100,32,32},16,1} } };
 const SpriteData::AnimAndTimingList HiroWalkRight = { 4,{ {{34,100,32,32},10,1 }, {{1,100,32,32},8,1 }, {{67,100,32,32},10,1 }, {{1,100,32,32},8,1 } } };
 const SpriteData::AnimAndTimingList HiroRunDown = { 4,{ {{166,34,32,32},8,3 }, {{133,34,32,32},6,2 }, {{199,34,32,32},8,3 }, {{133,34,32,32},6,2 } } };
+const SpriteData::AnimAndTimingList HiroRunUp = { 4,{ { { 166,1,32,32 },8,3 },{ { 133,1,32,32 },6,2 },{ { 199,1,32,32 },8,3 },{ { 133,1,32,32 },6,2 } } };
+const SpriteData::AnimAndTimingList HiroRunLeft = { 4,{ { { 166,67,32,32 },8,3 },{ { 133,67,32,32 },6,2 },{ { 199,67,32,32 },8,3 },{ { 133,67,32,32 },6,2 } } };
+const SpriteData::AnimAndTimingList HiroRunRight = { 4,{ { { 166,100,32,32 },8,3 },{ { 133,100,32,32 },6,2 },{ { 199,100,32,32 },8,3 },{ { 133,100,32,32 },6,2 } } };
+const SpriteData::AnimAndTimingList HiroAngelDown = { 4,{ { { 1,594,64,64 },12,0 },{ { 66,594,64,64 },8,0 },{ { 131,594,64,64 },4,0 },{ { 196,594,64,64 },12,0 } } };
 const SpriteData Hiro = {
-	"HiroSprites.png",9,{ &HiroLookDown, &HiroWalkDown, &HiroLookUp, &HiroWalkUp, &HiroLookLeft, &HiroWalkLeft, &HiroLookRight, &HiroWalkRight, &HiroRunDown }
+	"HiroSprites.png",13,{ &HiroLookDown, &HiroWalkDown, &HiroLookUp, &HiroWalkUp, &HiroLookLeft,
+	&HiroWalkLeft, &HiroLookRight, &HiroWalkRight, &HiroRunDown, &HiroRunUp, &HiroRunLeft, &HiroRunRight, &HiroAngelDown }
 };
 
 class Sprite {
@@ -113,8 +118,9 @@ public:
 		mapPos.w = sData->animData[curAnimNum]->list[0].frame.w;
 		animate(false);
 	}
-	void animate(const bool& activate) { 
+	void animate(const bool& activate, const bool& oneShotNotLoop = 0) {
 		animated = activate;
+		this->oneShotNotLoop = oneShotNotLoop;
 		curAnimFrameNum = 0;
 		frameCnt = 0;
 	}
@@ -127,11 +133,11 @@ public:
 			++frameCnt %= sData->animData[curAnimNum]->list[curAnimFrameNum].time;
 			if (frameCnt == 0) {
 				++curAnimFrameNum %= sData->animData[curAnimNum]->numFrames;
-					//framesPerAnimation[curAnimNum];
+				if (curAnimFrameNum == 0 && oneShotNotLoop)
+					animate(false);
 			}
 		}
 		return sData->animData[curAnimNum]->list[curAnimFrameNum].frame;
-			//animationPositions[curAnimNum][curAnimFrameNum];
 	}
 	const SDL_Rect& getSpriteMapCoord() {
 		return mapPos;
@@ -148,6 +154,7 @@ public:
 	char curAnimFrameNum;
 	char frameCnt;
 	bool animated;
+	bool oneShotNotLoop;
 	char movementSpeed;
 };
 Sprite sprites[10];
@@ -227,7 +234,7 @@ int main(int argc, char* args[])
 			tmpLastDir = 1;
 			if (!animSet) {
 				animSet = 1;
-				curSprite->setAnim(3);
+				curSprite->setAnim(9);//3
 				curSprite->animate(true);
 			}
 		}
@@ -236,7 +243,7 @@ int main(int argc, char* args[])
 			tmpLastDir = 0;
 			if (!animSet) {
 				animSet = 1;
-				curSprite->setAnim(8);
+				curSprite->setAnim(8);//0
 				curSprite->animate(true);
 			}
 		}
@@ -245,7 +252,7 @@ int main(int argc, char* args[])
 			tmpLastDir = 2;
 			if (!animSet) {
 				animSet = 1;
-				curSprite->setAnim(5);
+				curSprite->setAnim(10);//5
 				curSprite->animate(true);
 			}
 		}
@@ -254,7 +261,7 @@ int main(int argc, char* args[])
 			tmpLastDir = 3;
 			if (!animSet) {
 				animSet = 1;
-				curSprite->setAnim(7);
+				curSprite->setAnim(11);//7
 				curSprite->animate(true);
 			}
 		}
@@ -281,7 +288,7 @@ int main(int argc, char* args[])
 			sprites[1].mapPos.y += 2;
 		}
 		else if (keystates[SDL_SCANCODE_KP_1]) {
-			sprites[1].animate(!sprites[1].animated);
+			sprites[1].animate(!sprites[1].animated,true);
 			SDL_Delay(200);
 		}
 		else if (keystates[SDL_SCANCODE_KP_3]) {
@@ -289,9 +296,17 @@ int main(int argc, char* args[])
 			sprites[1].setAnim(tmp);
 			SDL_Delay(200);
 		}
+		else if (keystates[SDL_SCANCODE_KP_0]) {
+			if(curSprite== &sprites[0])
+			curSprite = &sprites[1];
+			else curSprite = &sprites[0];
+			SDL_Delay(200);
+		}
 		else {
-			sprites[0].setAnim(tmpLastDir * 2);
-			animSet = 0;
+			if (animSet) {
+				curSprite->setAnim(tmpLastDir * 2);
+				animSet = 0;
+			}
 		}
 
 		destRect.x = (resolutionX / 2) - (512 / 2) - curSprite->mapPos.x % 16;//destRect.x = (resolutionX / 2) - (512 / 2) + playerXOffset;
@@ -344,8 +359,8 @@ int main(int argc, char* args[])
 					int ursprungX = bildmitteX - curSprite->mapPos.x;
 					int ursprungY = bildmitteY - curSprite->mapPos.y;
 					SDL_Rect tmp;
-					tmp.h = curSprite->mapPos.h;
-					tmp.w = curSprite->mapPos.w;
+					tmp.h = sprites[i].mapPos.h;
+					tmp.w = sprites[i].mapPos.w;
 					tmp.x = ursprungX + sprites[i].mapPos.x;
 					tmp.y = ursprungY + sprites[i].mapPos.y;
 
