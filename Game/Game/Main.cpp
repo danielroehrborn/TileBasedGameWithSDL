@@ -52,11 +52,32 @@ unsigned char map1walkdata[map1hoehe][map1breite] = {
 	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
 	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
 };
-const char* pathHiroSprite = "HiroSprites.png";
-const char spriteHiroAnimNum = 2;
-//const SDL_Rect spriteHiroAnimPositions[] = { {1,1,32,33},{1,34,32,33} };//xyhw
-const SDL_Rect HiroAnimLookDown[] = { { 1,34,32,32 } };
+class SpriteData {
+public:
+	class AnimAndTiming {
+	public:
+		const SDL_Rect frame;
+		const char time;
+	};
+	class AnimAndTimingList {
+	public:
+		const char numFrames;
+		const AnimAndTiming list[];
+	};
+	const char* path;
+	const char numAnimations;
+	const AnimAndTimingList* animData[];
+};
+const SpriteData::AnimAndTimingList HiroLookDown = { 1,{ { { 1,34,32,32 },16 }} };
+const SpriteData::AnimAndTimingList HiroWalkDown = { 2,{ {{ 34,34,32,32 },16},{{ 67,34,32,32 },16} } };
+const SpriteData Hiro = {
+	"HiroSprites.png",2,{ &HiroLookDown ,&HiroWalkDown }
+};
+/*const char* pathHiroSprite = "HiroSprites.png";
+const char HiroAnimNum = 2;
+const SDL_Rect HiroAnimLookDown[] = { { 1,34,32,32 } }; //xyhw
 const SDL_Rect HiroAnimWalkDown[] = { { 34,34,32,32 },{ 67,34,32,32 } };
+const char HiroAnimWalkDownTiming[] = { 16,16 };
 const SDL_Rect* HiroAnimations[] = {
 	HiroAnimLookDown,//look down
 	HiroAnimWalkDown//walk down
@@ -67,50 +88,46 @@ const SDL_Rect* HiroAnimations[] = {
 	//look right
 	//walk right
 };
-const char HiroFramesPerAnim[] = { 1,2 };
-//const char spriteHiroFramesPerAnim[] = { 3,3 };
-
+const char HiroFramesPerAnim[] = { 1,2 };*/
 
 class Sprite {
 public:
-	const char* spriteImagePath;
-	char numberOfAnimations;
-	const SDL_Rect** animationPositions;
-	const char* framesPerAnimation;
+	const SpriteData* sData;
 	Sprite() {
-		spriteImagePath = NULL;
-		numberOfAnimations = NULL;
-		animationPositions = NULL;
-		framesPerAnimation = NULL;
 		curAnimNum = NULL;
 		objectInUse = NULL;
 		animated = NULL;
 	}
-	void init(const char* path, const char &animNum, const SDL_Rect** animPos, const char* framesPerAnim) {
-		spriteImagePath = path;
-		numberOfAnimations = animNum;
-		animationPositions = animPos;
-		framesPerAnimation = framesPerAnim;
+	void init(const SpriteData* sd) {
+		sData = sd;
 		curAnimNum = 0;
 		objectInUse = true;
 		animated = false;
 		movementSpeed = 2;
 
 		if (spriteTexture != NULL) SDL_DestroyTexture(spriteTexture);
-		SDL_Surface* tmpSurface = IMG_Load(path);
+		SDL_Surface* tmpSurface = IMG_Load(sData->path);
 		spriteTexture = SDL_CreateTextureFromSurface(renderer, tmpSurface);
 		if (spriteTexture == NULL) {
-			printf("Unable to create texture from %s! SDL Error: %s\n", path, SDL_GetError());
+			printf("Unable to create texture from %s! SDL Error: %s\n", sData->path, SDL_GetError());
 		}
 		SDL_FreeSurface(tmpSurface);
 	};
 	SDL_Texture* spriteTexture = NULL;
 
 	void setAnim(const char& index) {
-		framePos = animationPositions[index][0];
-		mapPos.h = framePos.h;
-		mapPos.w = framePos.w;
-		curAnimFrameNum = index;
+		curAnimNum = index%sData->numAnimations;
+		mapPos.h = sData->animData[curAnimNum]->list[0].frame.h;
+		mapPos.w = sData->animData[curAnimNum]->list[0].frame.w;
+		animate(false);
+	}
+	void animate(const bool& activate = NULL) {
+		if (activate == NULL) {
+			animated = !animated; //toggle
+		}
+		else animated = activate;
+		curAnimFrameNum = 0;
+		frameCnt = 0;
 	}
 	void setPos(const char& x, const char&y) {
 		mapPos.x = x;
@@ -118,13 +135,14 @@ public:
 	}
 	const SDL_Rect& getFrameCoord() {
 		if (animated) {
-			++frameCnt %= 8;
+			++frameCnt %= sData->animData[curAnimNum]->list[curAnimFrameNum].time;
 			if (frameCnt == 0) {
-				++curAnimFrameNum %= framesPerAnimation[curAnimNum];
-				//framePos = animationPositions[curAnimNum];
+				++curAnimFrameNum %= sData->animData[curAnimNum]->numFrames;
+					//framesPerAnimation[curAnimNum];
 			}
 		}
-		return animationPositions[curAnimNum][curAnimFrameNum];//framePos;
+		return sData->animData[curAnimNum]->list[curAnimFrameNum].frame;
+			//animationPositions[curAnimNum][curAnimFrameNum];
 	}
 	const SDL_Rect& getSpriteMapCoord() {
 		return mapPos;
@@ -134,7 +152,6 @@ public:
 		SDL_DestroyTexture(spriteTexture);
 	};
 	SDL_Rect mapPos;
-	SDL_Rect framePos;
 	char curAnimNum;
 	bool objectInUse;
 	char curAnimFrameNum;
@@ -190,11 +207,11 @@ int main(int argc, char* args[])
 
 
 	//sprite init - load map part
-	sprites[0].init(pathHiroSprite, spriteHiroAnimNum, HiroAnimations, HiroFramesPerAnim);
+	sprites[0].init(&Hiro);
 	sprites[0].setAnim(0);
 	sprites[0].setPos(100, 100);
 	Sprite *curSprite = &sprites[0];
-	sprites[1].init(pathHiroSprite, spriteHiroAnimNum, HiroAnimations, HiroFramesPerAnim);
+	sprites[1].init(&Hiro);
 	sprites[1].setAnim(0);
 	sprites[1].setPos(0, 0);
 
@@ -248,13 +265,13 @@ int main(int argc, char* args[])
 			sprites[1].mapPos.y += 2;
 		}
 		else if (keystates[SDL_SCANCODE_KP_1]) {
-			sprites[1].animated = !sprites[1].animated;
-			SDL_Delay(100);
+			sprites[1].animate();
+			SDL_Delay(200);
 		}
 		else if (keystates[SDL_SCANCODE_KP_3]) {
 			char tmp = (sprites[1].curAnimNum + 1) % 2;
 			sprites[1].setAnim(tmp);
-			SDL_Delay(100);
+			SDL_Delay(200);
 		}
 
 		destRect.x = (resolutionX / 2) - (512 / 2) - curSprite->mapPos.x % 16;//destRect.x = (resolutionX / 2) - (512 / 2) + playerXOffset;
