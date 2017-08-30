@@ -68,27 +68,17 @@ public:
 	const char numAnimations;
 	const AnimAndTimingList* animData[];
 };
-const SpriteData::AnimAndTimingList HiroLookDown = { 1,{ { { 1,34,32,32 },16 }} };
-const SpriteData::AnimAndTimingList HiroWalkDown = { 2,{ {{ 34,34,32,32 },16},{{ 67,34,32,32 },16} } };
+const SpriteData::AnimAndTimingList HiroLookDown = { 1,{ {{1,34,32,32},16} } };
+const SpriteData::AnimAndTimingList HiroWalkDown = { 4,{ {{34,34,32,32},12}, {{1,34,32,32},12}, {{67,34,32,32},12}, {{1,34,32,32},12} } };
+const SpriteData::AnimAndTimingList HiroLookUp = { 1,{ {{1,1,32,32},12} } };
+const SpriteData::AnimAndTimingList HiroWalkUp = { 4,{ {{34,1,32,32 },12}, {{1,1,32,32},12}, {{67,1,32,32},12}, {{1,1,32,32},12} } };
+const SpriteData::AnimAndTimingList HiroLookLeft = { 1,{ {{1,67,32,32},16} } };
+const SpriteData::AnimAndTimingList HiroWalkLeft = { 4,{ {{34,67,32,32},12}, {{1,67,32,32},12}, {{67,67,32,32},12}, {{1,67,32,32},12} } };
+const SpriteData::AnimAndTimingList HiroLookRight = { 1,{ {{1,100,32,32},16} } };
+const SpriteData::AnimAndTimingList HiroWalkRight = { 4,{ {{34,100,32,32},12}, {{1,100,32,32},12}, {{67,100,32,32},12}, {{1,100,32,32},12} } };
 const SpriteData Hiro = {
-	"HiroSprites.png",2,{ &HiroLookDown ,&HiroWalkDown }
+	"HiroSprites.png",8,{ &HiroLookDown, &HiroWalkDown, &HiroLookUp, &HiroWalkUp, &HiroLookLeft, &HiroWalkLeft, &HiroLookRight, &HiroWalkRight }
 };
-/*const char* pathHiroSprite = "HiroSprites.png";
-const char HiroAnimNum = 2;
-const SDL_Rect HiroAnimLookDown[] = { { 1,34,32,32 } }; //xyhw
-const SDL_Rect HiroAnimWalkDown[] = { { 34,34,32,32 },{ 67,34,32,32 } };
-const char HiroAnimWalkDownTiming[] = { 16,16 };
-const SDL_Rect* HiroAnimations[] = {
-	HiroAnimLookDown,//look down
-	HiroAnimWalkDown//walk down
-	//look up
-	//walk up
-	//look left
-	//walk left
-	//look right
-	//walk right
-};
-const char HiroFramesPerAnim[] = { 1,2 };*/
 
 class Sprite {
 public:
@@ -269,7 +259,7 @@ int main(int argc, char* args[])
 			SDL_Delay(200);
 		}
 		else if (keystates[SDL_SCANCODE_KP_3]) {
-			char tmp = (sprites[1].curAnimNum + 1) % 2;
+			char tmp = (sprites[1].curAnimNum + 1) % sprites[1].sData->numAnimations;
 			sprites[1].setAnim(tmp);
 			SDL_Delay(200);
 		}
