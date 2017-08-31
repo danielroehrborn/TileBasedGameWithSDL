@@ -153,7 +153,7 @@ const SpriteData::AnimAndTimingList DiabloGetHitDown = { 6,{ { { 5122,7,160,160 
 { { 5442,7,160,160 },{ 0,0 },9 },{ { 5602,7,160,160 },{ 0,0 },9 },{ { 5762,7,160,160 },{ 0,0 },9 },{ { 5922,7,160,160 },{ 0,0 },9 } } };
 
 const SpriteData Diablo = {
-	"Diablo.png",12,{ &DiabloLookDown, &DiabloWalkDown, &DiabloLookUp, &DiabloWalkUp,&DiabloLookLeft, &DiabloWalkLeft, &DiabloLookRight, &DiabloWalkRight, &DiabloAttackDown, &DiabloDieDown, &DiabloSpecialDown, &DiabloGetHitDown }
+	"Diablo.png",12,{ &DiabloLookDown, &DiabloWalkDown, &DiabloLookUp, &DiabloWalkUp, &DiabloLookLeft, &DiabloWalkLeft, &DiabloLookRight, &DiabloWalkRight, &DiabloAttackDown, &DiabloDieDown, &DiabloSpecialDown, &DiabloGetHitDown }
 };
 
 
@@ -182,18 +182,6 @@ public:
 	};
 	SDL_Texture* spriteTexture = NULL;
 
-	/*void setAnim(const char& index) {
-		curAnimNum = index%sData->numAnimations;
-		mapPos.h = sData->animData[curAnimNum]->list[0].frame.h;
-		mapPos.w = sData->animData[curAnimNum]->list[0].frame.w;
-		animate(false);
-	}
-	void animate(const bool& activate, const bool& oneShotNotLoop = 0) {
-		animated = activate;
-		this->oneShotNotLoop = oneShotNotLoop;
-		curAnimFrameNum = 0;
-		frameCnt = 0;
-	}*/
 	void pushAnim(const char& index) {
 		if (animList.size() == 1) {
 			animList.pop();
@@ -203,6 +191,11 @@ public:
 		animList.push(index);
 		mapPos.h = sData->animData[animList.front()]->list[curAnimFrameNum].frame.h;
 		mapPos.w = sData->animData[animList.front()]->list[curAnimFrameNum].frame.w;
+	}
+	void pushAnim(const char& num, const char* data) {
+		for (int i = 0; i < num; i++) {
+			animList.push(data[i]);
+		}
 	}
 	void setPos(const char& x, const char&y) {
 		mapPos.x = x;
@@ -370,6 +363,13 @@ int main(int argc, char* args[])
 			else if (curSprite == &sprites[1])
 				curSprite = &sprites[2];
 			else curSprite = &sprites[0];
+			SDL_Delay(200);
+		}
+		else if (keystates[SDL_SCANCODE_KP_7]) {
+			const char diablomove[] = {
+				1,1,0,7,7,3,3,7,10,8,11,9
+			};
+			sprites[2].pushAnim(12, diablomove);
 			SDL_Delay(200);
 		}
 		else {
