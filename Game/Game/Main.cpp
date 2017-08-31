@@ -2,6 +2,7 @@
 #include <SDL_image.h>
 #include <stdio.h>
 #include <SDL_thread.h>
+#include <queue>
 
 SDL_Window* window = NULL;
 SDL_Renderer* renderer = NULL;
@@ -54,11 +55,16 @@ unsigned char map1walkdata[map1hoehe][map1breite] = {
 };
 class SpriteData {
 public:
+	class AnimMovement {
+	public:
+		const char moveXPixel;
+		const char moveYPixel;
+	};
 	class AnimAndTiming {
 	public:
 		const SDL_Rect frame;
-		const char time;
-		const char moveSpeed;
+		const AnimMovement moveFrame;//const char moveSpeed;
+		const char displayDuration;
 	};
 	class AnimAndTimingList {
 	public:
@@ -69,51 +75,61 @@ public:
 	const char numAnimations;
 	const AnimAndTimingList* animData[];
 };
-const SpriteData::AnimAndTimingList HiroLookDown = { 1,{ {{1,34,32,32},16,1} } };
-const SpriteData::AnimAndTimingList HiroWalkDown = { 4,{ {{34,34,32,32},12,1}, {{1,34,32,32},12,1 }, {{67,34,32,32},12,1 }, {{1,34,32,32},12,1 } } };
-const SpriteData::AnimAndTimingList HiroLookUp = { 1,{ {{1,1,32,32},12,1 } } };
-const SpriteData::AnimAndTimingList HiroWalkUp = { 4,{ {{34,1,32,32 },12,3 }, {{1,1,32,32},12,3 }, {{67,1,32,32},12,3 }, {{1,1,32,32},12,3 } } };
-const SpriteData::AnimAndTimingList HiroLookLeft = { 1,{ {{1,67,32,32},16,1 } } };
-const SpriteData::AnimAndTimingList HiroWalkLeft = { 4,{ {{34,67,32,32},12,1 }, {{1,67,32,32},12,0 }, {{67,67,32,32},12,1 }, {{1,67,32,32},12,0 } } };
-const SpriteData::AnimAndTimingList HiroLookRight = { 1,{ {{1,100,32,32},16,1} } };
-const SpriteData::AnimAndTimingList HiroWalkRight = { 4,{ {{34,100,32,32},10,1 }, {{1,100,32,32},8,1 }, {{67,100,32,32},10,1 }, {{1,100,32,32},8,1 } } };
-const SpriteData::AnimAndTimingList HiroRunDown = { 4,{ {{166,34,32,32},8,3 }, {{133,34,32,32},6,2 }, {{199,34,32,32},8,3 }, {{133,34,32,32},6,2 } } };
-const SpriteData::AnimAndTimingList HiroRunUp = { 4,{ { { 166,1,32,32 },8,3 },{ { 133,1,32,32 },6,2 },{ { 199,1,32,32 },8,3 },{ { 133,1,32,32 },6,2 } } };
-const SpriteData::AnimAndTimingList HiroRunLeft = { 4,{ { { 166,67,32,32 },8,3 },{ { 133,67,32,32 },6,2 },{ { 199,67,32,32 },8,3 },{ { 133,67,32,32 },6,2 } } };
-const SpriteData::AnimAndTimingList HiroRunRight = { 4,{ { { 166,100,32,32 },8,3 },{ { 133,100,32,32 },6,2 },{ { 199,100,32,32 },8,3 },{ { 133,100,32,32 },6,2 } } };
-const SpriteData::AnimAndTimingList HiroAngelDown = { 4,{ { { 1,594,64,64 },12,0 },{ { 66,594,64,64 },8,0 },{ { 131,594,64,64 },4,0 },{ { 196,594,64,64 },12,0 } } };
+const SpriteData::AnimAndTimingList HiroLookDown = { 1,{ {{1,34,32,32},{0,0},16} } };
+const SpriteData::AnimAndTimingList HiroWalkDown = { 4,{ {{34,34,32,32},{0,1},9}, {{1,34,32,32},{ 0,1 },9 }, {{67,34,32,32},{ 0,1 },9 }, {{1,34,32,32},{ 0,1 },9 } } };
+const SpriteData::AnimAndTimingList HiroLookUp = { 1,{ {{1,1,32,32},{ 0,0 },16 } } };
+const SpriteData::AnimAndTimingList HiroWalkUp = { 4,{ {{34,1,32,32 },{ 0,-1 },9 }, {{1,1,32,32},{ 0,-1 },9 }, {{67,1,32,32},{ 0,-1 },9 }, {{1,1,32,32},{ 0,-1 },9 } } };
+const SpriteData::AnimAndTimingList HiroLookLeft = { 1,{ {{1,67,32,32},{ 0,0 },16 } } };
+const SpriteData::AnimAndTimingList HiroWalkLeft = { 4,{ {{34,67,32,32},{ -1,0 },9 }, {{1,67,32,32},{ -1,0 },9 }, {{67,67,32,32},{ -1,0 },9 }, {{1,67,32,32},{ -1,0 },9 } } };
+const SpriteData::AnimAndTimingList HiroLookRight = { 1,{ {{1,100,32,32},{ 0,0 },16 } } };
+const SpriteData::AnimAndTimingList HiroWalkRight = { 4,{ {{34,100,32,32},{ 1,0 },9 }, {{1,100,32,32},{ 1,0 },9 }, {{67,100,32,32},{ 1,0 },9 }, {{1,100,32,32},{ 1,0 },9 } } };
+const SpriteData::AnimAndTimingList HiroRunDown = { 4,{ {{166,34,32,32},{ 0,3 },8 }, {{133,34,32,32},{ 0,2 },6 }, {{199,34,32,32},{ 0,3 },8 }, {{133,34,32,32},{ 0,2 },6 } } };
+const SpriteData::AnimAndTimingList HiroRunUp = { 4,{ { { 166,1,32,32 },{ 0,-3 },8 },{ { 133,1,32,32 },{ 0,-2 },6 },{ { 199,1,32,32 },{ 0,-3 },8 },{ { 133,1,32,32 },{ 0,-2 },6 } } };
+const SpriteData::AnimAndTimingList HiroRunLeft = { 4,{ { { 166,67,32,32 },{ -3,0 },8 },{ { 133,67,32,32 },{ -2,0 },6 },{ { 199,67,32,32 },{ -3,0 },8 },{ { 133,67,32,32 },{ -2,0 },6 } } };
+const SpriteData::AnimAndTimingList HiroRunRight = { 4,{ { { 166,100,32,32 },{ 3,0 },8 },{ { 133,100,32,32 },{ 2,0 },6 },{ { 199,100,32,32 },{ 3,0 },8 },{ { 133,100,32,32 },{ 2,0 },6 } } };
+const SpriteData::AnimAndTimingList HiroAngelDown = { 4,{ { { 1,594,64,64 },{ 0,0 },12 },{ { 66,594,64,64 },{ 0,0 },8 },{ { 131,594,64,64 },{ 0,1 },4 },{ { 196,594,64,64 },{ 0,-1 },12 } } };
 const SpriteData Hiro = {
 	"HiroSprites.png",13,{ &HiroLookDown, &HiroWalkDown, &HiroLookUp, &HiroWalkUp, &HiroLookLeft,
 	&HiroWalkLeft, &HiroLookRight, &HiroWalkRight, &HiroRunDown, &HiroRunUp, &HiroRunLeft, &HiroRunRight, &HiroAngelDown }
 };
 
-const SpriteData::AnimAndTimingList CommandosLookDown = { 4,{ { { 599,452,30,41 },20,0 },{ { 631,452,30,41 },20,0 },{ { 663,452,30,41 },20,0 },{ { 631,452,30,41 },20,0 } } };
-const SpriteData::AnimAndTimingList CommandosWalkDown = { 8,{ { { 2,192,24,43 },6,1 },{ { 30,192,24,43 },8,1 },{ { 58,192,24,43 },10,1 },{ { 86,192,24,43 },6,1 },{ { 114,192,24,43 },8,1 },{ { 142,192,24,43 },6,1 },{ { 170,192,24,43 },10,1 },{ { 198,192,24,43 },10,1 } } };
-const SpriteData::AnimAndTimingList CommandosLookUp = { 4,{ { { 588,315,31,39 },20,0 },{ { 620,315,31,39 },20,0 },{ { 652,315,31,39 },20,0 },{ { 620,315,31,39 },20,0 } } };
-const SpriteData::AnimAndTimingList CommandosWalkUp = { 8,{ { { 1,7,24,43 },6,1 },{ { 29,7,24,43 },8,1 },{ { 57,7,24,43 },8,1 },{ { 85,7,24,43 },6,1 },{ { 113,7,24,43 },8,1 },{ { 141,7,24,43 },6,1 },{ { 169,7,24,43 },10,1 },{ { 197,7,24,43 },10,1 } } };
-const SpriteData::AnimAndTimingList CommandosLookLeft = { 4,{ { { 600,355,17,49 },20,0 },{ { 632,355,17,49 },20,0 },{ { 664,355,17,49 },20,0 },{ { 632,355,17,49 },20,0 } } };
-const SpriteData::AnimAndTimingList CommandosWalkLeft = { 8,{ { { 1,99,25,48 },6,1 },{ { 29,99,25,48 },8,1 },{ { 57,99,25,48 },10,1 },{ { 85,99,25,48 },6,1 },{ { 113,99,25,48 },8,1 },{ { 141,99,25,48 },6,1 },{ { 169,99,25,48 },10,1 },{ { 197,99,25,48 },8,1 } } };
-const SpriteData::AnimAndTimingList CommandosLookRight = { 3,{ { { 600,355,17,49 },20,0 },{ { 632,355,17,49 },20,0 },{ { 664,355,17,49 },20,0 },{ { 632,355,17,49 },20,0 } } };
-const SpriteData::AnimAndTimingList CommandosWalkRight = { 8,{ { { 1,99,25,48 },6,1 },{ { 29,99,25,48 },8,1 },{ { 57,99,25,48 },10,1 },{ { 85,99,25,48 },6,1 },{ { 113,99,25,48 },8,1 },{ { 141,99,25,48 },6,1 },{ { 169,99,25,48 },10,1 },{ { 197,99,25,48 },8,1 } } };
+const SpriteData::AnimAndTimingList CommandosLookDown = { 4,{ { { 599,452,30,41 },{ 0,0 },20 },{ { 631,452,30,41 },{ 0,0 },20 },{ { 663,452,30,41 },{ 0,0 },20 },{ { 631,452,30,41 },{ 0,0 },20 } } };
+const SpriteData::AnimAndTimingList CommandosWalkDown = { 8,{ { { 2,192,24,43 },{ 0,1 },6 },{ { 30,192,24,43 },{ 0,1 },8 },{ { 58,192,24,43 },{ 0,1 },8 },{ { 86,192,24,43 },{ 0,1 },6 },{ { 114,192,24,43 },{ 0,1 },8 },{ { 142,192,24,43 },{ 0,1 },6 },{ { 170,192,24,43 },{ 0,1 },8 },{ { 198,192,24,43 },{ 0,1 },8 } } };
+const SpriteData::AnimAndTimingList CommandosLookUp = { 4,{ { { 588,315,31,39 },{ 0,0 },20 },{ { 620,315,31,39 },{ 0,0 },20 },{ { 652,315,31,39 },{ 0,0 },20 },{ { 620,315,31,39 },{ 0,0 },20 } } };
+const SpriteData::AnimAndTimingList CommandosWalkUp = { 8,{ { { 1,7,24,43 },{ 0,-1 },6 },{ { 29,7,24,43 },{ 0,-1 },8 },{ { 57,7,24,43 },{ 0,-1 },8 },{ { 85,7,24,43 },{ 0,-1 },6 },{ { 113,7,24,43 },{ 0,-1 },8 },{ { 141,7,24,43 },{ 0,-1 },6 },{ { 169,7,24,43 },{ 0,-1 },10 },{ { 197,7,24,43 },{ 0,-1 },10 } } };
+const SpriteData::AnimAndTimingList CommandosLookLeft = { 4,{ { { 600,355,17,49 },{ 0,0 },20 },{ { 632,355,17,49 },{ 0,0 },20 },{ { 664,355,17,49 },{ 0,0 },20 },{ { 632,355,17,49 },{ 0,0 },20 } } };
+const SpriteData::AnimAndTimingList CommandosWalkLeft = { 8,{ { { 1,99,25,48 },{ -1,0 },6 },{ { 29,99,25,48 },{ -1,0 },8 },{ { 57,99,25,48 },{ -1,0 },10 },{ { 85,99,25,48 },{ -1,0 },6 },{ { 113,99,25,48 },{ -1,0 },8 },{ { 141,99,25,48 },{ -1,0 },6 },{ { 169,99,25,48 },{ -1,0 },10 },{ { 197,99,25,48 },{ -1,0 },8 } } };
+const SpriteData::AnimAndTimingList CommandosLookRight = { 4,{ { { 600,355,17,49 },{ 0,0 },20 },{ { 632,355,17,49 },{ 0,0 },20 },{ { 664,355,17,49 },{ 0,0 },20 },{ { 632,355,17,49 },{ 0,0 },20 } } };
+const SpriteData::AnimAndTimingList CommandosWalkRight = { 8,{ { { 1,99,25,48 },{ 1,0 },6 },{ { 29,99,25,48 },{ 1,0 },8 },{ { 57,99,25,48 },{ 1,0 },10 },{ { 85,99,25,48 },{ 1,0 },6 },{ { 113,99,25,48 },{ 1,0 },8 },{ { 141,99,25,48 },{ 1,0 },6 },{ { 169,99,25,48 },{ 1,0 },10 },{ { 197,99,25,48 },{ 1,0 },8 } } };
 const SpriteData Commandos = {
 	"Commandos.png",8,{ &CommandosLookDown, &CommandosWalkDown, &CommandosLookUp, &CommandosWalkUp, &CommandosLookLeft,
 	&CommandosWalkLeft, &CommandosLookRight, &CommandosWalkRight, &HiroRunDown, &HiroRunUp, &HiroRunLeft, &HiroRunRight, &HiroAngelDown }
 };
 
+const SpriteData::AnimAndTimingList DiabloLookDown = { 16,{ { { 0,1302,160,160 },{ 0,0 },5 },{ { 160,1302,160,160 },{ 0,0 },5 },
+{ { 320,1302,160,160 },{ 0,0 },5 },{ { 480,1302,160,160 },{ 0,0 },5 },{ { 640,1302,160,160 },{ 0,0 },5 },{ { 800,1302,160,160 },{ 0,0 },5 },
+{ { 960,1302,160,160 },{ 0,0 },5 },{ { 1120,1302,160,160 },{ 0,0 },5 },{ { 1280,1302,160,160 },{ 0,0 },5 },{ { 1440,1302,160,160 },{ 0,0 },5 },
+{ { 1600,1302,160,160 },{ 0,0 },5 },{ { 1760,1302,160,160 },{ 0,0 },5 },{ { 1920,1302,160,160 },{ 0,0 },5 },{ { 2080,1302,160,160 },{ 0,0 },5 },
+{ { 2240,1302,160,160 },{ 0,0 },5 },{ { 2400,1302,160,160 },{ 0,0 },5 } } };
+const SpriteData Diablo = {
+	"Diablo.png",1,{ &DiabloLookDown }
+};
+
+
 class Sprite {
 public:
 	const SpriteData* sData;
 	Sprite() {
-		curAnimNum = NULL;
 		objectInUse = NULL;
 		animated = NULL;
 	}
 	void init(const SpriteData* sd) {
 		sData = sd;
-		curAnimNum = 0;
 		objectInUse = true;
 		animated = false;
-		movementSpeed = 2;
+		frameCnt = 0;
+		curAnimFrameNum = 0;
+		pushAnim(0);
 
 		if (spriteTexture != NULL) SDL_DestroyTexture(spriteTexture);
 		SDL_Surface* tmpSurface = IMG_Load(sData->path);
@@ -125,7 +141,7 @@ public:
 	};
 	SDL_Texture* spriteTexture = NULL;
 
-	void setAnim(const char& index) {
+	/*void setAnim(const char& index) {
 		curAnimNum = index%sData->numAnimations;
 		mapPos.h = sData->animData[curAnimNum]->list[0].frame.h;
 		mapPos.w = sData->animData[curAnimNum]->list[0].frame.w;
@@ -136,39 +152,50 @@ public:
 		this->oneShotNotLoop = oneShotNotLoop;
 		curAnimFrameNum = 0;
 		frameCnt = 0;
+	}*/
+	void pushAnim(const char& index) {
+		if (animList.size() == 1) {
+			animList.pop();
+			frameCnt = 0;
+			curAnimFrameNum = 0;
+		}
+		animList.push(index);
+		mapPos.h = sData->animData[animList.front()]->list[curAnimFrameNum].frame.h;
+		mapPos.w = sData->animData[animList.front()]->list[curAnimFrameNum].frame.w;
 	}
 	void setPos(const char& x, const char&y) {
 		mapPos.x = x;
 		mapPos.y = y;
 	}
 	const SDL_Rect& getFrameCoord() {
-		if (animated) {
-			++frameCnt %= sData->animData[curAnimNum]->list[curAnimFrameNum].time;
-			if (frameCnt == 0) {
-				++curAnimFrameNum %= sData->animData[curAnimNum]->numFrames;
-				if (curAnimFrameNum == 0 && oneShotNotLoop)
-					animate(false);
+		if (animList.empty()) printf("AnimList empty\n");
+		if (animList.size() == 0) printf("AnimList size 0\n");
+		++frameCnt %= sData->animData[animList.front()]->list[curAnimFrameNum].displayDuration;
+		if (frameCnt == 0) {
+			++curAnimFrameNum %= sData->animData[animList.front()]->numFrames;
+			if (curAnimFrameNum == 0 && animList.size() > 1) {
+				animList.pop();
+				mapPos.h = sData->animData[animList.front()]->list[curAnimFrameNum].frame.h;
+				mapPos.w = sData->animData[animList.front()]->list[curAnimFrameNum].frame.w;
 			}
 		}
-		return sData->animData[curAnimNum]->list[curAnimFrameNum].frame;
+		mapPos.x += sData->animData[animList.front()]->list[curAnimFrameNum].moveFrame.moveXPixel;
+		mapPos.y += sData->animData[animList.front()]->list[curAnimFrameNum].moveFrame.moveYPixel;
+		SDL_Rect tmp = sData->animData[animList.front()]->list[curAnimFrameNum].frame;
+		return sData->animData[animList.front()]->list[curAnimFrameNum].frame;
 	}
 	const SDL_Rect& getSpriteMapCoord() {
 		return mapPos;
-	}
-	const char getSpeed() {
-		return sData->animData[curAnimNum]->list[curAnimFrameNum].moveSpeed;
 	}
 	~Sprite() {
 		SDL_DestroyTexture(spriteTexture);
 	};
 	SDL_Rect mapPos;
-	char curAnimNum;
 	bool objectInUse;
 	char curAnimFrameNum;
 	char frameCnt;
 	bool animated;
-	bool oneShotNotLoop;
-	char movementSpeed;
+	std::queue<char> animList;
 };
 Sprite sprites[10];
 
@@ -219,12 +246,13 @@ int main(int argc, char* args[])
 
 	//sprite init - load map part
 	sprites[0].init(&Hiro);
-	sprites[0].setAnim(0);
 	sprites[0].setPos(100, 100);
 	Sprite *curSprite = &sprites[0];
 	sprites[1].init(&Commandos);
-	sprites[1].setAnim(0);
 	sprites[1].setPos(0, 0);
+	sprites[2].init(&Diablo);
+	sprites[2].setPos(800, 600);
+	//sprites[2].animate(true,false);
 
 	char i, j;
 	bool quit = 0;
@@ -243,39 +271,43 @@ int main(int argc, char* args[])
 		}
 		keystates = SDL_GetKeyboardState(NULL);
 		if (keystates[SDL_SCANCODE_UP]) {
-			curSprite->mapPos.y -= curSprite->getSpeed();
+			//curSprite->mapPos.y -= curSprite->getSpeed();
 			tmpLastDir = 1;
 			if (!animSet) {
 				animSet = 1;
-				curSprite->setAnim(3);//3
-				curSprite->animate(true);
+				curSprite->pushAnim(3);
+				//curSprite->setAnim(3);//3
+				//curSprite->animate(true);
 			}
 		}
 		else if (keystates[SDL_SCANCODE_DOWN]) {
-			curSprite->mapPos.y += curSprite->getSpeed();
+			//curSprite->mapPos.y += curSprite->getSpeed();
 			tmpLastDir = 0;
 			if (!animSet) {
 				animSet = 1;
-				curSprite->setAnim(1);//1
-				curSprite->animate(true);
+				curSprite->pushAnim(1);
+				//curSprite->setAnim(1);//1
+				//curSprite->animate(true);
 			}
 		}
 		else if (keystates[SDL_SCANCODE_LEFT]) {
-			curSprite->mapPos.x -= curSprite->getSpeed();
+			//curSprite->mapPos.x -= curSprite->getSpeed();
 			tmpLastDir = 2;
 			if (!animSet) {
 				animSet = 1;
-				curSprite->setAnim(5);//5
-				curSprite->animate(true);
+				curSprite->pushAnim(5);
+				//curSprite->setAnim(5);//5
+				//curSprite->animate(true);
 			}
 		}
 		else if (keystates[SDL_SCANCODE_RIGHT]) {
-			curSprite->mapPos.x += curSprite->getSpeed();
+			//curSprite->mapPos.x += curSprite->getSpeed();
 			tmpLastDir = 3;
 			if (!animSet) {
 				animSet = 1;
-				curSprite->setAnim(7);//7
-				curSprite->animate(true);
+				curSprite->pushAnim(7);
+				//curSprite->setAnim(7);//7
+				//curSprite->animate(true);
 			}
 		}
 		else if (keystates[SDL_SCANCODE_KP_PLUS]) {
@@ -300,25 +332,27 @@ int main(int argc, char* args[])
 		else if (keystates[SDL_SCANCODE_KP_2]) {
 			sprites[1].mapPos.y += 2;
 		}
-		else if (keystates[SDL_SCANCODE_KP_1]) {
-			sprites[1].animate(!sprites[1].animated,true);
+		/*else if (keystates[SDL_SCANCODE_KP_1]) {
+			sprites[1].animate(!sprites[1].animated, true);
 			SDL_Delay(200);
-		}
+		}*/
 		else if (keystates[SDL_SCANCODE_KP_3]) {
-			char tmp = (sprites[1].curAnimNum + 1) % sprites[1].sData->numAnimations;
-			sprites[1].setAnim(tmp);
+			//char tmp = (sprites[1].curAnimNum + 1) % sprites[1].sData->numAnimations;
+			//sprites[1].setAnim(tmp);
+			sprites[1].pushAnim((sprites[1].animList.front() + 1) % sprites[1].sData->numAnimations);
 			SDL_Delay(200);
 		}
 		else if (keystates[SDL_SCANCODE_KP_0]) {
-			if(curSprite== &sprites[0])
-			curSprite = &sprites[1];
+			if (curSprite == &sprites[0])
+				curSprite = &sprites[1];
 			else curSprite = &sprites[0];
 			SDL_Delay(200);
 		}
 		else {
 			if (animSet) {
-				curSprite->setAnim(tmpLastDir * 2);
-				curSprite->animate(true, false);
+				//curSprite->setAnim(tmpLastDir * 2);
+				//curSprite->animate(true, false);
+				curSprite->pushAnim(tmpLastDir * 2);
 				animSet = 0;
 			}
 		}
