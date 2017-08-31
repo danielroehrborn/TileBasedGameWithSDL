@@ -106,13 +106,54 @@ const SpriteData Commandos = {
 	&CommandosWalkLeft, &CommandosLookRight, &CommandosWalkRight, &HiroRunDown, &HiroRunUp, &HiroRunLeft, &HiroRunRight, &HiroAngelDown }
 };
 
-const SpriteData::AnimAndTimingList DiabloLookDown = { 16,{ { { 0,1302,160,160 },{ 0,0 },5 },{ { 160,1302,160,160 },{ 0,0 },5 },
-{ { 320,1302,160,160 },{ 0,0 },5 },{ { 480,1302,160,160 },{ 0,0 },5 },{ { 640,1302,160,160 },{ 0,0 },5 },{ { 800,1302,160,160 },{ 0,0 },5 },
-{ { 960,1302,160,160 },{ 0,0 },5 },{ { 1120,1302,160,160 },{ 0,0 },5 },{ { 1280,1302,160,160 },{ 0,0 },5 },{ { 1440,1302,160,160 },{ 0,0 },5 },
-{ { 1600,1302,160,160 },{ 0,0 },5 },{ { 1760,1302,160,160 },{ 0,0 },5 },{ { 1920,1302,160,160 },{ 0,0 },5 },{ { 2080,1302,160,160 },{ 0,0 },5 },
-{ { 2240,1302,160,160 },{ 0,0 },5 },{ { 2400,1302,160,160 },{ 0,0 },5 } } };
+const SpriteData::AnimAndTimingList DiabloLookDown = { 16,{ { { 0,1301,160,160 },{ 0,0 },8 },{ { 160,1301,160,160 },{ 0,0 },8 },
+{ { 320,1301,160,160 },{ 0,0 },8 },{ { 480,1301,160,160 },{ 0,0 },8 },{ { 640,1301,160,160 },{ 0,0 },8 },{ { 800,1301,160,160 },{ 0,0 },8 },
+{ { 960,1301,160,160 },{ 0,0 },8 },{ { 1120,1301,160,160 },{ 0,0 },8 },{ { 1280,1301,160,160 },{ 0,0 },8 },{ { 1440,1301,160,160 },{ 0,0 },8 },
+{ { 1600,1301,160,160 },{ 0,0 },8 },{ { 1760,1301,160,160 },{ 0,0 },8 },{ { 1920,1301,160,160 },{ 0,0 },8 },{ { 2080,1301,160,160 },{ 0,0 },8 },
+{ { 2240,1301,160,160 },{ 0,0 },8 },{ { 2400,1301,160,160 },{ 0,0 },8 } } };
+const SpriteData::AnimAndTimingList DiabloWalkDown = { 6,{ { { 5122,1301,160,160 },{ 0,1 },8 },{ { 5282,1301,160,160 },{ 0,1 },8 },
+{ { 5442,1301,160,160 },{ 0,1 },8 },{ { 5602,1301,160,160 },{ 0,1 },8 },{ { 5762,1301,160,160 },{ 0,1 },8 },{ { 5922,1301,160,160 },{ 0,1 },8 } } };
+const SpriteData::AnimAndTimingList DiabloLookUp = { 16,{ { { 0,1945,160,160 },{ 0,0 },8 },{ { 160,1945,160,160 },{ 0,0 },8 },
+{ { 320,1945,160,160 },{ 0,0 },8 },{ { 480,1945,160,160 },{ 0,0 },8 },{ { 640,1945,160,160 },{ 0,0 },8 },{ { 800,1945,160,160 },{ 0,0 },8 },
+{ { 960,1945,160,160 },{ 0,0 },8 },{ { 1120,1945,160,160 },{ 0,0 },8 },{ { 1280,1945,160,160 },{ 0,0 },8 },{ { 1440,1945,160,160 },{ 0,0 },8 },
+{ { 1600,1945,160,160 },{ 0,0 },8 },{ { 1760,1945,160,160 },{ 0,0 },8 },{ { 1920,1945,160,160 },{ 0,0 },8 },{ { 2080,1945,160,160 },{ 0,0 },8 },
+{ { 2240,1945,160,160 },{ 0,0 },8 },{ { 2400,1945,160,160 },{ 0,0 },8 } } };
+const SpriteData::AnimAndTimingList DiabloWalkUp = { 6,{ { { 5122,1945,160,160 },{ 0,-1 },8 },{ { 5282,1945,160,160 },{ 0,-1 },8 },
+{ { 5442,1945,160,160 },{ 0,-1 },8 },{ { 5602,1945,160,160 },{ 0,-1 },8 },{ { 5762,1945,160,160 },{ 0,-1 },8 },{ { 5922,1945,160,160 },{ 0,-1 },8 } } };
+const SpriteData::AnimAndTimingList DiabloLookLeft = { 16,{ { { 0,1623,160,160 },{ 0,0 },8 },{ { 160,1623,160,160 },{ 0,0 },8 },
+{ { 320,1623,160,160 },{ 0,0 },8 },{ { 480,1623,160,160 },{ 0,0 },8 },{ { 640,1623,160,160 },{ 0,0 },8 },{ { 800,1623,160,160 },{ 0,0 },8 },
+{ { 960,1623,160,160 },{ 0,0 },8 },{ { 1120,1623,160,160 },{ 0,0 },8 },{ { 1280,1623,160,160 },{ 0,0 },8 },{ { 1440,1623,160,160 },{ 0,0 },8 },
+{ { 1600,1623,160,160 },{ 0,0 },8 },{ { 1760,1623,160,160 },{ 0,0 },8 },{ { 1920,1623,160,160 },{ 0,0 },8 },{ { 2080,1623,160,160 },{ 0,0 },8 },
+{ { 2240,1623,160,160 },{ 0,0 },8 },{ { 2400,1623,160,160 },{ 0,0 },8 } } };
+const SpriteData::AnimAndTimingList DiabloWalkLeft = { 6,{ { { 5122,1623,160,160 },{ -1,0 },9 },{ { 5282,1623,160,160 },{ -1,0 },9 },
+{ { 5442,1623,160,160 },{ -1,0 },9 },{ { 5602,1623,160,160 },{ -1,0 },9 },{ { 5762,1623,160,160 },{ -1,0 },9 },{ { 5922,1623,160,160 },{ -1,0 },9 } } };
+const SpriteData::AnimAndTimingList DiabloLookRight = { 16,{ { { 0,2267,160,160 },{ 0,0 },8 },{ { 160,2267,160,160 },{ 0,0 },8 },
+{ { 320,2267,160,160 },{ 0,0 },8 },{ { 480,2267,160,160 },{ 0,0 },8 },{ { 640,2267,160,160 },{ 0,0 },8 },{ { 800,2267,160,160 },{ 0,0 },8 },
+{ { 960,2267,160,160 },{ 0,0 },8 },{ { 1120,2267,160,160 },{ 0,0 },8 },{ { 1280,2267,160,160 },{ 0,0 },8 },{ { 1440,2267,160,160 },{ 0,0 },8 },
+{ { 1600,2267,160,160 },{ 0,0 },8 },{ { 1760,2267,160,160 },{ 0,0 },8 },{ { 1920,2267,160,160 },{ 0,0 },8 },{ { 2080,2267,160,160 },{ 0,0 },8 },
+{ { 2240,2267,160,160 },{ 0,0 },8 },{ { 2400,2267,160,160 },{ 0,0 },8 } } };
+const SpriteData::AnimAndTimingList DiabloWalkRight = { 6,{ { { 5122,2267,160,160 },{ 1,0 },9 },{ { 5282,2267,160,160 },{ 1,0 },9 },
+{ { 5442,2267,160,160 },{ 1,0 },9 },{ { 5602,2267,160,160 },{ 1,0 },9 },{ { 5762,2267,160,160 },{ 1,0 },9 },{ { 5922,2267,160,160 },{ 1,0 },9 } } };
+const SpriteData::AnimAndTimingList DiabloAttackDown = { 16,{ { { 0,7,160,160 },{ 0,0 },4 },{ { 160,7,160,160 },{ 0,0 },4 },
+{ { 320,7,160,160 },{ 0,0 },6 },{ { 480,7,160,160 },{ 0,0 },6 },{ { 640,7,160,160 },{ 0,0 },8 },{ { 800,7,160,160 },{ 0,0 },8 },
+{ { 960,7,160,160 },{ 0,0 },8 },{ { 1120,7,160,160 },{ 0,0 },8 },{ { 1280,7,160,160 },{ 0,0 },8 },{ { 1440,7,160,160 },{ 0,0 },8 },
+{ { 1600,7,160,160 },{ 0,0 },8 },{ { 1760,7,160,160 },{ 0,0 },6 },{ { 1920,7,160,160 },{ 0,0 },6 },{ { 2080,7,160,160 },{ 0,0 },6 },
+{ { 2240,7,160,160 },{ 0,0 },6 },{ { 2400,7,160,160 },{ 0,0 },8 } } };
+const SpriteData::AnimAndTimingList DiabloDieDown = { 16,{ { { 2561,7,160,160 },{ 0,0 },4 },{ { 2721,7,160,160 },{ 0,0 },4 },
+{ { 2881,7,160,160 },{ 0,0 },6 },{ { 3041,7,160,160 },{ 0,0 },6 },{ { 3201,7,160,160 },{ 0,0 },8 },{ { 3361,7,160,160 },{ 0,0 },8 },
+{ { 3521,7,160,160 },{ 0,0 },8 },{ { 3681,7,160,160 },{ 0,0 },8 },{ { 3841,7,160,160 },{ 0,0 },8 },{ { 4001,7,160,160 },{ 0,0 },8 },
+{ { 4161,7,160,160 },{ 0,0 },8 },{ { 4321,7,160,160 },{ 0,0 },6 },{ { 4481,7,160,160 },{ 0,0 },6 },{ { 4641,7,160,160 },{ 0,0 },6 },
+{ { 4801,7,160,160 },{ 0,0 },6 },{ { 4961,7,160,160 },{ 0,0 },8 } } };
+const SpriteData::AnimAndTimingList DiabloSpecialDown = { 16,{ { { 2561,1301,160,160 },{ 0,0 },4 },{ { 2721,1301,160,160 },{ 0,0 },4 },
+{ { 2881,1301,160,160 },{ 0,0 },6 },{ { 3041,1301,160,160 },{ 0,0 },6 },{ { 3201,1301,160,160 },{ 0,0 },8 },{ { 3361,1301,160,160 },{ 0,0 },8 },
+{ { 3521,1301,160,160 },{ 0,0 },8 },{ { 3681,1301,160,160 },{ 0,0 },8 },{ { 3841,1301,160,160 },{ 0,0 },8 },{ { 4001,1301,160,160 },{ 0,0 },8 },
+{ { 4161,1301,160,160 },{ 0,0 },8 },{ { 4321,1301,160,160 },{ 0,0 },6 },{ { 4481,1301,160,160 },{ 0,0 },6 },{ { 4641,1301,160,160 },{ 0,0 },6 },
+{ { 4801,1301,160,160 },{ 0,0 },6 },{ { 4961,1301,160,160 },{ 0,0 },8 } } };
+const SpriteData::AnimAndTimingList DiabloGetHitDown = { 6,{ { { 5122,7,160,160 },{ 0,0 },9 },{ { 5282,7,160,160 },{ 0,0 },9 },
+{ { 5442,7,160,160 },{ 0,0 },9 },{ { 5602,7,160,160 },{ 0,0 },9 },{ { 5762,7,160,160 },{ 0,0 },9 },{ { 5922,7,160,160 },{ 0,0 },9 } } };
+
 const SpriteData Diablo = {
-	"Diablo.png",1,{ &DiabloLookDown }
+	"Diablo.png",12,{ &DiabloLookDown, &DiabloWalkDown, &DiabloLookUp, &DiabloWalkUp,&DiabloLookLeft, &DiabloWalkLeft, &DiabloLookRight, &DiabloWalkRight, &DiabloAttackDown, &DiabloDieDown, &DiabloSpecialDown, &DiabloGetHitDown }
 };
 
 
@@ -252,7 +293,6 @@ int main(int argc, char* args[])
 	sprites[1].setPos(0, 0);
 	sprites[2].init(&Diablo);
 	sprites[2].setPos(800, 600);
-	//sprites[2].animate(true,false);
 
 	char i, j;
 	bool quit = 0;
@@ -271,43 +311,31 @@ int main(int argc, char* args[])
 		}
 		keystates = SDL_GetKeyboardState(NULL);
 		if (keystates[SDL_SCANCODE_UP]) {
-			//curSprite->mapPos.y -= curSprite->getSpeed();
 			tmpLastDir = 1;
 			if (!animSet) {
 				animSet = 1;
 				curSprite->pushAnim(3);
-				//curSprite->setAnim(3);//3
-				//curSprite->animate(true);
 			}
 		}
 		else if (keystates[SDL_SCANCODE_DOWN]) {
-			//curSprite->mapPos.y += curSprite->getSpeed();
 			tmpLastDir = 0;
 			if (!animSet) {
 				animSet = 1;
 				curSprite->pushAnim(1);
-				//curSprite->setAnim(1);//1
-				//curSprite->animate(true);
 			}
 		}
 		else if (keystates[SDL_SCANCODE_LEFT]) {
-			//curSprite->mapPos.x -= curSprite->getSpeed();
 			tmpLastDir = 2;
 			if (!animSet) {
 				animSet = 1;
 				curSprite->pushAnim(5);
-				//curSprite->setAnim(5);//5
-				//curSprite->animate(true);
 			}
 		}
 		else if (keystates[SDL_SCANCODE_RIGHT]) {
-			//curSprite->mapPos.x += curSprite->getSpeed();
 			tmpLastDir = 3;
 			if (!animSet) {
 				animSet = 1;
 				curSprite->pushAnim(7);
-				//curSprite->setAnim(7);//7
-				//curSprite->animate(true);
 			}
 		}
 		else if (keystates[SDL_SCANCODE_KP_PLUS]) {
@@ -332,37 +360,31 @@ int main(int argc, char* args[])
 		else if (keystates[SDL_SCANCODE_KP_2]) {
 			sprites[1].mapPos.y += 2;
 		}
-		/*else if (keystates[SDL_SCANCODE_KP_1]) {
-			sprites[1].animate(!sprites[1].animated, true);
-			SDL_Delay(200);
-		}*/
 		else if (keystates[SDL_SCANCODE_KP_3]) {
-			//char tmp = (sprites[1].curAnimNum + 1) % sprites[1].sData->numAnimations;
-			//sprites[1].setAnim(tmp);
-			sprites[1].pushAnim((sprites[1].animList.front() + 1) % sprites[1].sData->numAnimations);
+			curSprite->pushAnim((curSprite->animList.front() + 1) % curSprite->sData->numAnimations);
 			SDL_Delay(200);
 		}
 		else if (keystates[SDL_SCANCODE_KP_0]) {
 			if (curSprite == &sprites[0])
 				curSprite = &sprites[1];
+			else if (curSprite == &sprites[1])
+				curSprite = &sprites[2];
 			else curSprite = &sprites[0];
 			SDL_Delay(200);
 		}
 		else {
 			if (animSet) {
-				//curSprite->setAnim(tmpLastDir * 2);
-				//curSprite->animate(true, false);
 				curSprite->pushAnim(tmpLastDir * 2);
 				animSet = 0;
 			}
 		}
 
-		destRect.x = (resolutionX / 2) - (512 / 2) - curSprite->mapPos.x % 16;//destRect.x = (resolutionX / 2) - (512 / 2) + playerXOffset;
-		destRect.y = (resolutionY / 2) - (512 / 2) - curSprite->mapPos.y % 16;//destRect.y = (resolutionY / 2) - (512 / 2) + playerYOffset;
+		destRect.x = (resolutionX / 2) - (512 / 2) - curSprite->mapPos.x % 16;
+		destRect.y = (resolutionY / 2) - (512 / 2) - curSprite->mapPos.y % 16;
 		SDL_RenderClear(renderer);
 		for (i = 0; i < 32; i++) {
-			mapTopLeftY = (curSprite->mapPos.y / 16) - 16 + i;//mapTopLeftY = playerPos.y - 16 + i;
-			mapTopLeftX = (curSprite->mapPos.x / 16) - 16;//mapTopLeftX = playerPos.x - 16;
+			mapTopLeftY = (curSprite->mapPos.y / 16) - 16 + i;
+			mapTopLeftX = (curSprite->mapPos.x / 16) - 16;
 			for (j = 0; j < 32; j++) {
 				++mapTopLeftX;
 
@@ -415,8 +437,6 @@ int main(int argc, char* args[])
 					tmp.x -= sprites[i].mapPos.w / 2;
 					tmp.y -= sprites[i].mapPos.h / 2;
 
-					//SDL_RenderCopy(renderer, sprites[i].spriteTexture, &sprites[i].getFrameCoord(), &sprites[i].getSpriteMapCoord());
-					//SDL_RenderCopy(renderer, sprites[i].spriteTexture, &sprites[i].framePos, &tmp);// &sprites[i].mapPos);
 					SDL_RenderCopy(renderer, sprites[i].spriteTexture, &sprites[i].getFrameCoord(), &tmp);
 				}
 			}
