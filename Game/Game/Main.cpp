@@ -127,6 +127,20 @@ const SpriteData Diablo = {
 	"Diablo.png",12,{ &DiabloLookDown, &DiabloWalkDown, &DiabloLookUp, &DiabloWalkUp, &DiabloLookLeft, &DiabloWalkLeft, &DiabloLookRight, &DiabloWalkRight, &DiabloAttackDown, &DiabloDieDown, &DiabloSpecialDown, &DiabloGetHitDown }
 };
 
+const SpriteData::AnimAndTimingList HyperLightDrifterLookDown = { 1,{ { { 64,32,32,32 },{ 0,0 },20 } } };
+const SpriteData::AnimAndTimingList HyperLightDrifterWalkDown = { 12,{ { { 96,32,32,32 },{ 0,2 },4 },{ { 128,32,32,32 },{ 0,2 },4 },{ { 160,32,32,32 },{ 0,2 },4 },{ { 192,32,32,32 },{ 0,2 },4 },{ { 224,32,32,32 },{ 0,2 },4 },{ { 256,32,32,32 },{ 0,2 },4 },{ { 288,32,32,32 },{ 0,2 },4 },{ { 320,32,32,32 },{ 0,2 },4 },{ { 352,32,32,32 },{ 0,2 },4 },{ { 0,32,32,32 },{ 0,2 },4 },{ { 32,32,32,32 },{ 0,2 },4 },{ { 64,32,32,32 },{ 0,2 },4 } } };
+const SpriteData::AnimAndTimingList HyperLightDrifterLookUp = { 1,{ { { 32,0,32,32 },{ 0,0 },20 } } };
+const SpriteData::AnimAndTimingList HyperLightDrifterWalkUp = { 12,{ { { 64,0,32,32 },{ 0,-2 },4 },{ { 96,0,32,32 },{ 0,-2 },4 },{ { 128,0,32,32 },{ 0,-2 },4 },{ { 160,0,32,32 },{ 0,-2 },4 },{ { 192,0,32,32 },{ 0,-2 },4 },{ { 224,0,32,32 },{ 0,-2 },4 },{ { 256,0,32,32 },{ 0,-2 },4 },{ { 288,0,32,32 },{ 0,-2 },4 },{ { 320,0,32,32 },{ 0,-2 },4 },{ { 352,0,32,32 },{ 0,-2 },4 },{ { 0,0,32,32 },{ 0,-2 },4 },{ { 32,0,32,32 },{ 0,-2 },4 } } };
+const SpriteData::AnimAndTimingList HyperLightDrifterLookLeft = { 1,{ { { 64,64,32,32 },{ 0,0 },20 } } };
+const SpriteData::AnimAndTimingList HyperLightDrifterWalkLeft = { 12,{ { { 96,64,32,32 },{ -2,0 },4 },{ { 128,64,32,32 },{ -2,0 },4 },{ { 160,64,32,32 },{ -2,0 },4 },{ { 192,64,32,32 },{ -2,0 },4 },{ { 224,64,32,32 },{ -2,0 },4 },{ { 256,64,32,32 },{ -2,0 },4 },{ { 288,64,32,32 },{ -2,0 },4 },{ { 320,64,32,32 },{ -2,0 },4 },{ { 352,64,32,32 },{ -2,0 },4 },{ { 0,64,32,32 },{ -2,0 },4 },{ { 32,64,32,32 },{ -2,0 },4 },{ { 64,64,32,32 },{ -2,0 },4 } } };
+const SpriteData::AnimAndTimingList HyperLightDrifterLookRight = { 1,{ { { 64,96,32,32 },{ 0,0 },20 } } };
+const SpriteData::AnimAndTimingList HyperLightDrifterWalkRight = { 12,{ { { 96,96,32,32 },{ 2,0 },4 },{ { 128,96,32,32 },{ 2,0 },4 },{ { 160,96,32,32 },{ 2,0 },4 },{ { 192,96,32,32 },{ 2,0 },4 },{ { 224,96,32,32 },{ 2,0 },4 },{ { 256,96,32,32 },{ 2,0 },4 },{ { 288,96,32,32 },{ 2,0 },4 },{ { 320,96,32,32 },{ 2,0 },4 },{ { 352,96,32,32 },{ 2,0 },4 },{ { 0,96,32,32 },{ 2,0 },4 },{ { 32,96,32,32 },{ 2,0 },4 },{ { 64,96,32,32 },{ 2,0 },4 } } };
+
+const SpriteData HyperLightDrifter = {
+	"HyperLightDrifter.png",8,{ &HyperLightDrifterLookDown, &HyperLightDrifterWalkDown, &HyperLightDrifterLookUp, &HyperLightDrifterWalkUp, &HyperLightDrifterLookLeft,
+	&HyperLightDrifterWalkLeft, &HyperLightDrifterLookRight, &HyperLightDrifterWalkRight }
+};
+
 
 class Sprite {
 public:
@@ -257,6 +271,8 @@ int main(int argc, char* args[])
 	sprites[1].setPos(0, 0);
 	sprites[2].init(&Diablo);
 	sprites[2].setPos(800, 600);
+	sprites[3].init(&HyperLightDrifter);
+	sprites[3].setPos(200, 200);
 
 	char i, j;
 	bool quit = 0;
@@ -333,6 +349,8 @@ int main(int argc, char* args[])
 				curSprite = &sprites[1];
 			else if (curSprite == &sprites[1])
 				curSprite = &sprites[2];
+			else if (curSprite == &sprites[2])
+				curSprite = &sprites[3];
 			else curSprite = &sprites[0];
 			SDL_Delay(200);
 		}
@@ -341,6 +359,12 @@ int main(int argc, char* args[])
 				1,1,0,7,7,3,3,7,10,8,11,9
 			};
 			sprites[2].pushAnim(12, diablomove);
+
+			const char hiromove[] = {
+				11,11,12,9,9,10,10,10,8,8,12,2,12,0
+			};
+			sprites[0].pushAnim(14, hiromove);
+
 			SDL_Delay(200);
 		}
 		else {
@@ -395,6 +419,8 @@ int main(int argc, char* args[])
 		for (i = 0; i < 10; i++) {
 			if (sprites[i].objectInUse) {
 				if ((abs(sprites[i].mapPos.x - curSprite->mapPos.x) < 250) && (abs(sprites[i].mapPos.y - curSprite->mapPos.y) < 250)) {
+					const SDL_Rect* srcTmp = &sprites[i].getFrameCoord();
+
 					int bildmitteX = (resolutionX / 2);
 					int bildmitteY = (resolutionY / 2);
 					int ursprungX = bildmitteX - curSprite->mapPos.x;
@@ -408,7 +434,8 @@ int main(int argc, char* args[])
 					tmp.x -= sprites[i].mapPos.w / 2;
 					tmp.y -= sprites[i].mapPos.h / 2;
 
-					SDL_RenderCopy(renderer, sprites[i].spriteTexture, &sprites[i].getFrameCoord(), &tmp);
+					SDL_RenderCopy(renderer, sprites[i].spriteTexture, srcTmp, &tmp);
+					//SDL_RenderCopy(renderer, sprites[i].spriteTexture, &sprites[i].getFrameCoord(), &tmp);
 				}
 			}
 		}
