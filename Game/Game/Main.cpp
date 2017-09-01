@@ -47,7 +47,7 @@ unsigned char map1walkdata[map1hoehe][map1breite] = {
 	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
 	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
 	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-	{ 0,0,0,0,0,0,224,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
 	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
 	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
 	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
@@ -273,6 +273,8 @@ int main(int argc, char* args[])
 	sprites[2].setPos(800, 600);
 	sprites[3].init(&HyperLightDrifter);
 	sprites[3].setPos(200, 200);
+	sprites[4].init(&Diablo);
+	sprites[4].setPos(1000, 700);
 
 	char i, j;
 	bool quit = 0;
@@ -351,6 +353,8 @@ int main(int argc, char* args[])
 				curSprite = &sprites[2];
 			else if (curSprite == &sprites[2])
 				curSprite = &sprites[3];
+			else if (curSprite == &sprites[3])
+				curSprite = &sprites[4];
 			else curSprite = &sprites[0];
 			SDL_Delay(200);
 		}
@@ -415,27 +419,33 @@ int main(int argc, char* args[])
 			destRect.x = (resolutionX / 2) - (512 / 2) - curSprite->mapPos.x % 16;//destRect.x = (resolutionX / 2) - (512 / 2) + playerXOffset;
 			destRect.y += 16;
 		}
+		/*sprite drawing order*/
+		char spriteOrder[] = { 0,1,2,3,4,5,6,7,8,9 };
+		for (i = 0; i < 9; i++)
+			for (j = 0; j < 9; j++)
+				if (sprites[spriteOrder[j]].mapPos.y + sprites[spriteOrder[j]].mapPos.h > sprites[spriteOrder[j + 1]].mapPos.y + sprites[spriteOrder[j + 1]].mapPos.h)
+					std::swap(spriteOrder[j], spriteOrder[j + 1]);
 		/*add sprites to BG*/
 		for (i = 0; i < 10; i++) {
-			if (sprites[i].objectInUse) {
-				if ((abs(sprites[i].mapPos.x - curSprite->mapPos.x) < 250) && (abs(sprites[i].mapPos.y - curSprite->mapPos.y) < 250)) {
-					const SDL_Rect* srcTmp = &sprites[i].getFrameCoord();
+			j = spriteOrder[i];
+			if (sprites[j].objectInUse) {
+				if ((abs(sprites[j].mapPos.x - curSprite->mapPos.x) < 250) && (abs(sprites[j].mapPos.y - curSprite->mapPos.y) < 250)) {
+					const SDL_Rect* srcTmp = &sprites[j].getFrameCoord();
 
 					int bildmitteX = (resolutionX / 2);
 					int bildmitteY = (resolutionY / 2);
 					int ursprungX = bildmitteX - curSprite->mapPos.x;
 					int ursprungY = bildmitteY - curSprite->mapPos.y;
 					SDL_Rect tmp;
-					tmp.h = sprites[i].mapPos.h;
-					tmp.w = sprites[i].mapPos.w;
-					tmp.x = ursprungX + sprites[i].mapPos.x;
-					tmp.y = ursprungY + sprites[i].mapPos.y;
+					tmp.h = sprites[j].mapPos.h;
+					tmp.w = sprites[j].mapPos.w;
+					tmp.x = ursprungX + sprites[j].mapPos.x;
+					tmp.y = ursprungY + sprites[j].mapPos.y;
 
-					tmp.x -= sprites[i].mapPos.w / 2;
-					tmp.y -= sprites[i].mapPos.h / 2;
+					tmp.x -= sprites[j].mapPos.w / 2;
+					tmp.y -= sprites[j].mapPos.h / 2;
 
-					SDL_RenderCopy(renderer, sprites[i].spriteTexture, srcTmp, &tmp);
-					//SDL_RenderCopy(renderer, sprites[i].spriteTexture, &sprites[i].getFrameCoord(), &tmp);
+					SDL_RenderCopy(renderer, sprites[j].spriteTexture, srcTmp, &tmp);
 				}
 			}
 		}
