@@ -37,10 +37,10 @@ unsigned char map1walkdata[map1hoehe][map1breite] = {
 	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
 	{ 0,0,0,0,0,24,24,24,24,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
 	{ 0,0,0,0,0,24,24,24,24,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-	{ 0,0,0,0,0,24,24,24,24,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-	{ 0,0,0,0,0,24,24,24,24,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+	{ 0,0,0,0,0,24,24,24,24,0,0,0,0,0,0,0,224,0,0,0,0,0,0,0,0,224,224,224,224,224,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+	{ 0,0,0,0,0,24,24,24,24,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,224,224,224,224,224,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,224,224,224,224,224,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,224,224,224,224,224,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
 	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
 	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
 	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
@@ -53,10 +53,16 @@ unsigned char map1walkdata[map1hoehe][map1breite] = {
 	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
 	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
 };
-/*const char map1tilesize = 16;
-bool checkCollision(const int& x, const int& y) {
-	return (map1walkdata[y / map1tilesize][x / map1tilesize] >> 5) == 7 ? true : false;
-}*/
+bool checkCollision(const SDL_Rect& pos) {
+	for (int i = pos.y ; i < pos.y + pos.h/2; i++) {
+		for (int j = pos.x-pos.w/2; j < pos.x + pos.w/2; j++) {
+			if ((j / 16) < map1breite && (i / 16) < map1hoehe && (map1walkdata[i / 16][j / 16] >> 5) == 7) return true;
+		}
+	}
+	//if ((pos.x / 16) < map1breite && (pos.y / 16) < map1hoehe && (map1walkdata[pos.y / 16][(pos.x+pos.w/2) / 16] >> 5) == 7) return true;
+	return false;
+	//return (map1walkdata[y / 16][x / 16] >> 5) == 7 ? true : false;
+}
 class SpriteData {
 public:
 	class AnimMovement {
@@ -198,9 +204,16 @@ public:
 				mapPos.w = sData->animData[animList.front()]->list[curAnimFrameNum].frame.w;
 			}
 		}
-		mapPos.x += sData->animData[animList.front()]->list[curAnimFrameNum].moveFrame.moveXPixel;
-		mapPos.y += sData->animData[animList.front()]->list[curAnimFrameNum].moveFrame.moveYPixel;
-		SDL_Rect tmp = sData->animData[animList.front()]->list[curAnimFrameNum].frame;
+		SDL_Rect newPos;
+		newPos.x = mapPos.x + sData->animData[animList.front()]->list[curAnimFrameNum].moveFrame.moveXPixel;//mapPos.x += sData->animData[animList.front()]->list[curAnimFrameNum].moveFrame.moveXPixel;
+		newPos.y = mapPos.y + sData->animData[animList.front()]->list[curAnimFrameNum].moveFrame.moveYPixel;//mapPos.y += sData->animData[animList.front()]->list[curAnimFrameNum].moveFrame.moveYPixel;
+		newPos.h = mapPos.h;
+		newPos.w = mapPos.w;
+		if (!checkCollision(newPos)) {
+			mapPos.x = newPos.x;
+			mapPos.y = newPos.y;
+		}
+		//SDL_Rect tmp = sData->animData[animList.front()]->list[curAnimFrameNum].frame;
 		return sData->animData[animList.front()]->list[curAnimFrameNum].frame;
 	}
 	const SDL_Rect& getSpriteMapCoord() {
@@ -268,13 +281,13 @@ int main(int argc, char* args[])
 	sprites[0].setPos(100, 100);
 	Sprite *curSprite = &sprites[0];
 	sprites[1].init(&Commandos);
-	sprites[1].setPos(0, 0);
+	sprites[1].setPos(10, 10);
 	sprites[2].init(&Diablo);
-	sprites[2].setPos(800, 600);
+	sprites[2].setPos(150, 200);
 	sprites[3].init(&HyperLightDrifter);
 	sprites[3].setPos(200, 200);
 	sprites[4].init(&Diablo);
-	sprites[4].setPos(1000, 700);
+	sprites[4].setPos(200, 100);
 
 	char i, j;
 	bool quit = 0;
@@ -416,7 +429,7 @@ int main(int argc, char* args[])
 				SDL_RenderCopy(renderer, texture, &srcRect, &destRect);
 				destRect.x += 16;
 			}
-			destRect.x = (resolutionX / 2) - (512 / 2) - curSprite->mapPos.x % 16;//destRect.x = (resolutionX / 2) - (512 / 2) + playerXOffset;
+			destRect.x = (resolutionX / 2) - (512 / 2) - curSprite->mapPos.x % 16;
 			destRect.y += 16;
 		}
 		/*sprite drawing order*/
@@ -449,7 +462,8 @@ int main(int argc, char* args[])
 				}
 			}
 		}
-
+		SDL_RenderDrawLine(renderer, curSprite->mapPos.x, curSprite->mapPos.x + curSprite->mapPos.w,
+			curSprite->mapPos.y, curSprite->mapPos.y + curSprite->mapPos.h);
 		SDL_RenderPresent(renderer);
 		//SDL_Delay(100);
 		if (20 > (SDL_GetTicks() - time)) SDL_Delay(20 - (SDL_GetTicks() - time));
