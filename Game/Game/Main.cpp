@@ -145,13 +145,14 @@ class Sprite {
 public:
 	const SpriteData* sData;
 	Sprite() {
-		objectInUse = NULL;
-		animated = NULL;
+		autoDelete = true;
+
 	}
-	void init(const SpriteData* sd) {
+	void init(const SpriteData* sd, const bool& autoDel) {
 		sData = sd;
 		objectInUse = true;
-		animated = false;
+		autoDelete = autoDel;
+		//animated = false;
 		frameCnt = 0;
 		curAnimFrameNum = 0;
 		pushAnim(0);
@@ -220,10 +221,10 @@ public:
 	bool objectInUse;
 	char curAnimFrameNum;
 	char frameCnt;
-	bool animated;
+	//bool animated;
+	bool autoDelete;
 	std::queue<char> animList;
 };
-Sprite sprites[10];
 Sprite *curSprite = NULL;
 
 bool checkCollision(const SDL_Rect& pos) {
@@ -235,7 +236,7 @@ bool checkCollision(const SDL_Rect& pos) {
 				int bildmitteY = (resolutionY / 2);
 				int ursprungX = bildmitteX - curSprite->mapPos.x;
 				int ursprungY = bildmitteY - curSprite->mapPos.y;
-				
+
 				SDL_SetRenderDrawColor(renderer, 255, 255, 255, 80);
 				SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 				SDL_Rect collision;
@@ -272,6 +273,7 @@ const SDL_Rect& Sprite::getFrameCoord() {
 			mapPos.h = sData->animData[animList.front()]->list[curAnimFrameNum].frame.h;
 			mapPos.w = sData->animData[animList.front()]->list[curAnimFrameNum].frame.w;
 		}
+		else if (autoDelete && curAnimFrameNum == 0 && animList.size() == 1) objectInUse = false;
 	}
 	SDL_Rect newPos;
 	newPos.x = mapPos.x + sData->animData[animList.front()]->list[curAnimFrameNum].moveFrame.moveXPixel;//mapPos.x += sData->animData[animList.front()]->list[curAnimFrameNum].moveFrame.moveXPixel;
@@ -332,17 +334,46 @@ int main(int argc, char* args[])
 
 
 	//sprite init - load map part
-	sprites[0].init(&Hiro);
+	std::vector<Sprite*> vSprites;
+	Sprite* newSprite = new Sprite;
+	newSprite->init(&Hiro, false);
+	newSprite->setPos(100, 100);
+	vSprites.push_back(newSprite);
+	Sprite* pHiro1 = newSprite;
+	curSprite = newSprite;
+	newSprite = new Sprite;
+	newSprite->init(&Commandos, false);
+	newSprite->setPos(10, 10);
+	vSprites.push_back(newSprite);
+	newSprite = new Sprite;
+	newSprite->init(&Diablo, false);
+	newSprite->setPos(150, 200);
+	vSprites.push_back(newSprite);
+	Sprite* pDiablo1 = newSprite;
+	newSprite = new Sprite;
+	newSprite->init(&HyperLightDrifter, false);
+	newSprite->setPos(200, 200);
+	vSprites.push_back(newSprite);
+	newSprite = new Sprite;
+	newSprite->init(&Diablo, false);
+	newSprite->setPos(200, 100);
+	vSprites.push_back(newSprite);
+	std::vector<Sprite*>::iterator itCurSprite = vSprites.begin();
+
+	/*
+	Sprite sprites[10];
+	sprites[0].init(&Hiro, false);
 	sprites[0].setPos(100, 100);
 	curSprite = &sprites[0];
-	sprites[1].init(&Commandos);
+	sprites[1].init(&Commandos, false);
 	sprites[1].setPos(10, 10);
-	sprites[2].init(&Diablo);
+	sprites[2].init(&Diablo, false);
 	sprites[2].setPos(150, 200);
-	sprites[3].init(&HyperLightDrifter);
+	sprites[3].init(&HyperLightDrifter, false);
 	sprites[3].setPos(200, 200);
-	sprites[4].init(&Diablo);
+	sprites[4].init(&Diablo, true);
 	sprites[4].setPos(200, 100);
+	*/
 
 	char i, j;
 	bool quit = 0;
@@ -399,22 +430,33 @@ int main(int argc, char* args[])
 			SDL_RenderSetLogicalSize(renderer, resolutionX, resolutionY);
 		}
 		else if (keystates[SDL_SCANCODE_KP_8]) {
-			sprites[1].mapPos.y -= 2;
 		}
 		else if (keystates[SDL_SCANCODE_KP_4]) {
-			sprites[1].mapPos.x -= 2;
 		}
 		else if (keystates[SDL_SCANCODE_KP_6]) {
-			sprites[1].mapPos.x += 2;
 		}
 		else if (keystates[SDL_SCANCODE_KP_2]) {
-			sprites[1].mapPos.y += 2;
+			Sprite* newHyperLightDrifter = new Sprite;
+			newHyperLightDrifter->init(&HyperLightDrifter, true);
+			newHyperLightDrifter->setPos(100, 100);
+			vSprites.push_back(newHyperLightDrifter);
+			const char hyperlightdriftermove[] = {
+				7,7,1,1,5,5,3,3,7,7,1,1,5,5,3,3
+			};
+			newHyperLightDrifter->pushAnim(16, hyperlightdriftermove);
+			itCurSprite = vSprites.begin();
+			SDL_Delay(500);
 		}
 		else if (keystates[SDL_SCANCODE_KP_3]) {
 			curSprite->pushAnim((curSprite->animList.front() + 1) % curSprite->sData->numAnimations);
 			SDL_Delay(200);
 		}
 		else if (keystates[SDL_SCANCODE_KP_0]) {
+			if (++itCurSprite == vSprites.end())
+				itCurSprite = vSprites.begin();
+			curSprite = *itCurSprite;
+
+			/*
 			if (curSprite == &sprites[0])
 				curSprite = &sprites[1];
 			else if (curSprite == &sprites[1])
@@ -424,18 +466,21 @@ int main(int argc, char* args[])
 			else if (curSprite == &sprites[3])
 				curSprite = &sprites[4];
 			else curSprite = &sprites[0];
+			*/
 			SDL_Delay(200);
 		}
 		else if (keystates[SDL_SCANCODE_KP_7]) {
 			const char diablomove[] = {
 				1,1,0,7,7,3,3,7,10,8,11,9
 			};
-			sprites[2].pushAnim(12, diablomove);
+			pDiablo1->pushAnim(12, diablomove);
+			//sprites[2].pushAnim(12, diablomove);
 
 			const char hiromove[] = {
 				11,11,12,9,9,10,10,10,8,8,12,2,12,0
 			};
-			sprites[0].pushAnim(14, hiromove);
+			pHiro1->pushAnim(14, hiromove);
+			//sprites[0].pushAnim(14, hiromove);
 
 			SDL_Delay(200);
 		}
@@ -487,13 +532,56 @@ int main(int argc, char* args[])
 			destRect.x = (resolutionX / 2) - (512 / 2) - curSprite->mapPos.x % 16;
 			destRect.y += 16;
 		}
-		/*sprite drawing order*/
+		//sprite drawing order
+		for (std::vector<Sprite*>::iterator it = vSprites.begin(); it != vSprites.end() - 1; ++it)
+			for (std::vector<Sprite*>::iterator it2 = vSprites.begin(); it2 != vSprites.end() - 1; ++it2)
+				if ((*it2)->mapPos.y + (*it2)->mapPos.h > (*(it2 + 1))->mapPos.y + (*(it2 + 1))->mapPos.h)
+					std::iter_swap(it2, it2 + 1);
+		//add sprites to BG
+		for (std::vector<Sprite*>::iterator it = vSprites.begin(); it != vSprites.end();) {
+			if ((*it)->objectInUse) {
+				if ((abs((*it)->mapPos.x - curSprite->mapPos.x) < 250) && (abs((*it)->mapPos.y - curSprite->mapPos.y) < 250)) {
+					const SDL_Rect* srcTmp = &(*it)->getFrameCoord();
+					if ((*it)->objectInUse) {
+						int bildmitteX = (resolutionX / 2);
+						int bildmitteY = (resolutionY / 2);
+						int ursprungX = bildmitteX - curSprite->mapPos.x;
+						int ursprungY = bildmitteY - curSprite->mapPos.y;
+						SDL_Rect tmp;
+						tmp.h = (*it)->mapPos.h;
+						tmp.w = (*it)->mapPos.w;
+						tmp.x = ursprungX + (*it)->mapPos.x;
+						tmp.y = ursprungY + (*it)->mapPos.y;
+
+						tmp.x -= (*it)->mapPos.w / 2;
+						tmp.y -= (*it)->mapPos.h / 2;
+
+						SDL_RenderCopy(renderer, (*it)->spriteTexture, srcTmp, &tmp);
+					}
+				}
+				++it;
+			}
+			else {
+				if (curSprite == (*it)) {
+					delete *it;
+					it = vSprites.erase(it);
+					itCurSprite = it;
+					curSprite = *it;
+				}
+				else {
+					delete *it;
+					it = vSprites.erase(it);
+					itCurSprite = it;
+				}
+			}
+		}
+		/*
 		char spriteOrder[] = { 0,1,2,3,4,5,6,7,8,9 };
 		for (i = 0; i < 9; i++)
 			for (j = 0; j < 9; j++)
 				if (sprites[spriteOrder[j]].mapPos.y + sprites[spriteOrder[j]].mapPos.h > sprites[spriteOrder[j + 1]].mapPos.y + sprites[spriteOrder[j + 1]].mapPos.h)
 					std::swap(spriteOrder[j], spriteOrder[j + 1]);
-		/*add sprites to BG*/
+		//add sprites to BG
 		for (i = 0; i < 10; i++) {
 			j = spriteOrder[i];
 			if (sprites[j].objectInUse) {
@@ -517,6 +605,7 @@ int main(int argc, char* args[])
 				}
 			}
 		}
+		*/
 		SDL_RenderPresent(renderer);
 		//SDL_Delay(100);
 		if (20 > (SDL_GetTicks() - time)) SDL_Delay(20 - (SDL_GetTicks() - time));
