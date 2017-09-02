@@ -6,6 +6,8 @@
 
 SDL_Window* window = NULL;
 SDL_Renderer* renderer = NULL;
+int resolutionX = 640;
+int resolutionY = (resolutionX / 4) * 3;
 
 const char map1breite = 50, map1hoehe = 20, map1border = 13;
 unsigned char map1tiledata[map1hoehe][map1breite] = {
@@ -53,16 +55,7 @@ unsigned char map1walkdata[map1hoehe][map1breite] = {
 	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
 	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
 };
-bool checkCollision(const SDL_Rect& pos) {
-	for (int i = pos.y ; i < pos.y + pos.h/2; i++) {
-		for (int j = pos.x-pos.w/2; j < pos.x + pos.w/2; j++) {
-			if ((j / 16) < map1breite && (i / 16) < map1hoehe && (map1walkdata[i / 16][j / 16] >> 5) == 7) return true;
-		}
-	}
-	//if ((pos.x / 16) < map1breite && (pos.y / 16) < map1hoehe && (map1walkdata[pos.y / 16][(pos.x+pos.w/2) / 16] >> 5) == 7) return true;
-	return false;
-	//return (map1walkdata[y / 16][x / 16] >> 5) == 7 ? true : false;
-}
+
 class SpriteData {
 public:
 	class AnimMovement {
@@ -192,7 +185,8 @@ public:
 		mapPos.x = x;
 		mapPos.y = y;
 	}
-	const SDL_Rect& getFrameCoord() {
+	const SDL_Rect& getFrameCoord();
+	/*const SDL_Rect& getFrameCoord() {
 		if (animList.empty()) printf("AnimList empty\n");
 		if (animList.size() == 0) printf("AnimList size 0\n");
 		++frameCnt %= sData->animData[animList.front()]->list[curAnimFrameNum].displayDuration;
@@ -215,7 +209,7 @@ public:
 		}
 		//SDL_Rect tmp = sData->animData[animList.front()]->list[curAnimFrameNum].frame;
 		return sData->animData[animList.front()]->list[curAnimFrameNum].frame;
-	}
+	}*/
 	const SDL_Rect& getSpriteMapCoord() {
 		return mapPos;
 	}
@@ -230,6 +224,67 @@ public:
 	std::queue<char> animList;
 };
 Sprite sprites[10];
+Sprite *curSprite = NULL;
+
+bool checkCollision(const SDL_Rect& pos) {
+	for (int i = pos.y; i < pos.y + pos.h / 2; i++) {
+		for (int j = pos.x - pos.w / 3; j < pos.x + (pos.w / 3); j++) {
+			if ((j / 16) < map1breite && (i / 16) < map1hoehe && (map1walkdata[i / 16][j / 16] >> 5) == 7) {
+
+				int bildmitteX = (resolutionX / 2);
+				int bildmitteY = (resolutionY / 2);
+				int ursprungX = bildmitteX - curSprite->mapPos.x;
+				int ursprungY = bildmitteY - curSprite->mapPos.y;
+				
+				SDL_SetRenderDrawColor(renderer, 255, 255, 255, 80);
+				SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+				SDL_Rect collision;
+				collision.x = ursprungX + pos.x - pos.w / 3;
+				collision.y = ursprungY + pos.y;
+				collision.h = pos.h / 2;
+				collision.w = (pos.w / 3) * 2;
+				SDL_RenderDrawRect(renderer, &collision);
+
+				SDL_Rect object;
+				object.x = ursprungX + (j / 16) * 16;
+				object.y = ursprungY + (i / 16) * 16;
+				object.h = 16;
+				object.w = 16;
+				SDL_RenderDrawRect(renderer, &object);
+
+				SDL_SetRenderDrawColor(renderer, 100, 50, 150, 20);
+				SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+const SDL_Rect& Sprite::getFrameCoord() {
+	if (animList.empty()) printf("AnimList empty\n");
+	if (animList.size() == 0) printf("AnimList size 0\n");
+	++frameCnt %= sData->animData[animList.front()]->list[curAnimFrameNum].displayDuration;
+	if (frameCnt == 0) {
+		++curAnimFrameNum %= sData->animData[animList.front()]->numFrames;
+		if (curAnimFrameNum == 0 && animList.size() > 1) {
+			animList.pop();
+			mapPos.h = sData->animData[animList.front()]->list[curAnimFrameNum].frame.h;
+			mapPos.w = sData->animData[animList.front()]->list[curAnimFrameNum].frame.w;
+		}
+	}
+	SDL_Rect newPos;
+	newPos.x = mapPos.x + sData->animData[animList.front()]->list[curAnimFrameNum].moveFrame.moveXPixel;//mapPos.x += sData->animData[animList.front()]->list[curAnimFrameNum].moveFrame.moveXPixel;
+	newPos.y = mapPos.y + sData->animData[animList.front()]->list[curAnimFrameNum].moveFrame.moveYPixel;//mapPos.y += sData->animData[animList.front()]->list[curAnimFrameNum].moveFrame.moveYPixel;
+	newPos.h = mapPos.h;
+	newPos.w = mapPos.w;
+	if (!checkCollision(newPos)) {
+		mapPos.x = newPos.x;
+		mapPos.y = newPos.y;
+	}
+	//SDL_Rect tmp = sData->animData[animList.front()]->list[curAnimFrameNum].frame;
+	return sData->animData[animList.front()]->list[curAnimFrameNum].frame;
+}
 
 /*int threadFunction(void* data)
 {
@@ -258,8 +313,8 @@ int main(int argc, char* args[])
 	IMG_Init(IMG_INIT_PNG);
 
 	Uint32 time;
-	int resolutionX = 640;
-	int resolutionY = (resolutionX / 4) * 3;
+	//int resolutionX = 640;
+	//int resolutionY = (resolutionX / 4) * 3;
 	SDL_RenderSetLogicalSize(renderer, resolutionX, resolutionY);//(renderer, 320, 240);
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 
@@ -279,7 +334,7 @@ int main(int argc, char* args[])
 	//sprite init - load map part
 	sprites[0].init(&Hiro);
 	sprites[0].setPos(100, 100);
-	Sprite *curSprite = &sprites[0];
+	curSprite = &sprites[0];
 	sprites[1].init(&Commandos);
 	sprites[1].setPos(10, 10);
 	sprites[2].init(&Diablo);
@@ -396,7 +451,7 @@ int main(int argc, char* args[])
 		SDL_RenderClear(renderer);
 		for (i = 0; i < 32; i++) {
 			mapTopLeftY = (curSprite->mapPos.y / 16) - 16 + i;
-			mapTopLeftX = (curSprite->mapPos.x / 16) - 16;
+			mapTopLeftX = (curSprite->mapPos.x / 16) - 17;
 			for (j = 0; j < 32; j++) {
 				++mapTopLeftX;
 
@@ -462,8 +517,6 @@ int main(int argc, char* args[])
 				}
 			}
 		}
-		SDL_RenderDrawLine(renderer, curSprite->mapPos.x, curSprite->mapPos.x + curSprite->mapPos.w,
-			curSprite->mapPos.y, curSprite->mapPos.y + curSprite->mapPos.h);
 		SDL_RenderPresent(renderer);
 		//SDL_Delay(100);
 		if (20 > (SDL_GetTicks() - time)) SDL_Delay(20 - (SDL_GetTicks() - time));
