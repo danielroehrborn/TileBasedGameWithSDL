@@ -140,32 +140,57 @@ const SpriteData HyperLightDrifter = {
 	&HyperLightDrifterWalkLeft, &HyperLightDrifterLookRight, &HyperLightDrifterWalkRight }
 };
 
+const SpriteData::AnimAndTimingList ExplosiveFlyRight = { 1,{ { { 20,196,196,179 },{ 0,0 },20 } } };
+const SpriteData::AnimAndTimingList ExplosiveExplode = { 12,{ { { 216,196,196,179 },{ 0,0 },4 },{ { 412,196,196,179 },{ 0,0 },4 },
+{ { 608,196,196,179 },{ 0,0 },4 },{ { 804,196,196,179 },{ 0,0 },4 },{ { 1000,196,196,179 },{ 0,0 },4 },{ { 1196,196,196,179 },{ 0,0 },4 },
+{ { 1392,196,196,179 },{ 0,0 },4 },{ { 1588,196,196,179 },{ 0,0 },4 },{ { 1784,196,196,179 },{ 0,0 },4 },{ { 1980,196,196,179 },{ 0,0 },4 },
+{ { 2176,196,196,179 },{ 0,0 },4 },{ { 2372,196,196,179 },{ 0,0 },8 } } };
+
+const SpriteData Explosive = {
+	"Explosive.png",2,{ &ExplosiveFlyRight, &ExplosiveExplode }
+};
+
 
 class Sprite {
 public:
 	const SpriteData* sData;
-	Sprite() {
-		autoDelete = true;
-
-	}
-	void init(const SpriteData* sd, const bool& autoDel) {
+	Sprite(SDL_Texture* tex, const SpriteData* sd, const bool& autoDel) {
 		sData = sd;
 		objectInUse = true;
 		autoDelete = autoDel;
-		//animated = false;
+		frameCnt = 0;
+		curAnimFrameNum = 0;
+		pushAnim(0);
+		spriteTexture = tex;
+	}
+	/*void init(SDL_Texture* tex, const SpriteData* sd, const bool& autoDel) {
+		sData = sd;
+		objectInUse = true;
+		autoDelete = autoDel;
 		frameCnt = 0;
 		curAnimFrameNum = 0;
 		pushAnim(0);
 
-		if (spriteTexture != NULL) SDL_DestroyTexture(spriteTexture);
+		spriteTexture = tex;
+		/*if (spriteTexture != NULL) SDL_DestroyTexture(spriteTexture);
 		SDL_Surface* tmpSurface = IMG_Load(sData->path);
 		spriteTexture = SDL_CreateTextureFromSurface(renderer, tmpSurface);
 		if (spriteTexture == NULL) {
 			printf("Unable to create texture from %s! SDL Error: %s\n", sData->path, SDL_GetError());
 		}
 		SDL_FreeSurface(tmpSurface);
-	};
+	};*/
 	SDL_Texture* spriteTexture = NULL;
+
+	static SDL_Texture* loadTexture(const char* path) {
+		SDL_Surface* tmpSurface = IMG_Load(path);
+		SDL_Texture* tmpTexture = SDL_CreateTextureFromSurface(renderer, tmpSurface);
+		if (tmpTexture == NULL) {
+			printf("Unable to create texture from %s! SDL Error: %s\n", path, SDL_GetError());
+		}
+		SDL_FreeSurface(tmpSurface);
+		return tmpTexture;
+	}
 
 	void pushAnim(const char& index) {
 		if (animList.size() == 1) {
@@ -182,46 +207,21 @@ public:
 			animList.push(data[i]);
 		}
 	}
-	void setPos(const char& x, const char&y) {
+	void setPos(const int& x, const int&y) {
 		mapPos.x = x;
 		mapPos.y = y;
 	}
 	const SDL_Rect& getFrameCoord();
-	/*const SDL_Rect& getFrameCoord() {
-		if (animList.empty()) printf("AnimList empty\n");
-		if (animList.size() == 0) printf("AnimList size 0\n");
-		++frameCnt %= sData->animData[animList.front()]->list[curAnimFrameNum].displayDuration;
-		if (frameCnt == 0) {
-			++curAnimFrameNum %= sData->animData[animList.front()]->numFrames;
-			if (curAnimFrameNum == 0 && animList.size() > 1) {
-				animList.pop();
-				mapPos.h = sData->animData[animList.front()]->list[curAnimFrameNum].frame.h;
-				mapPos.w = sData->animData[animList.front()]->list[curAnimFrameNum].frame.w;
-			}
-		}
-		SDL_Rect newPos;
-		newPos.x = mapPos.x + sData->animData[animList.front()]->list[curAnimFrameNum].moveFrame.moveXPixel;//mapPos.x += sData->animData[animList.front()]->list[curAnimFrameNum].moveFrame.moveXPixel;
-		newPos.y = mapPos.y + sData->animData[animList.front()]->list[curAnimFrameNum].moveFrame.moveYPixel;//mapPos.y += sData->animData[animList.front()]->list[curAnimFrameNum].moveFrame.moveYPixel;
-		newPos.h = mapPos.h;
-		newPos.w = mapPos.w;
-		if (!checkCollision(newPos)) {
-			mapPos.x = newPos.x;
-			mapPos.y = newPos.y;
-		}
-		//SDL_Rect tmp = sData->animData[animList.front()]->list[curAnimFrameNum].frame;
-		return sData->animData[animList.front()]->list[curAnimFrameNum].frame;
-	}*/
 	const SDL_Rect& getSpriteMapCoord() {
 		return mapPos;
 	}
 	~Sprite() {
-		SDL_DestroyTexture(spriteTexture);
+		//SDL_DestroyTexture(spriteTexture);
 	};
 	SDL_Rect mapPos;
 	bool objectInUse;
 	char curAnimFrameNum;
 	char frameCnt;
-	//bool animated;
 	bool autoDelete;
 	std::queue<char> animList;
 };
@@ -334,7 +334,32 @@ int main(int argc, char* args[])
 
 
 	//sprite init - load map part
+	SDL_Texture* tHiro = Sprite::loadTexture(Hiro.path);
+	SDL_Texture* tCommando = Sprite::loadTexture(Commandos.path);
+	SDL_Texture* tDiablo = Sprite::loadTexture(Diablo.path);
+	SDL_Texture* tHyperLightDrifter = Sprite::loadTexture(HyperLightDrifter.path);
+	SDL_Texture* tExplosive = Sprite::loadTexture(Explosive.path);
 	std::vector<Sprite*> vSprites;
+	Sprite* newSprite = new Sprite(tHiro, &Hiro, false);
+	newSprite->setPos(100, 100);
+	vSprites.push_back(newSprite);
+	Sprite* pHiro1 = newSprite;
+	curSprite = newSprite;
+	newSprite = new Sprite(tCommando, &Commandos, false);
+	newSprite->setPos(10, 10);
+	vSprites.push_back(newSprite);
+	newSprite = new Sprite(tDiablo, &Diablo, false);
+	newSprite->setPos(150, 200);
+	vSprites.push_back(newSprite);
+	Sprite* pDiablo1 = newSprite;
+	newSprite = new Sprite(tHyperLightDrifter, &HyperLightDrifter, false);
+	newSprite->setPos(200, 200);
+	vSprites.push_back(newSprite);
+	newSprite = new Sprite(tDiablo, &Diablo, false);
+	newSprite->setPos(200, 100);
+	vSprites.push_back(newSprite);
+	std::vector<Sprite*>::iterator itCurSprite = vSprites.begin();
+	/*std::vector<Sprite*> vSprites;
 	Sprite* newSprite = new Sprite;
 	newSprite->init(&Hiro, false);
 	newSprite->setPos(100, 100);
@@ -358,22 +383,7 @@ int main(int argc, char* args[])
 	newSprite->init(&Diablo, false);
 	newSprite->setPos(200, 100);
 	vSprites.push_back(newSprite);
-	std::vector<Sprite*>::iterator itCurSprite = vSprites.begin();
-
-	/*
-	Sprite sprites[10];
-	sprites[0].init(&Hiro, false);
-	sprites[0].setPos(100, 100);
-	curSprite = &sprites[0];
-	sprites[1].init(&Commandos, false);
-	sprites[1].setPos(10, 10);
-	sprites[2].init(&Diablo, false);
-	sprites[2].setPos(150, 200);
-	sprites[3].init(&HyperLightDrifter, false);
-	sprites[3].setPos(200, 200);
-	sprites[4].init(&Diablo, true);
-	sprites[4].setPos(200, 100);
-	*/
+	std::vector<Sprite*>::iterator itCurSprite = vSprites.begin();*/
 
 	char i, j;
 	bool quit = 0;
@@ -434,18 +444,23 @@ int main(int argc, char* args[])
 		else if (keystates[SDL_SCANCODE_KP_4]) {
 		}
 		else if (keystates[SDL_SCANCODE_KP_6]) {
+			Sprite* newExplodeBulletRight = new Sprite(tExplosive, &Explosive, true);
+			newExplodeBulletRight->setPos(curSprite->mapPos.x, curSprite->mapPos.y);
+			vSprites.push_back(newExplodeBulletRight);
+			const char explosivemove[] = { 0,0,1 };
+			newExplodeBulletRight->pushAnim(3, explosivemove);
+			itCurSprite = vSprites.begin();
+			curSprite = newExplodeBulletRight;
+			SDL_Delay(20);
 		}
 		else if (keystates[SDL_SCANCODE_KP_2]) {
-			Sprite* newHyperLightDrifter = new Sprite;
-			newHyperLightDrifter->init(&HyperLightDrifter, true);
+			Sprite* newHyperLightDrifter = new Sprite(tHyperLightDrifter, &HyperLightDrifter, true);
 			newHyperLightDrifter->setPos(100, 100);
 			vSprites.push_back(newHyperLightDrifter);
-			const char hyperlightdriftermove[] = {
-				7,7,1,1,5,5,3,3,7,7,1,1,5,5,3,3
-			};
+			const char hyperlightdriftermove[] = { 7,7,1,1,5,5,3,3,7,7,1,1,5,5,3,3 };
 			newHyperLightDrifter->pushAnim(16, hyperlightdriftermove);
 			itCurSprite = vSprites.begin();
-			SDL_Delay(500);
+			SDL_Delay(50);
 		}
 		else if (keystates[SDL_SCANCODE_KP_3]) {
 			curSprite->pushAnim((curSprite->animList.front() + 1) % curSprite->sData->numAnimations);
@@ -455,18 +470,6 @@ int main(int argc, char* args[])
 			if (++itCurSprite == vSprites.end())
 				itCurSprite = vSprites.begin();
 			curSprite = *itCurSprite;
-
-			/*
-			if (curSprite == &sprites[0])
-				curSprite = &sprites[1];
-			else if (curSprite == &sprites[1])
-				curSprite = &sprites[2];
-			else if (curSprite == &sprites[2])
-				curSprite = &sprites[3];
-			else if (curSprite == &sprites[3])
-				curSprite = &sprites[4];
-			else curSprite = &sprites[0];
-			*/
 			SDL_Delay(200);
 		}
 		else if (keystates[SDL_SCANCODE_KP_7]) {
@@ -474,14 +477,10 @@ int main(int argc, char* args[])
 				1,1,0,7,7,3,3,7,10,8,11,9
 			};
 			pDiablo1->pushAnim(12, diablomove);
-			//sprites[2].pushAnim(12, diablomove);
-
 			const char hiromove[] = {
 				11,11,12,9,9,10,10,10,8,8,12,2,12,0
 			};
 			pHiro1->pushAnim(14, hiromove);
-			//sprites[0].pushAnim(14, hiromove);
-
 			SDL_Delay(200);
 		}
 		else {
@@ -562,17 +561,34 @@ int main(int argc, char* args[])
 				++it;
 			}
 			else {
+				if (curSprite == (*it)) curSprite = NULL;
+				delete *it;
+				it = vSprites.erase(it);
+				if (it == vSprites.end()) it = vSprites.begin();
+				itCurSprite = it;
+				if (curSprite == NULL) curSprite = *itCurSprite;
+				/*
+
 				if (curSprite == (*it)) {
 					delete *it;
 					it = vSprites.erase(it);
-					itCurSprite = it;
-					curSprite = *it;
+					if (it == vSprites.end()) {
+						curSprite = *vSprites.begin();
+						itCurSprite = vSprites.begin();
+					}
+					else {
+						curSprite = *it;
+						itCurSprite = it;
+					}
 				}
 				else {
 					delete *it;
 					it = vSprites.erase(it);
 					itCurSprite = it;
 				}
+				if (it == vSprites.end())itCurSprite = vSprites.begin();
+				else
+					itCurSprite = it;*/
 			}
 		}
 		/*
