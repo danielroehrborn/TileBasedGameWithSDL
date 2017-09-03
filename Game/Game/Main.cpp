@@ -34,26 +34,26 @@ unsigned char map1tiledata[map1hoehe][map1breite] = {
 };
 
 unsigned char map1walkdata[map1hoehe][map1breite] = {
-	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-	{ 0,0,0,0,0,24,24,24,24,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-	{ 0,0,0,0,0,24,24,24,24,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-	{ 0,0,0,0,0,24,24,24,24,0,0,0,0,0,0,0,224,0,0,0,0,0,0,0,0,224,224,224,224,224,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-	{ 0,0,0,0,0,24,24,24,24,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,224,224,224,224,224,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,224,224,224,224,224,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,224,224,224,224,224,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
+	{ 224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224 },
+	{ 224,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,224 },
+	{ 224,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,224 },
+	{ 224,0,0,0,0,24,24,24,24,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,224 },
+	{ 224,0,0,0,0,24,24,24,24,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,224 },
+	{ 224,0,0,0,0,24,24,24,24,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,224,224,224,224,224,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,224 },
+	{ 224,0,0,0,0,24,24,24,24,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,224,224,224,224,224,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,224 },
+	{ 224,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,224,224,224,224,224,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,224 },
+	{ 224,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,224,224,224,224,224,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,224 },
+	{ 224,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,224 },
+	{ 224,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,224,224,0,0,0,0,0,0,0,0,0,0,0,224 },
+	{ 224,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,224,224,0,0,0,0,0,0,0,0,0,0,0,224 },
+	{ 224,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,224,224,0,0,0,0,0,0,0,0,0,0,0,224 },
+	{ 224,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,224 },
+	{ 224,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,224 },
+	{ 224,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,224 },
+	{ 224,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,224 },
+	{ 224,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,224 },
+	{ 224,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,224 },
+	{ 224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224 },
 };
 
 class SpriteData {
@@ -66,7 +66,7 @@ public:
 	class AnimAndTiming {
 	public:
 		const SDL_Rect frame;
-		const AnimMovement moveFrame;//const char moveSpeed;
+		const AnimMovement moveFrame;
 		const char displayDuration;
 	};
 	class AnimAndTimingList {
@@ -150,6 +150,33 @@ const SpriteData Explosive = {
 	"Explosive.png",2,{ &ExplosiveFlyRight, &ExplosiveExplode }
 };
 
+const SpriteData::AnimAndTimingList EntStand = { 128,{ 
+{ { 2514,0,199,234 },{ 0,0 },4 },{ { 2713,0,199,234 },{ 0,0 },4 },{ { 2912,0,199,234 },{ 0,0 },4 },{ { 3111,0,199,234 },{ 0,0 },4 },{ { 3310,0,199,234 },{ 0,0 },4 },{ { 3509,0,199,234 },{ 0,0 },4 },{ { 3708,0,199,234 },{ 0,0 },4 },{ { 3907,0,199,234 },{ 0,0 },4 },
+{ { 2514, 235, 199, 234 }, { 0,0 }, 4 }, { { 2713,235,199,234 },{ 0,0 },4 }, { { 2912,235,199,234 },{ 0,0 },4 }, { { 3111,235,199,234 },{ 0,0 },4 }, { { 3310,235,199,234 },{ 0,0 },4 }, { { 3509,235,199,234 },{ 0,0 },4 }, { { 3708,235,199,234 },{ 0,0 },4 }, { { 3907,235,199,234 },{ 0,0 },4 },
+{ { 2514, 470, 199, 234 },{ 0,0 }, 4 },{ { 2713,470,199,234 },{ 0,0 },4 },{ { 2912,470,199,234 },{ 0,0 },4 },{ { 3111,470,199,234 },{ 0,0 },4 },{ { 3310,470,199,234 },{ 0,0 },4 },{ { 3509,470,199,234 },{ 0,0 },4 },{ { 3708,470,199,234 },{ 0,0 },4 },{ { 3907,470,199,234 },{ 0,0 },4 },
+{ { 2514, 705, 199, 234 },{ 0,0 }, 4 },{ { 2713,705,199,234 },{ 0,0 },4 },{ { 2912,705,199,234 },{ 0,0 },4 },{ { 3111,705,199,234 },{ 0,0 },4 },{ { 3310,705,199,234 },{ 0,0 },4 },{ { 3509,705,199,234 },{ 0,0 },4 },{ { 3708,705,199,234 },{ 0,0 },4 },{ { 3907,705,199,234 },{ 0,0 },4 },
+{ { 2514, 940, 199, 234 },{ 0,0 }, 4 },{ { 2713,940,199,234 },{ 0,0 },4 },{ { 2912,940,199,234 },{ 0,0 },4 },{ { 3111,940,199,234 },{ 0,0 },4 },{ { 3310,940,199,234 },{ 0,0 },4 },{ { 3509,940,199,234 },{ 0,0 },4 },{ { 3708,940,199,234 },{ 0,0 },4 },{ { 3907,940,199,234 },{ 0,0 },4 },
+{ { 2514, 1175, 199, 234 },{ 0,0 }, 4 },{ { 2713,1175,199,234 },{ 0,0 },4 },{ { 2912,1175,199,234 },{ 0,0 },4 },{ { 3111,1175,199,234 },{ 0,0 },4 },{ { 3310,1175,199,234 },{ 0,0 },4 },{ { 3509,1175,199,234 },{ 0,0 },4 },{ { 3708,1175,199,234 },{ 0,0 },4 },{ { 3907,1175,199,234 },{ 0,0 },4 },
+{ { 2514, 1410, 199, 234 },{ 0,0 }, 4 },{ { 2713,1410,199,234 },{ 0,0 },4 },{ { 2912,1410,199,234 },{ 0,0 },4 },{ { 3111,1410,199,234 },{ 0,0 },4 },{ { 3310,1410,199,234 },{ 0,0 },4 },{ { 3509,1410,199,234 },{ 0,0 },4 },{ { 3708,1410,199,234 },{ 0,0 },4 },{ { 3907,1410,199,234 },{ 0,0 },4 },
+{ { 2514, 1645, 199, 234 },{ 0,0 }, 4 },{ { 2713,1645,199,234 },{ 0,0 },4 },{ { 2912,1645,199,234 },{ 0,0 },4 },{ { 3111,1645,199,234 },{ 0,0 },4 },{ { 3310,1645,199,234 },{ 0,0 },4 },{ { 3509,1645,199,234 },{ 0,0 },4 },{ { 3708,1645,199,234 },{ 0,0 },4 },{ { 3907,1645,199,234 },{ 0,0 },4 },
+{ { 2514, 1880, 199, 234 },{ 0,0 }, 4 },{ { 2713,1880,199,234 },{ 0,0 },4 },{ { 2912,1880,199,234 },{ 0,0 },4 },{ { 3111,1880,199,234 },{ 0,0 },4 },{ { 3310,1880,199,234 },{ 0,0 },4 },{ { 3509,1880,199,234 },{ 0,0 },4 },{ { 3708,1880,199,234 },{ 0,0 },4 },{ { 3907,1880,199,234 },{ 0,0 },4 },
+{ { 2514, 2115, 199, 234 },{ 0,0 }, 4 },{ { 2713,2115,199,234 },{ 0,0 },4 },{ { 2912,2115,199,234 },{ 0,0 },4 },{ { 3111,2115,199,234 },{ 0,0 },4 },{ { 3310,2115,199,234 },{ 0,0 },4 },{ { 3509,2115,199,234 },{ 0,0 },4 },{ { 3708,2115,199,234 },{ 0,0 },4 },{ { 3907,2115,199,234 },{ 0,0 },4 },
+{ { 2514, 2350, 199, 234 },{ 0,0 }, 4 },{ { 2713,2350,199,234 },{ 0,0 },4 },{ { 2912,2350,199,234 },{ 0,0 },4 },{ { 3111,2350,199,234 },{ 0,0 },4 },{ { 3310,2350,199,234 },{ 0,0 },4 },{ { 3509,2350,199,234 },{ 0,0 },4 },{ { 3708,2350,199,234 },{ 0,0 },4 },{ { 3907,2350,199,234 },{ 0,0 },4 },
+{ { 2514, 2585, 199, 234 },{ 0,0 }, 4 },{ { 2713,2585,199,234 },{ 0,0 },4 },{ { 2912,2585,199,234 },{ 0,0 },4 },{ { 3111,2585,199,234 },{ 0,0 },4 },{ { 3310,2585,199,234 },{ 0,0 },4 },{ { 3509,2585,199,234 },{ 0,0 },4 },{ { 3708,2585,199,234 },{ 0,0 },4 },{ { 3907,2585,199,234 },{ 0,0 },4 },
+{ { 2514, 2820, 199, 234 },{ 0,0 }, 4 },{ { 2713,2820,199,234 },{ 0,0 },4 },{ { 2912,2820,199,234 },{ 0,0 },4 },{ { 3111,2820,199,234 },{ 0,0 },4 },{ { 3310,2820,199,234 },{ 0,0 },4 },{ { 3509,2820,199,234 },{ 0,0 },4 },{ { 3708,2820,199,234 },{ 0,0 },4 },{ { 3907,2820,199,234 },{ 0,0 },4 },
+{ { 2514, 3055, 199, 234 },{ 0,0 }, 4 },{ { 2713,3055,199,234 },{ 0,0 },4 },{ { 2912,3055,199,234 },{ 0,0 },4 },{ { 3111,3055,199,234 },{ 0,0 },4 },{ { 3310,3055,199,234 },{ 0,0 },4 },{ { 3509,3055,199,234 },{ 0,0 },4 },{ { 3708,3055,199,234 },{ 0,0 },4 },{ { 3907,3055,199,234 },{ 0,0 },4 },
+{ { 2514, 3290, 199, 234 },{ 0,0 }, 4 },{ { 2713,3290,199,234 },{ 0,0 },4 },{ { 2912,3290,199,234 },{ 0,0 },4 },{ { 3111,3290,199,234 },{ 0,0 },4 },{ { 3310,3290,199,234 },{ 0,0 },4 },{ { 3509,3290,199,234 },{ 0,0 },4 },{ { 3708,3290,199,234 },{ 0,0 },4 },{ { 3907,3290,199,234 },{ 0,0 },4 },
+{ { 2514, 3525, 199, 234 },{ 0,0 }, 4 },{ { 2713,3525,199,234 },{ 0,0 },4 },{ { 2912,3525,199,234 },{ 0,0 },4 },{ { 3111,3525,199,234 },{ 0,0 },4 },{ { 3310,3525,199,234 },{ 0,0 },4 },{ { 3509,3525,199,234 },{ 0,0 },4 },{ { 3708,3525,199,234 },{ 0,0 },4 },{ { 3907,3525,199,234 },{ 0,0 },4 }
+
+
+
+
+} };
+
+const SpriteData Ent = {
+	"Ent.png",1,{ &EntStand }
+};
+
 
 class Sprite {
 public:
@@ -163,23 +190,6 @@ public:
 		pushAnim(0);
 		spriteTexture = tex;
 	}
-	/*void init(SDL_Texture* tex, const SpriteData* sd, const bool& autoDel) {
-		sData = sd;
-		objectInUse = true;
-		autoDelete = autoDel;
-		frameCnt = 0;
-		curAnimFrameNum = 0;
-		pushAnim(0);
-
-		spriteTexture = tex;
-		/*if (spriteTexture != NULL) SDL_DestroyTexture(spriteTexture);
-		SDL_Surface* tmpSurface = IMG_Load(sData->path);
-		spriteTexture = SDL_CreateTextureFromSurface(renderer, tmpSurface);
-		if (spriteTexture == NULL) {
-			printf("Unable to create texture from %s! SDL Error: %s\n", sData->path, SDL_GetError());
-		}
-		SDL_FreeSurface(tmpSurface);
-	};*/
 	SDL_Texture* spriteTexture = NULL;
 
 	static SDL_Texture* loadTexture(const char* path) {
@@ -216,7 +226,6 @@ public:
 		return mapPos;
 	}
 	~Sprite() {
-		//SDL_DestroyTexture(spriteTexture);
 	};
 	SDL_Rect mapPos;
 	bool objectInUse;
@@ -276,15 +285,14 @@ const SDL_Rect& Sprite::getFrameCoord() {
 		else if (autoDelete && curAnimFrameNum == 0 && animList.size() == 1) objectInUse = false;
 	}
 	SDL_Rect newPos;
-	newPos.x = mapPos.x + sData->animData[animList.front()]->list[curAnimFrameNum].moveFrame.moveXPixel;//mapPos.x += sData->animData[animList.front()]->list[curAnimFrameNum].moveFrame.moveXPixel;
-	newPos.y = mapPos.y + sData->animData[animList.front()]->list[curAnimFrameNum].moveFrame.moveYPixel;//mapPos.y += sData->animData[animList.front()]->list[curAnimFrameNum].moveFrame.moveYPixel;
+	newPos.x = mapPos.x + sData->animData[animList.front()]->list[curAnimFrameNum].moveFrame.moveXPixel;
+	newPos.y = mapPos.y + sData->animData[animList.front()]->list[curAnimFrameNum].moveFrame.moveYPixel;
 	newPos.h = mapPos.h;
 	newPos.w = mapPos.w;
 	if (!checkCollision(newPos)) {
 		mapPos.x = newPos.x;
 		mapPos.y = newPos.y;
 	}
-	//SDL_Rect tmp = sData->animData[animList.front()]->list[curAnimFrameNum].frame;
 	return sData->animData[animList.front()]->list[curAnimFrameNum].frame;
 }
 
@@ -339,6 +347,7 @@ int main(int argc, char* args[])
 	SDL_Texture* tDiablo = Sprite::loadTexture(Diablo.path);
 	SDL_Texture* tHyperLightDrifter = Sprite::loadTexture(HyperLightDrifter.path);
 	SDL_Texture* tExplosive = Sprite::loadTexture(Explosive.path);
+	SDL_Texture* tEnt = Sprite::loadTexture(Ent.path);
 	std::vector<Sprite*> vSprites;
 	Sprite* newSprite = new Sprite(tHiro, &Hiro, false);
 	newSprite->setPos(100, 100);
@@ -346,7 +355,7 @@ int main(int argc, char* args[])
 	Sprite* pHiro1 = newSprite;
 	curSprite = newSprite;
 	newSprite = new Sprite(tCommando, &Commandos, false);
-	newSprite->setPos(10, 10);
+	newSprite->setPos(30, 40);
 	vSprites.push_back(newSprite);
 	newSprite = new Sprite(tDiablo, &Diablo, false);
 	newSprite->setPos(150, 200);
@@ -355,35 +364,10 @@ int main(int argc, char* args[])
 	newSprite = new Sprite(tHyperLightDrifter, &HyperLightDrifter, false);
 	newSprite->setPos(200, 200);
 	vSprites.push_back(newSprite);
-	newSprite = new Sprite(tDiablo, &Diablo, false);
-	newSprite->setPos(200, 100);
+	newSprite = new Sprite(tEnt, &Ent, false);
+	newSprite->setPos(300, 20);
 	vSprites.push_back(newSprite);
 	std::vector<Sprite*>::iterator itCurSprite = vSprites.begin();
-	/*std::vector<Sprite*> vSprites;
-	Sprite* newSprite = new Sprite;
-	newSprite->init(&Hiro, false);
-	newSprite->setPos(100, 100);
-	vSprites.push_back(newSprite);
-	Sprite* pHiro1 = newSprite;
-	curSprite = newSprite;
-	newSprite = new Sprite;
-	newSprite->init(&Commandos, false);
-	newSprite->setPos(10, 10);
-	vSprites.push_back(newSprite);
-	newSprite = new Sprite;
-	newSprite->init(&Diablo, false);
-	newSprite->setPos(150, 200);
-	vSprites.push_back(newSprite);
-	Sprite* pDiablo1 = newSprite;
-	newSprite = new Sprite;
-	newSprite->init(&HyperLightDrifter, false);
-	newSprite->setPos(200, 200);
-	vSprites.push_back(newSprite);
-	newSprite = new Sprite;
-	newSprite->init(&Diablo, false);
-	newSprite->setPos(200, 100);
-	vSprites.push_back(newSprite);
-	std::vector<Sprite*>::iterator itCurSprite = vSprites.begin();*/
 
 	char i, j;
 	bool quit = 0;
@@ -450,7 +434,7 @@ int main(int argc, char* args[])
 			const char explosivemove[] = { 0,0,1 };
 			newExplodeBulletRight->pushAnim(3, explosivemove);
 			itCurSprite = vSprites.begin();
-			curSprite = newExplodeBulletRight;
+			//curSprite = newExplodeBulletRight;
 			SDL_Delay(20);
 		}
 		else if (keystates[SDL_SCANCODE_KP_2]) {
@@ -567,61 +551,8 @@ int main(int argc, char* args[])
 				if (it == vSprites.end()) it = vSprites.begin();
 				itCurSprite = it;
 				if (curSprite == NULL) curSprite = *itCurSprite;
-				/*
-
-				if (curSprite == (*it)) {
-					delete *it;
-					it = vSprites.erase(it);
-					if (it == vSprites.end()) {
-						curSprite = *vSprites.begin();
-						itCurSprite = vSprites.begin();
-					}
-					else {
-						curSprite = *it;
-						itCurSprite = it;
-					}
-				}
-				else {
-					delete *it;
-					it = vSprites.erase(it);
-					itCurSprite = it;
-				}
-				if (it == vSprites.end())itCurSprite = vSprites.begin();
-				else
-					itCurSprite = it;*/
 			}
 		}
-		/*
-		char spriteOrder[] = { 0,1,2,3,4,5,6,7,8,9 };
-		for (i = 0; i < 9; i++)
-			for (j = 0; j < 9; j++)
-				if (sprites[spriteOrder[j]].mapPos.y + sprites[spriteOrder[j]].mapPos.h > sprites[spriteOrder[j + 1]].mapPos.y + sprites[spriteOrder[j + 1]].mapPos.h)
-					std::swap(spriteOrder[j], spriteOrder[j + 1]);
-		//add sprites to BG
-		for (i = 0; i < 10; i++) {
-			j = spriteOrder[i];
-			if (sprites[j].objectInUse) {
-				if ((abs(sprites[j].mapPos.x - curSprite->mapPos.x) < 250) && (abs(sprites[j].mapPos.y - curSprite->mapPos.y) < 250)) {
-					const SDL_Rect* srcTmp = &sprites[j].getFrameCoord();
-
-					int bildmitteX = (resolutionX / 2);
-					int bildmitteY = (resolutionY / 2);
-					int ursprungX = bildmitteX - curSprite->mapPos.x;
-					int ursprungY = bildmitteY - curSprite->mapPos.y;
-					SDL_Rect tmp;
-					tmp.h = sprites[j].mapPos.h;
-					tmp.w = sprites[j].mapPos.w;
-					tmp.x = ursprungX + sprites[j].mapPos.x;
-					tmp.y = ursprungY + sprites[j].mapPos.y;
-
-					tmp.x -= sprites[j].mapPos.w / 2;
-					tmp.y -= sprites[j].mapPos.h / 2;
-
-					SDL_RenderCopy(renderer, sprites[j].spriteTexture, srcTmp, &tmp);
-				}
-			}
-		}
-		*/
 		SDL_RenderPresent(renderer);
 		//SDL_Delay(100);
 		if (20 > (SDL_GetTicks() - time)) SDL_Delay(20 - (SDL_GetTicks() - time));
