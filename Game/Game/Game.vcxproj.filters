@@ -13,10 +13,51 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Quelldateien\Sprites">
+      <UniqueIdentifier>{2f094b66-5997-4c06-87c7-0841b99e3730}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quelldateien\Maps">
+      <UniqueIdentifier>{a1ae10cc-93ba-4af7-905d-a3c6d5f6b69d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="Sprite.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Map1.cpp">
+      <Filter>Quelldateien\Maps</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Sprite.h">
+      <Filter>Quelldateien</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteData.h">
+      <Filter>Quelldateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Hiro.h">
+      <Filter>Quelldateien\Sprites</Filter>
+    </ClInclude>
+    <ClInclude Include="Commandos.h">
+      <Filter>Quelldateien\Sprites</Filter>
+    </ClInclude>
+    <ClInclude Include="Diablo.h">
+      <Filter>Quelldateien\Sprites</Filter>
+    </ClInclude>
+    <ClInclude Include="HyperLightDrifter.h">
+      <Filter>Quelldateien\Sprites</Filter>
+    </ClInclude>
+    <ClInclude Include="Explosive.h">
+      <Filter>Quelldateien\Sprites</Filter>
+    </ClInclude>
+    <ClInclude Include="Ent.h">
+      <Filter>Quelldateien\Sprites</Filter>
+    </ClInclude>
+    <ClInclude Include="Map.h">
+      <Filter>Quelldateien\Maps</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

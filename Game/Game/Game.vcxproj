@@ -118,6 +118,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Map1.cpp" />
+    <ClCompile Include="Sprite.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Commandos.h" />
+    <ClInclude Include="Diablo.h" />
+    <ClInclude Include="Ent.h" />
+    <ClInclude Include="Explosive.h" />
+    <ClInclude Include="HyperLightDrifter.h" />
+    <ClInclude Include="Map.h" />
+    <ClInclude Include="Hiro.h" />
+    <ClInclude Include="Sprite.h" />
+    <ClInclude Include="SpriteData.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

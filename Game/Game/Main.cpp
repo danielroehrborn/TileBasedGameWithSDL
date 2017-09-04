@@ -3,14 +3,24 @@
 #include <stdio.h>
 #include <SDL_thread.h>
 #include <queue>
+#include "Map.h"
+#include "Sprite.h"
+#include "SpriteData.h"
+#include "Hiro.h"
+#include "Commandos.h"
+#include "Diablo.h"
+#include "HyperLightDrifter.h"
+#include "Explosive.h"
+#include "Ent.h"
 
 SDL_Window* window = NULL;
 SDL_Renderer* renderer = NULL;
+Sprite *curSprite = NULL;
 int resolutionX = 640;
 int resolutionY = (resolutionX / 4) * 3;
 
-const char map1breite = 50, map1hoehe = 20, map1border = 13;
-unsigned char map1tiledata[map1hoehe][map1breite] = {
+/*extern const char map1breite = 50, map1hoehe = 20, map1border = 13;
+extern unsigned char map1tiledata[map1hoehe][map1breite] = {
 	{ 7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7 },
 	{ 7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,7 },
 	{ 7,1,1,1,176,177,177,177,177,178,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,7 },
@@ -33,7 +43,7 @@ unsigned char map1tiledata[map1hoehe][map1breite] = {
 	{ 7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7 }
 };
 
-unsigned char map1walkdata[map1hoehe][map1breite] = {
+extern unsigned char map1walkdata[map1hoehe][map1breite] = {
 	{ 224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224 },
 	{ 224,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,224 },
 	{ 224,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,224 },
@@ -54,9 +64,8 @@ unsigned char map1walkdata[map1hoehe][map1breite] = {
 	{ 224,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,224 },
 	{ 224,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,224 },
 	{ 224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224 },
-};
-
-class SpriteData {
+};*/
+/*class SpriteData {
 public:
 	class AnimMovement {
 	public:
@@ -77,8 +86,8 @@ public:
 	const char* path;
 	const char numAnimations;
 	const AnimAndTimingList* animData[];
-};
-const SpriteData::AnimAndTimingList HiroLookDown = { 1,{ {{1,34,32,32},{0,0},16} } };
+};*/
+/*const SpriteData::AnimAndTimingList HiroLookDown = { 1,{ {{1,34,32,32},{0,0},16} } };
 const SpriteData::AnimAndTimingList HiroWalkDown = { 4,{ {{34,34,32,32},{0,1},9}, {{1,34,32,32},{ 0,1 },9 }, {{67,34,32,32},{ 0,1 },9 }, {{1,34,32,32},{ 0,1 },9 } } };
 const SpriteData::AnimAndTimingList HiroLookUp = { 1,{ {{1,1,32,32},{ 0,0 },16 } } };
 const SpriteData::AnimAndTimingList HiroWalkUp = { 4,{ {{34,1,32,32 },{ 0,-1 },9 }, {{1,1,32,32},{ 0,-1 },9 }, {{67,1,32,32},{ 0,-1 },9 }, {{1,1,32,32},{ 0,-1 },9 } } };
@@ -94,9 +103,8 @@ const SpriteData::AnimAndTimingList HiroAngelDown = { 4,{ { { 1,594,64,64 },{ 0,
 const SpriteData Hiro = {
 	"HiroSprites.png",13,{ &HiroLookDown, &HiroWalkDown, &HiroLookUp, &HiroWalkUp, &HiroLookLeft,
 	&HiroWalkLeft, &HiroLookRight, &HiroWalkRight, &HiroRunDown, &HiroRunUp, &HiroRunLeft, &HiroRunRight, &HiroAngelDown }
-};
-
-const SpriteData::AnimAndTimingList CommandosLookDown = { 4,{ { { 599,452,30,41 },{ 0,0 },20 },{ { 631,452,30,41 },{ 0,0 },20 },{ { 663,452,30,41 },{ 0,0 },20 },{ { 631,452,30,41 },{ 0,0 },20 } } };
+};*/
+/*const SpriteData::AnimAndTimingList CommandosLookDown = { 4,{ { { 599,452,30,41 },{ 0,0 },20 },{ { 631,452,30,41 },{ 0,0 },20 },{ { 663,452,30,41 },{ 0,0 },20 },{ { 631,452,30,41 },{ 0,0 },20 } } };
 const SpriteData::AnimAndTimingList CommandosWalkDown = { 8,{ { { 2,192,24,43 },{ 0,1 },6 },{ { 30,192,24,43 },{ 0,1 },8 },{ { 58,192,24,43 },{ 0,1 },8 },{ { 86,192,24,43 },{ 0,1 },6 },{ { 114,192,24,43 },{ 0,1 },8 },{ { 142,192,24,43 },{ 0,1 },6 },{ { 170,192,24,43 },{ 0,1 },8 },{ { 198,192,24,43 },{ 0,1 },8 } } };
 const SpriteData::AnimAndTimingList CommandosLookUp = { 4,{ { { 588,315,31,39 },{ 0,0 },20 },{ { 620,315,31,39 },{ 0,0 },20 },{ { 652,315,31,39 },{ 0,0 },20 },{ { 620,315,31,39 },{ 0,0 },20 } } };
 const SpriteData::AnimAndTimingList CommandosWalkUp = { 8,{ { { 1,7,24,43 },{ 0,-1 },6 },{ { 29,7,24,43 },{ 0,-1 },8 },{ { 57,7,24,43 },{ 0,-1 },8 },{ { 85,7,24,43 },{ 0,-1 },6 },{ { 113,7,24,43 },{ 0,-1 },8 },{ { 141,7,24,43 },{ 0,-1 },6 },{ { 169,7,24,43 },{ 0,-1 },10 },{ { 197,7,24,43 },{ 0,-1 },10 } } };
@@ -107,9 +115,8 @@ const SpriteData::AnimAndTimingList CommandosWalkRight = { 8,{ { { 1,99,25,48 },
 const SpriteData Commandos = {
 	"Commandos.png",8,{ &CommandosLookDown, &CommandosWalkDown, &CommandosLookUp, &CommandosWalkUp, &CommandosLookLeft,
 	&CommandosWalkLeft, &CommandosLookRight, &CommandosWalkRight, &HiroRunDown, &HiroRunUp, &HiroRunLeft, &HiroRunRight, &HiroAngelDown }
-};
-
-const SpriteData::AnimAndTimingList DiabloLookDown = { 16,{ { { 0,1301,160,160 },{ 0,0 },8 },{ { 160,1301,160,160 },{ 0,0 },8 },{ { 320,1301,160,160 },{ 0,0 },8 },{ { 480,1301,160,160 },{ 0,0 },8 },{ { 640,1301,160,160 },{ 0,0 },8 },{ { 800,1301,160,160 },{ 0,0 },8 },{ { 960,1301,160,160 },{ 0,0 },8 },{ { 1120,1301,160,160 },{ 0,0 },8 },{ { 1280,1301,160,160 },{ 0,0 },8 },{ { 1440,1301,160,160 },{ 0,0 },8 },{ { 1600,1301,160,160 },{ 0,0 },8 },{ { 1760,1301,160,160 },{ 0,0 },8 },{ { 1920,1301,160,160 },{ 0,0 },8 },{ { 2080,1301,160,160 },{ 0,0 },8 },{ { 2240,1301,160,160 },{ 0,0 },8 },{ { 2400,1301,160,160 },{ 0,0 },8 } } };
+};*/
+/*const SpriteData::AnimAndTimingList DiabloLookDown = { 16,{ { { 0,1301,160,160 },{ 0,0 },8 },{ { 160,1301,160,160 },{ 0,0 },8 },{ { 320,1301,160,160 },{ 0,0 },8 },{ { 480,1301,160,160 },{ 0,0 },8 },{ { 640,1301,160,160 },{ 0,0 },8 },{ { 800,1301,160,160 },{ 0,0 },8 },{ { 960,1301,160,160 },{ 0,0 },8 },{ { 1120,1301,160,160 },{ 0,0 },8 },{ { 1280,1301,160,160 },{ 0,0 },8 },{ { 1440,1301,160,160 },{ 0,0 },8 },{ { 1600,1301,160,160 },{ 0,0 },8 },{ { 1760,1301,160,160 },{ 0,0 },8 },{ { 1920,1301,160,160 },{ 0,0 },8 },{ { 2080,1301,160,160 },{ 0,0 },8 },{ { 2240,1301,160,160 },{ 0,0 },8 },{ { 2400,1301,160,160 },{ 0,0 },8 } } };
 const SpriteData::AnimAndTimingList DiabloWalkDown = { 6,{ { { 5122,1301,160,160 },{ 0,1 },8 },{ { 5282,1301,160,160 },{ 0,1 },8 },{ { 5442,1301,160,160 },{ 0,1 },8 },{ { 5602,1301,160,160 },{ 0,1 },8 },{ { 5762,1301,160,160 },{ 0,1 },8 },{ { 5922,1301,160,160 },{ 0,1 },8 } } };
 const SpriteData::AnimAndTimingList DiabloLookUp = { 16,{ { { 0,1945,160,160 },{ 0,0 },8 },{ { 160,1945,160,160 },{ 0,0 },8 },{ { 320,1945,160,160 },{ 0,0 },8 },{ { 480,1945,160,160 },{ 0,0 },8 },{ { 640,1945,160,160 },{ 0,0 },8 },{ { 800,1945,160,160 },{ 0,0 },8 },{ { 960,1945,160,160 },{ 0,0 },8 },{ { 1120,1945,160,160 },{ 0,0 },8 },{ { 1280,1945,160,160 },{ 0,0 },8 },{ { 1440,1945,160,160 },{ 0,0 },8 },{ { 1600,1945,160,160 },{ 0,0 },8 },{ { 1760,1945,160,160 },{ 0,0 },8 },{ { 1920,1945,160,160 },{ 0,0 },8 },{ { 2080,1945,160,160 },{ 0,0 },8 },{ { 2240,1945,160,160 },{ 0,0 },8 },{ { 2400,1945,160,160 },{ 0,0 },8 } } };
 const SpriteData::AnimAndTimingList DiabloWalkUp = { 6,{ { { 5122,1945,160,160 },{ 0,-1 },8 },{ { 5282,1945,160,160 },{ 0,-1 },8 },{ { 5442,1945,160,160 },{ 0,-1 },8 },{ { 5602,1945,160,160 },{ 0,-1 },8 },{ { 5762,1945,160,160 },{ 0,-1 },8 },{ { 5922,1945,160,160 },{ 0,-1 },8 } } };
@@ -124,9 +131,8 @@ const SpriteData::AnimAndTimingList DiabloGetHitDown = { 6,{ { { 5122,7,160,160 
 
 const SpriteData Diablo = {
 	"Diablo.png",12,{ &DiabloLookDown, &DiabloWalkDown, &DiabloLookUp, &DiabloWalkUp, &DiabloLookLeft, &DiabloWalkLeft, &DiabloLookRight, &DiabloWalkRight, &DiabloAttackDown, &DiabloDieDown, &DiabloSpecialDown, &DiabloGetHitDown }
-};
-
-const SpriteData::AnimAndTimingList HyperLightDrifterLookDown = { 1,{ { { 64,32,32,32 },{ 0,0 },20 } } };
+};*/
+/*const SpriteData::AnimAndTimingList HyperLightDrifterLookDown = { 1,{ { { 64,32,32,32 },{ 0,0 },20 } } };
 const SpriteData::AnimAndTimingList HyperLightDrifterWalkDown = { 12,{ { { 96,32,32,32 },{ 0,2 },4 },{ { 128,32,32,32 },{ 0,2 },4 },{ { 160,32,32,32 },{ 0,2 },4 },{ { 192,32,32,32 },{ 0,2 },4 },{ { 224,32,32,32 },{ 0,2 },4 },{ { 256,32,32,32 },{ 0,2 },4 },{ { 288,32,32,32 },{ 0,2 },4 },{ { 320,32,32,32 },{ 0,2 },4 },{ { 352,32,32,32 },{ 0,2 },4 },{ { 0,32,32,32 },{ 0,2 },4 },{ { 32,32,32,32 },{ 0,2 },4 },{ { 64,32,32,32 },{ 0,2 },4 } } };
 const SpriteData::AnimAndTimingList HyperLightDrifterLookUp = { 1,{ { { 32,0,32,32 },{ 0,0 },20 } } };
 const SpriteData::AnimAndTimingList HyperLightDrifterWalkUp = { 12,{ { { 64,0,32,32 },{ 0,-2 },4 },{ { 96,0,32,32 },{ 0,-2 },4 },{ { 128,0,32,32 },{ 0,-2 },4 },{ { 160,0,32,32 },{ 0,-2 },4 },{ { 192,0,32,32 },{ 0,-2 },4 },{ { 224,0,32,32 },{ 0,-2 },4 },{ { 256,0,32,32 },{ 0,-2 },4 },{ { 288,0,32,32 },{ 0,-2 },4 },{ { 320,0,32,32 },{ 0,-2 },4 },{ { 352,0,32,32 },{ 0,-2 },4 },{ { 0,0,32,32 },{ 0,-2 },4 },{ { 32,0,32,32 },{ 0,-2 },4 } } };
@@ -138,9 +144,8 @@ const SpriteData::AnimAndTimingList HyperLightDrifterWalkRight = { 12,{ { { 96,9
 const SpriteData HyperLightDrifter = {
 	"HyperLightDrifter.png",8,{ &HyperLightDrifterLookDown, &HyperLightDrifterWalkDown, &HyperLightDrifterLookUp, &HyperLightDrifterWalkUp, &HyperLightDrifterLookLeft,
 	&HyperLightDrifterWalkLeft, &HyperLightDrifterLookRight, &HyperLightDrifterWalkRight }
-};
-
-const SpriteData::AnimAndTimingList ExplosiveFlyRight = { 1,{ { { 20,196,196,179 },{ 0,0 },20 } } };
+};*/
+/*const SpriteData::AnimAndTimingList ExplosiveFlyRight = { 1,{ { { 20,196,196,179 },{ 0,0 },20 } } };
 const SpriteData::AnimAndTimingList ExplosiveExplode = { 12,{ { { 216,196,196,179 },{ 0,0 },4 },{ { 412,196,196,179 },{ 0,0 },4 },
 { { 608,196,196,179 },{ 0,0 },4 },{ { 804,196,196,179 },{ 0,0 },4 },{ { 1000,196,196,179 },{ 0,0 },4 },{ { 1196,196,196,179 },{ 0,0 },4 },
 { { 1392,196,196,179 },{ 0,0 },4 },{ { 1588,196,196,179 },{ 0,0 },4 },{ { 1784,196,196,179 },{ 0,0 },4 },{ { 1980,196,196,179 },{ 0,0 },4 },
@@ -148,9 +153,8 @@ const SpriteData::AnimAndTimingList ExplosiveExplode = { 12,{ { { 216,196,196,17
 
 const SpriteData Explosive = {
 	"Explosive.png",2,{ &ExplosiveFlyRight, &ExplosiveExplode }
-};
-
-const SpriteData::AnimAndTimingList EntStand = { 128,{ 
+};*/
+/*const SpriteData::AnimAndTimingList EntStand = { 128,{
 { { 2514,0,199,234 },{ 0,0 },4 },{ { 2713,0,199,234 },{ 0,0 },4 },{ { 2912,0,199,234 },{ 0,0 },4 },{ { 3111,0,199,234 },{ 0,0 },4 },{ { 3310,0,199,234 },{ 0,0 },4 },{ { 3509,0,199,234 },{ 0,0 },4 },{ { 3708,0,199,234 },{ 0,0 },4 },{ { 3907,0,199,234 },{ 0,0 },4 },
 { { 2514, 235, 199, 234 }, { 0,0 }, 4 }, { { 2713,235,199,234 },{ 0,0 },4 }, { { 2912,235,199,234 },{ 0,0 },4 }, { { 3111,235,199,234 },{ 0,0 },4 }, { { 3310,235,199,234 },{ 0,0 },4 }, { { 3509,235,199,234 },{ 0,0 },4 }, { { 3708,235,199,234 },{ 0,0 },4 }, { { 3907,235,199,234 },{ 0,0 },4 },
 { { 2514, 470, 199, 234 },{ 0,0 }, 4 },{ { 2713,470,199,234 },{ 0,0 },4 },{ { 2912,470,199,234 },{ 0,0 },4 },{ { 3111,470,199,234 },{ 0,0 },4 },{ { 3310,470,199,234 },{ 0,0 },4 },{ { 3509,470,199,234 },{ 0,0 },4 },{ { 3708,470,199,234 },{ 0,0 },4 },{ { 3907,470,199,234 },{ 0,0 },4 },
@@ -167,18 +171,12 @@ const SpriteData::AnimAndTimingList EntStand = { 128,{
 { { 2514, 3055, 199, 234 },{ 0,0 }, 4 },{ { 2713,3055,199,234 },{ 0,0 },4 },{ { 2912,3055,199,234 },{ 0,0 },4 },{ { 3111,3055,199,234 },{ 0,0 },4 },{ { 3310,3055,199,234 },{ 0,0 },4 },{ { 3509,3055,199,234 },{ 0,0 },4 },{ { 3708,3055,199,234 },{ 0,0 },4 },{ { 3907,3055,199,234 },{ 0,0 },4 },
 { { 2514, 3290, 199, 234 },{ 0,0 }, 4 },{ { 2713,3290,199,234 },{ 0,0 },4 },{ { 2912,3290,199,234 },{ 0,0 },4 },{ { 3111,3290,199,234 },{ 0,0 },4 },{ { 3310,3290,199,234 },{ 0,0 },4 },{ { 3509,3290,199,234 },{ 0,0 },4 },{ { 3708,3290,199,234 },{ 0,0 },4 },{ { 3907,3290,199,234 },{ 0,0 },4 },
 { { 2514, 3525, 199, 234 },{ 0,0 }, 4 },{ { 2713,3525,199,234 },{ 0,0 },4 },{ { 2912,3525,199,234 },{ 0,0 },4 },{ { 3111,3525,199,234 },{ 0,0 },4 },{ { 3310,3525,199,234 },{ 0,0 },4 },{ { 3509,3525,199,234 },{ 0,0 },4 },{ { 3708,3525,199,234 },{ 0,0 },4 },{ { 3907,3525,199,234 },{ 0,0 },4 }
-
-
-
-
 } };
 
 const SpriteData Ent = {
 	"Ent.png",1,{ &EntStand }
-};
-
-
-class Sprite {
+};*/
+/*class Sprite {
 public:
 	const SpriteData* sData;
 	Sprite(SDL_Texture* tex, const SpriteData* sd, const bool& autoDel) {
@@ -233,10 +231,8 @@ public:
 	char frameCnt;
 	bool autoDelete;
 	std::queue<char> animList;
-};
-Sprite *curSprite = NULL;
-
-bool checkCollision(const SDL_Rect& pos) {
+};*/
+/*bool checkCollision(const SDL_Rect& pos) {
 	for (int i = pos.y; i < pos.y + pos.h / 2; i++) {
 		for (int j = pos.x - pos.w / 3; j < pos.x + (pos.w / 3); j++) {
 			if ((j / 16) < map1breite && (i / 16) < map1hoehe && (map1walkdata[i / 16][j / 16] >> 5) == 7) {
@@ -294,14 +290,12 @@ const SDL_Rect& Sprite::getFrameCoord() {
 		mapPos.y = newPos.y;
 	}
 	return sData->animData[animList.front()]->list[curAnimFrameNum].frame;
-}
-
+}*/
 /*int threadFunction(void* data)
 {
 	printf("Running thread with value = %d\n", (int)data);
 	return 0;
 }*/
-
 int main(int argc, char* args[])
 {
 	//int data = 101;
@@ -323,8 +317,6 @@ int main(int argc, char* args[])
 	IMG_Init(IMG_INIT_PNG);
 
 	Uint32 time;
-	//int resolutionX = 640;
-	//int resolutionY = (resolutionX / 4) * 3;
 	SDL_RenderSetLogicalSize(renderer, resolutionX, resolutionY);//(renderer, 320, 240);
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 
@@ -435,7 +427,7 @@ int main(int argc, char* args[])
 			newExplodeBulletRight->pushAnim(3, explosivemove);
 			itCurSprite = vSprites.begin();
 			//curSprite = newExplodeBulletRight;
-			SDL_Delay(20);
+			SDL_Delay(50);
 		}
 		else if (keystates[SDL_SCANCODE_KP_2]) {
 			Sprite* newHyperLightDrifter = new Sprite(tHyperLightDrifter, &HyperLightDrifter, true);
@@ -521,16 +513,16 @@ int main(int argc, char* args[])
 				if ((*it2)->mapPos.y + (*it2)->mapPos.h > (*(it2 + 1))->mapPos.y + (*(it2 + 1))->mapPos.h)
 					std::iter_swap(it2, it2 + 1);
 		//add sprites to BG
+		int bildmitteX = (resolutionX / 2);
+		int bildmitteY = (resolutionY / 2);
+		int ursprungX = bildmitteX - curSprite->mapPos.x;
+		int ursprungY = bildmitteY - curSprite->mapPos.y;
+		SDL_Rect tmp;
 		for (std::vector<Sprite*>::iterator it = vSprites.begin(); it != vSprites.end();) {
 			if ((*it)->objectInUse) {
 				if ((abs((*it)->mapPos.x - curSprite->mapPos.x) < 250) && (abs((*it)->mapPos.y - curSprite->mapPos.y) < 250)) {
 					const SDL_Rect* srcTmp = &(*it)->getFrameCoord();
 					if ((*it)->objectInUse) {
-						int bildmitteX = (resolutionX / 2);
-						int bildmitteY = (resolutionY / 2);
-						int ursprungX = bildmitteX - curSprite->mapPos.x;
-						int ursprungY = bildmitteY - curSprite->mapPos.y;
-						SDL_Rect tmp;
 						tmp.h = (*it)->mapPos.h;
 						tmp.w = (*it)->mapPos.w;
 						tmp.x = ursprungX + (*it)->mapPos.x;
