@@ -6,11 +6,16 @@ extern unsigned int resolutionX, resolutionY;
 extern Sprite *curSprite;
 extern SDL_Renderer* renderer;
 
+extern unsigned const char bghoehe = 100, bgbreite = 100;
+//extern unsigned char bgTiles[bghoehe*bgbreite];
+extern unsigned char bgWalk[bghoehe*bgbreite];
+
 bool checkCollision(const SDL_Rect& pos) {
 	for (int i = pos.y; i < pos.y + pos.h / 2; i++) {
 		for (int j = pos.x - pos.w / 3; j < pos.x + (pos.w / 3); j++) {
 			//if ((j / 16) < map1breite && (i / 16) < map1hoehe && (map1walkdata[i / 16][j / 16] >> 5) == 7) {
-			if ((j / 16) < map1breite && (i / 16) < map1hoehe && (map1walkdata[(i / 16)*map1breite+(j / 16)] >> 5) == 7) {
+			//if ((j / 16) < map1breite && (i / 16) < map1hoehe && (map1walkdata[(i / 16)*map1breite+(j / 16)] >> 5) == 7) {
+			if ((j / 16) < bgbreite && (i / 16) < bghoehe && (bgWalk[(i / 16)*bgbreite + (j / 16)] >> 5) == 7) {
 
 				int bildmitteX = (resolutionX / 2);
 				int bildmitteY = (resolutionY / 2);

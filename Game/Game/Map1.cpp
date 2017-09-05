@@ -2,7 +2,7 @@
 #include "Hiro.h"
 #include "HyperLightDrifter.h"
 
-const char map1breite = 50, map1hoehe = 20, map1border = 13;
+const char map1breite = 50, map1hoehe = 20, map1border = 1;
 /*unsigned char map1tiledata[map1hoehe][map1breite] = {
 	{ 7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7 },
 	{ 7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,7 },
@@ -95,7 +95,18 @@ unsigned char map1walkdata[map1hoehe*map1breite] = {
 };
 
 const MapData map1Data = {
-"tilesAnim.bmp", map1hoehe, map1breite, map1tiledata, map1walkdata,
-{ { 0,0,0 }, { 0,0,0 }, { 0,0,0 }, { 0,0,0 } }, map1border,
-{ { &Hiro, { 0, 0, 0, 0 }, 0 }, { &HyperLightDrifter, { 0,0,0,0 } ,0 } }
+	"tilesAnim.bmp", map1hoehe, map1breite, map1tiledata, map1walkdata,
+	{ { 0,3,1 }, //nord //mapID, xOffset, yOffset
+	  { 0,0,0 }, //süd
+	  { 0,0,0 }, //west
+	  { 0,0,0 } }, //ost
+	map1border,
+	{ { &Hiro,{ 0, 0, 0, 0 }, 0 },{ &HyperLightDrifter,{ 0,0,0,0 } ,0 } }
+};
+
+//test 
+const MapData map2Data = {
+	"tilesAnim.bmp", map1hoehe, map1breite, map1tiledata, map1walkdata,
+	{ { 0,0,0 },{ 0,0,0 },{ 0,0,0 },{ 0,0,0 } }, map1border,
+	{ { &Hiro,{ 0, 0, 0, 0 }, 0 },{ &HyperLightDrifter,{ 0,0,0,0 } ,0 } }
 };
