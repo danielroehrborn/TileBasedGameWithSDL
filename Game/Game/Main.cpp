@@ -16,8 +16,8 @@
 SDL_Window* window = NULL;
 SDL_Renderer* renderer = NULL;
 Sprite *curSprite = NULL;
-int resolutionX = 640;
-int resolutionY = (resolutionX / 4) * 3;
+unsigned int resolutionX = 640;
+unsigned int resolutionY = (resolutionX / 4) * 3;
 
 /*extern const char map1breite = 50, map1hoehe = 20, map1border = 13;
 extern unsigned char map1tiledata[map1hoehe][map1breite] = {
@@ -317,7 +317,7 @@ int main(int argc, char* args[])
 	IMG_Init(IMG_INIT_PNG);
 
 	Uint32 time;
-	SDL_RenderSetLogicalSize(renderer, resolutionX, resolutionY);//(renderer, 320, 240);
+	SDL_RenderSetLogicalSize(renderer, resolutionX, resolutionY);
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 
 	SDL_Surface *surface = SDL_LoadBMP("tilesAnim.bmp");
@@ -330,7 +330,7 @@ int main(int argc, char* args[])
 
 	SDL_Rect playerPos = { 0,0,0,0 }, srcRect = { 0,0,16,16 }, destRect = { 0,0,16,16 };
 	int tileBlockNum, tileNum;
-	int mapTopLeftX, mapTopLeftY, playerXOffset = 0, playerYOffset = 0, walkData, tileData;
+	int mapTopLeftX, mapTopLeftY, playerXOffset = 0, playerYOffset = 0, walkData;
 
 
 	//sprite init - load map part
@@ -365,6 +365,8 @@ int main(int argc, char* args[])
 	bool quit = 0;
 	SDL_Event e;
 	const Uint8* keystates;
+	static unsigned char LastPressed[100];
+	static unsigned char KeyPressed[100];
 	char tmpLastDir = 0, animSet = 0;
 	while (!quit)
 	{
@@ -430,13 +432,21 @@ int main(int argc, char* args[])
 			SDL_Delay(50);
 		}
 		else if (keystates[SDL_SCANCODE_KP_2]) {
+			/*if (LastPressed[SDL_SCANCODE_KP_2] == 0)
+				KeyPressed[SDL_SCANCODE_KP_2] = 1;
+			else
+				KeyPressed[SDL_SCANCODE_KP_2] = 0;
+			LastPressed[SDL_SCANCODE_KP_2] = 1;
+
+			if (KeyPressed[SDL_SCANCODE_KP_2]) {*/
 			Sprite* newHyperLightDrifter = new Sprite(tHyperLightDrifter, &HyperLightDrifter, true);
 			newHyperLightDrifter->setPos(100, 100);
 			vSprites.push_back(newHyperLightDrifter);
 			const char hyperlightdriftermove[] = { 7,7,1,1,5,5,3,3,7,7,1,1,5,5,3,3 };
 			newHyperLightDrifter->pushAnim(16, hyperlightdriftermove);
 			itCurSprite = vSprites.begin();
-			SDL_Delay(50);
+
+			//}
 		}
 		else if (keystates[SDL_SCANCODE_KP_3]) {
 			curSprite->pushAnim((curSprite->animList.front() + 1) % curSprite->sData->numAnimations);
@@ -464,6 +474,7 @@ int main(int argc, char* args[])
 				curSprite->pushAnim(tmpLastDir * 2);
 				animSet = 0;
 			}
+			LastPressed[SDL_SCANCODE_KP_2] = 0;
 		}
 
 		destRect.x = (resolutionX / 2) - (512 / 2) - curSprite->mapPos.x % 16;
@@ -475,13 +486,17 @@ int main(int argc, char* args[])
 			for (j = 0; j < 32; j++) {
 				++mapTopLeftX;
 
+				unsigned int mapTopTile = mapTopLeftY*map1breite + mapTopLeftX;
+
 				if (mapTopLeftX >= map1breite || mapTopLeftX < 0 || mapTopLeftY >= map1hoehe || mapTopLeftY < 0) {
 					tileNum = map1border;
 					tileBlockNum = 0;
 				}
 				else {
-					tileNum = map1tiledata[mapTopLeftY][mapTopLeftX];
-					walkData = map1walkdata[mapTopLeftY][mapTopLeftX];
+					//tileNum = map1tiledata[mapTopLeftY][mapTopLeftX];
+					//walkData = map1walkdata[mapTopLeftY][mapTopLeftX];
+					tileNum = map1tiledata[mapTopTile];
+					walkData = map1walkdata[mapTopTile];
 					tileBlockNum = (walkData >> 3) & 0x3;
 				}
 
@@ -491,13 +506,13 @@ int main(int argc, char* args[])
 				if (tileBlockNum > 2) {//format: bit 7 6 5 (walk data), 4 3 (tile block num) 2 1 0 (pause count) )
 					if (((walkData + 1) & 0x7) == 0) {
 						if ((++tileNum % 8) == 0)
-							map1tiledata[mapTopLeftY][mapTopLeftX] -= 7;
+							map1tiledata[mapTopTile] -= 7;//map1tiledata[mapTopLeftY][mapTopLeftX] -= 7;
 						else
-							map1tiledata[mapTopLeftY][mapTopLeftX] = tileNum;
-						map1walkdata[mapTopLeftY][mapTopLeftX] &= 0xf8;
+							map1tiledata[mapTopTile] = tileNum;//map1tiledata[mapTopLeftY][mapTopLeftX] = tileNum;
+						map1walkdata[mapTopTile] &= 0xf8;//map1walkdata[mapTopLeftY][mapTopLeftX] &= 0xf8;
 					}
 					else {
-						map1walkdata[mapTopLeftY][mapTopLeftX] = (walkData & 0xf8) | ((walkData + 1) & 0x7);
+						map1walkdata[mapTopTile] = (walkData & 0xf8) | ((walkData + 1) & 0x7);//map1walkdata[mapTopLeftY][mapTopLeftX] = (walkData & 0xf8) | ((walkData + 1) & 0x7);
 					}
 				}
 

@@ -24,20 +24,14 @@
     <ClCompile Include="Main.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="Sprite.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="Map1.cpp">
       <Filter>Quelldateien\Maps</Filter>
     </ClCompile>
+    <ClCompile Include="Sprite.cpp">
+      <Filter>Quelldateien\Sprites</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Sprite.h">
-      <Filter>Quelldateien</Filter>
-    </ClInclude>
-    <ClInclude Include="SpriteData.h">
-      <Filter>Quelldateien</Filter>
-    </ClInclude>
     <ClInclude Include="Hiro.h">
       <Filter>Quelldateien\Sprites</Filter>
     </ClInclude>
@@ -58,6 +52,12 @@
     </ClInclude>
     <ClInclude Include="Map.h">
       <Filter>Quelldateien\Maps</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite.h">
+      <Filter>Quelldateien\Sprites</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteData.h">
+      <Filter>Quelldateien\Sprites</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
