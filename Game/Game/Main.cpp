@@ -14,8 +14,9 @@
 #include "Ent.h"
 
 const MapData* const mapIDs[] = {
-	&map1Data, //ID: 0
-	&map2Data  //ID: 1
+	&map1Data,	//ID: 0
+	&map2Data,  //ID: 1
+	&map3Data	//ID: 2
 };
 const MapData* curMap = &map1Data;
 
@@ -81,6 +82,40 @@ void loadMap(unsigned const char& mapID) {
 		}
 	}
 
+	const MapData::ConnectionData westConnection = curMap->connectionData[MapData::West];
+	if (westConnection.mapID != -1) {
+		const MapData* WestConnectedMap = mapIDs[westConnection.mapID];
+		unsigned int ConnStripIndex = WestConnectedMap->width - 8;
+		int curBgRow = westConnection.yOffset;
+		int curBgColumn = westConnection.xOffset;
+		for (int i = 0; i < WestConnectedMap->height; i++) {
+			for (int j = 0; j < 8; j++) {
+				if (curBgRow + i >= 0 && curBgRow + i < bghoehe && curBgColumn + j >= 0 && curBgColumn + j < bgbreite) {
+					bgTiles[(curBgRow + i) * bgbreite + curBgColumn + j] = WestConnectedMap->tileData[ConnStripIndex + j];
+					bgWalk[(curBgRow + i) * bgbreite + curBgColumn + j] = WestConnectedMap->walkData[ConnStripIndex + j];
+				}
+			}
+			ConnStripIndex += WestConnectedMap->width;
+		}
+	}
+
+	const MapData::ConnectionData eastConnection = curMap->connectionData[MapData::East];
+	if (eastConnection.mapID != -1) {
+		const MapData* EastConnectedMap = mapIDs[eastConnection.mapID];
+		unsigned int ConnStripIndex = 0;
+		int curBgRow = eastConnection.yOffset;
+		int curBgColumn = curMap->width + 8 + eastConnection.xOffset;
+		for (int i = 0; i < EastConnectedMap->height; i++) {
+			for (int j = 0; j < 8; j++) {
+				if (curBgRow + i >= 0 && curBgRow + i < bghoehe && curBgColumn + j >= 0 && curBgColumn + j < bgbreite) {
+					bgTiles[(curBgRow + i) * bgbreite + curBgColumn + j] = EastConnectedMap->tileData[ConnStripIndex + j];
+					bgWalk[(curBgRow + i) * bgbreite + curBgColumn + j] = EastConnectedMap->walkData[ConnStripIndex + j];
+				}
+			}
+			ConnStripIndex += EastConnectedMap->width;
+		}
+	}
+
 	SDL_Surface *surface = SDL_LoadBMP(curMap->pathTileset);
 	if (surface == NULL) {
 		printf("load bmp error: %s\n", SDL_GetError()); return;
@@ -131,26 +166,26 @@ int main(int argc, char* args[])
 	SDL_Texture* tDiablo = Sprite::loadTexture(Diablo.path);
 	SDL_Texture* tHyperLightDrifter = Sprite::loadTexture(HyperLightDrifter.path);
 	SDL_Texture* tExplosive = Sprite::loadTexture(Explosive.path);
-	SDL_Texture* tEnt = Sprite::loadTexture(Ent.path);
+	//SDL_Texture* tEnt = Sprite::loadTexture(Ent.path);
 	std::vector<Sprite*> vSprites;
 	Sprite* newSprite = new Sprite(tHiro, &Hiro, false);
-	newSprite->setPos(100, 100);
+	newSprite->setPos(14 * 16, 16 * 16);
 	vSprites.push_back(newSprite);
 	Sprite* pHiro1 = newSprite;
-	curSprite = newSprite;
 	newSprite = new Sprite(tCommando, &Commandos, false);
-	newSprite->setPos(30, 40);
+	newSprite->setPos(11 * 16, 13 * 16);
 	vSprites.push_back(newSprite);
 	newSprite = new Sprite(tDiablo, &Diablo, false);
-	newSprite->setPos(150, 200);
+	newSprite->setPos(15 * 16, 10 * 16);
 	vSprites.push_back(newSprite);
 	Sprite* pDiablo1 = newSprite;
 	newSprite = new Sprite(tHyperLightDrifter, &HyperLightDrifter, false);
-	newSprite->setPos(200, 200);
+	newSprite->setPos(12 * 16, 17 * 16);
 	vSprites.push_back(newSprite);
-	newSprite = new Sprite(tEnt, &Ent, false);
-	newSprite->setPos(300, 20);
-	vSprites.push_back(newSprite);
+	curSprite = newSprite;
+	//newSprite = new Sprite(tEnt, &Ent, false);
+	//newSprite->setPos(300, 20);
+	//vSprites.push_back(newSprite);
 	std::vector<Sprite*>::iterator itCurSprite = vSprites.begin();
 
 	char i, j;
@@ -164,33 +199,33 @@ int main(int argc, char* args[])
 	while (!quit)
 	{
 		time = SDL_GetTicks();
-
+		
 		curGridPos = curSprite->mapPos;
 		curGridPos.x = (curGridPos.x / 16) - 8;
 		if (curGridPos.x < 0 && curMap->connectionData[MapData::West].mapID != -1) {
-			printf("LoadMap west\n");
+			curSprite->mapPos.y += (8 - curMap->connectionData[MapData::West].yOffset) * 16;
 			loadMap(curMap->connectionData[MapData::West].mapID);
+			curSprite->mapPos.x = (curMap->width + 8) * 16;
 		}
 		else if (curGridPos.x >= curMap->width && curMap->connectionData[MapData::East].mapID != -1) {
-			printf("LoadMap east\n");
+			curSprite->mapPos.x = 16 * 8;
+			curSprite->mapPos.y += (8 - curMap->connectionData[MapData::East].yOffset) * 16;
 			loadMap(curMap->connectionData[MapData::East].mapID);
 		}
 		else {
 			curGridPos.y = (curGridPos.y / 16) - 8;
 			if (curGridPos.y < 0 && curMap->connectionData[MapData::North].mapID != -1) {
-				printf("LoadMap north\n");
 				curSprite->mapPos.x += (8 - curMap->connectionData[MapData::North].xOffset) * 16;
-				curSprite->mapPos.y = (curMap->height + 8) * 16;
 				loadMap(curMap->connectionData[MapData::North].mapID);
+				curSprite->mapPos.y = (curMap->height + 8) * 16;
 			}
 			else if (curGridPos.y >= curMap->height && curMap->connectionData[MapData::South].mapID != -1) {
-				printf("LoadMap south\n");
 				curSprite->mapPos.x += (8 - curMap->connectionData[MapData::South].xOffset) * 16;
 				curSprite->mapPos.y = 16 * 8;
 				loadMap(curMap->connectionData[MapData::South].mapID);
 			}
 		}
-
+		
 
 		while (SDL_PollEvent(&e) != 0)
 		{

@@ -32,3 +32,4 @@ public:
 
 extern const MapData map1Data;
 extern const MapData map2Data;
+extern const MapData map3Data;
