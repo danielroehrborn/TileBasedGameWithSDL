@@ -21,6 +21,7 @@ const MapData* curMap = &map1Data;
 
 SDL_Window* window = NULL;
 SDL_Renderer* renderer = NULL;
+SDL_Texture *tilemapTexture;
 Sprite *curSprite = NULL;
 unsigned int resolutionX = 640;
 unsigned int resolutionY = (resolutionX / 4) * 3;
@@ -29,10 +30,15 @@ unsigned const char bghoehe = 100, bgbreite = 100;
 unsigned char bgTiles[bghoehe*bgbreite] = {};
 unsigned char bgWalk[bghoehe*bgbreite] = {};
 
+
+//void loadMap(unsigned const char& mapID) {
 void loadMap(unsigned const char& mapID) {
-	for (int i = bghoehe*bgbreite; i--;) bgTiles[i] = curMap->borderTile;
 	curMap = mapIDs[mapID];
-	int topLeftIndex = (bghoehe / 2 - curMap->height / 2) * bgbreite + bgbreite / 2 - curMap->width / 2;
+	for (int i = bghoehe*bgbreite; i--;) {
+		bgTiles[i] = curMap->borderTile;
+		bgWalk[i] = 0;
+	}
+	int topLeftIndex = 8 * bgbreite + 8; //int topLeftIndex = (bghoehe / 2 - curMap->height / 2) * bgbreite + bgbreite / 2 - curMap->width / 2;
 	int curMapTileIndex = 0;
 	for (int i = 0; i < curMap->height; i++) {
 		for (int j = 0; j < curMap->width; j++) {
@@ -49,21 +55,42 @@ void loadMap(unsigned const char& mapID) {
 		int ConnStripIndex = (NorthConnectedMap->height - 8) * NorthConnectedMap->width;
 		for (int i = curMap->connectionData[MapData::North].yOffset; i < curMap->connectionData[MapData::North].yOffset + 8; i++) {
 			for (int j = 0; j < NorthConnectedMap->width; j++) {
-				if (i >= 0 && i < bghoehe && j+ curMap->connectionData[MapData::North].xOffset >= 0 && j+ curMap->connectionData[MapData::North].xOffset < bgbreite) {
-					bgTiles[i*bghoehe + j+curMap->connectionData[MapData::North].xOffset] = NorthConnectedMap->tileData[ConnStripIndex];
-					bgWalk[i*bghoehe + j+curMap->connectionData[MapData::North].xOffset] = NorthConnectedMap->walkData[ConnStripIndex];
+				if (i >= 0 && i < bghoehe && j + curMap->connectionData[MapData::North].xOffset >= 0 && j + curMap->connectionData[MapData::North].xOffset < bgbreite) {
+					bgTiles[i*bgbreite + j + curMap->connectionData[MapData::North].xOffset] = NorthConnectedMap->tileData[ConnStripIndex];
+					bgWalk[i*bgbreite + j + curMap->connectionData[MapData::North].xOffset] = NorthConnectedMap->walkData[ConnStripIndex];
 				}
 				++ConnStripIndex;
 			}
-
 		}
 	}
+
+	const MapData::ConnectionData southConnection = curMap->connectionData[MapData::South];
+	if (southConnection.mapID != -1) {
+		const MapData* SouthConnectedMap = mapIDs[southConnection.mapID];
+		unsigned int ConnStripIndex = 0;
+		int curBgRow = curMap->height + 8 + southConnection.yOffset;
+		int curBgColumn = southConnection.xOffset;
+		for (int i = 0; i < 8; i++) {
+			for (int j = 0; j < SouthConnectedMap->width; j++) {
+				if (curBgRow + i >= 0 && curBgRow + i < bghoehe && curBgColumn + j >= 0 && curBgColumn + j < bgbreite) {
+					bgTiles[(curBgRow + i) * bgbreite + curBgColumn + j] = SouthConnectedMap->tileData[ConnStripIndex];
+					bgWalk[(curBgRow + i) * bgbreite + curBgColumn + j] = SouthConnectedMap->walkData[ConnStripIndex];
+				}
+				++ConnStripIndex;
+			}
+		}
+	}
+
+	SDL_Surface *surface = SDL_LoadBMP(curMap->pathTileset);
+	if (surface == NULL) {
+		printf("load bmp error: %s\n", SDL_GetError()); return;
+	}
+	tilemapTexture = SDL_CreateTextureFromSurface(renderer, surface);
+	SDL_FreeSurface(surface);
 }
 
 int main(int argc, char* args[])
 {
-	loadMap(0);
-
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
 		printf("SDL could not initialize! SDL Error: %s\n", SDL_GetError()); return -1;
 	}
@@ -83,12 +110,14 @@ int main(int argc, char* args[])
 	SDL_RenderSetLogicalSize(renderer, resolutionX, resolutionY);
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 
-	SDL_Surface *surface = SDL_LoadBMP("tilesAnim.bmp");
+	/*SDL_Surface *surface = SDL_LoadBMP("tilesAnim.bmp");
 	if (surface == NULL) {
 		printf("load bmp error: %s\n", SDL_GetError()); return -1;
 	}
-	SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
-	SDL_FreeSurface(surface);
+	SDL_Texture *tilemapTexture = SDL_CreateTextureFromSurface(renderer, surface);
+	SDL_FreeSurface(surface);*/
+	loadMap(0);
+
 	SDL_SetRenderDrawColor(renderer, 100, 50, 150, 20);
 
 	SDL_Rect playerPos = { 0,0,0,0 }, srcRect = { 0,0,16,16 }, destRect = { 0,0,16,16 };
@@ -131,9 +160,38 @@ int main(int argc, char* args[])
 	static unsigned char LastPressed[100];
 	static unsigned char KeyPressed[100];
 	char tmpLastDir = 0, animSet = 0;
+	SDL_Rect curGridPos;
 	while (!quit)
 	{
 		time = SDL_GetTicks();
+
+		curGridPos = curSprite->mapPos;
+		curGridPos.x = (curGridPos.x / 16) - 8;
+		if (curGridPos.x < 0 && curMap->connectionData[MapData::West].mapID != -1) {
+			printf("LoadMap west\n");
+			loadMap(curMap->connectionData[MapData::West].mapID);
+		}
+		else if (curGridPos.x >= curMap->width && curMap->connectionData[MapData::East].mapID != -1) {
+			printf("LoadMap east\n");
+			loadMap(curMap->connectionData[MapData::East].mapID);
+		}
+		else {
+			curGridPos.y = (curGridPos.y / 16) - 8;
+			if (curGridPos.y < 0 && curMap->connectionData[MapData::North].mapID != -1) {
+				printf("LoadMap north\n");
+				curSprite->mapPos.x += (8 - curMap->connectionData[MapData::North].xOffset) * 16;
+				curSprite->mapPos.y = (curMap->height + 8) * 16;
+				loadMap(curMap->connectionData[MapData::North].mapID);
+			}
+			else if (curGridPos.y >= curMap->height && curMap->connectionData[MapData::South].mapID != -1) {
+				printf("LoadMap south\n");
+				curSprite->mapPos.x += (8 - curMap->connectionData[MapData::South].xOffset) * 16;
+				curSprite->mapPos.y = 16 * 8;
+				loadMap(curMap->connectionData[MapData::South].mapID);
+			}
+		}
+
+
 		while (SDL_PollEvent(&e) != 0)
 		{
 			if (e.type == SDL_QUIT)
@@ -181,8 +239,10 @@ int main(int argc, char* args[])
 			SDL_RenderSetLogicalSize(renderer, resolutionX, resolutionY);
 		}
 		else if (keystates[SDL_SCANCODE_KP_8]) {
+			loadMap(0);
 		}
 		else if (keystates[SDL_SCANCODE_KP_4]) {
+			loadMap(1);
 		}
 		else if (keystates[SDL_SCANCODE_KP_6]) {
 			Sprite* newExplodeBulletRight = new Sprite(tExplosive, &Explosive, true);
@@ -279,7 +339,7 @@ int main(int argc, char* args[])
 					}
 				}
 
-				SDL_RenderCopy(renderer, texture, &srcRect, &destRect);
+				SDL_RenderCopy(renderer, tilemapTexture, &srcRect, &destRect);
 				destRect.x += 16;
 			}
 			destRect.x = (resolutionX / 2) - (512 / 2) - curSprite->mapPos.x % 16;
