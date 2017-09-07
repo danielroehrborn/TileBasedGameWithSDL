@@ -5,7 +5,7 @@
 class Sprite {
 public:
 	const SpriteData* sData;
-	Sprite(SDL_Texture* tex, const SpriteData* sd, const bool& autoDel);/* {
+	Sprite(const SpriteData* sd, const bool& autoDel);/* {
 		sData = sd;
 		objectInUse = true;
 		autoDelete = autoDel;
@@ -54,4 +54,5 @@ public:
 	char frameCnt;
 	bool autoDelete;
 	std::queue<char> animList;
+	static SDL_Texture* textures[6];
 };

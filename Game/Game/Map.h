@@ -27,6 +27,7 @@ public:
 	unsigned char* const tileData, * const walkData;
 	const ConnectionData const connectionData[4];
 	unsigned const char borderTile;
+	const unsigned char numSprites;
 	const SpritePos const sprites[];
 };
 

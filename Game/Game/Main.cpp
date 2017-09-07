@@ -24,21 +24,22 @@ SDL_Window* window = NULL;
 SDL_Renderer* renderer = NULL;
 SDL_Texture *tilemapTexture;
 Sprite *curSprite = NULL;
+std::vector<Sprite*> vSprites;
+std::vector<Sprite*>::iterator itCurSprite;
 unsigned int resolutionX = 640;
 unsigned int resolutionY = (resolutionX / 4) * 3;
-
 unsigned const char bghoehe = 100, bgbreite = 100;
 unsigned char bgTiles[bghoehe*bgbreite] = {};
 unsigned char bgWalk[bghoehe*bgbreite] = {};
 
-
-//void loadMap(unsigned const char& mapID) {
 void loadMap(unsigned const char& mapID) {
+	//clear bg map
 	curMap = mapIDs[mapID];
 	for (int i = bghoehe*bgbreite; i--;) {
 		bgTiles[i] = curMap->borderTile;
 		bgWalk[i] = 0;
 	}
+	//copy map to bg
 	int topLeftIndex = 8 * bgbreite + 8; //int topLeftIndex = (bghoehe / 2 - curMap->height / 2) * bgbreite + bgbreite / 2 - curMap->width / 2;
 	int curMapTileIndex = 0;
 	for (int i = 0; i < curMap->height; i++) {
@@ -49,7 +50,7 @@ void loadMap(unsigned const char& mapID) {
 		}
 		topLeftIndex += bgbreite;
 	}
-
+	//load connection strips
 	const char NorthConnectedMapID = curMap->connectionData[MapData::North].mapID;
 	if (NorthConnectedMapID != -1) {
 		const MapData* NorthConnectedMap = mapIDs[curMap->connectionData[MapData::North].mapID];
@@ -64,7 +65,6 @@ void loadMap(unsigned const char& mapID) {
 			}
 		}
 	}
-
 	const MapData::ConnectionData southConnection = curMap->connectionData[MapData::South];
 	if (southConnection.mapID != -1) {
 		const MapData* SouthConnectedMap = mapIDs[southConnection.mapID];
@@ -81,7 +81,6 @@ void loadMap(unsigned const char& mapID) {
 			}
 		}
 	}
-
 	const MapData::ConnectionData westConnection = curMap->connectionData[MapData::West];
 	if (westConnection.mapID != -1) {
 		const MapData* WestConnectedMap = mapIDs[westConnection.mapID];
@@ -98,7 +97,6 @@ void loadMap(unsigned const char& mapID) {
 			ConnStripIndex += WestConnectedMap->width;
 		}
 	}
-
 	const MapData::ConnectionData eastConnection = curMap->connectionData[MapData::East];
 	if (eastConnection.mapID != -1) {
 		const MapData* EastConnectedMap = mapIDs[eastConnection.mapID];
@@ -115,13 +113,34 @@ void loadMap(unsigned const char& mapID) {
 			ConnStripIndex += EastConnectedMap->width;
 		}
 	}
-
+	//load new tilemap
 	SDL_Surface *surface = SDL_LoadBMP(curMap->pathTileset);
 	if (surface == NULL) {
 		printf("load bmp error: %s\n", SDL_GetError()); return;
 	}
 	tilemapTexture = SDL_CreateTextureFromSurface(renderer, surface);
 	SDL_FreeSurface(surface);
+	//remove sprites except current player sprite
+	if (vSprites.size() > 0)
+		for (std::vector<Sprite*>::iterator it = vSprites.begin(); it != vSprites.end() - 1; ++it)
+			if (*it != curSprite)
+				delete *it;
+	vSprites.clear();
+	//load new map sprites
+	Sprite* newSprite = NULL;
+	for (unsigned char spriteNum = 0; spriteNum < curMap->numSprites; ++spriteNum) {
+		newSprite = new Sprite(curMap->sprites[spriteNum].sprite, false);
+		newSprite->setPos((curMap->sprites[spriteNum].mapPos.x + 8) * 16, (curMap->sprites[spriteNum].mapPos.y + 8) * 16);
+		vSprites.push_back(newSprite);
+	}
+	if (curSprite == NULL) {
+		itCurSprite = vSprites.begin();
+		curSprite = *itCurSprite;
+	}
+	else {
+		vSprites.push_back(curSprite);
+		itCurSprite = vSprites.begin();
+	}
 }
 
 int main(int argc, char* args[])
@@ -143,50 +162,39 @@ int main(int argc, char* args[])
 
 	Uint32 time;
 	SDL_RenderSetLogicalSize(renderer, resolutionX, resolutionY);
-	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-
-	/*SDL_Surface *surface = SDL_LoadBMP("tilesAnim.bmp");
-	if (surface == NULL) {
-		printf("load bmp error: %s\n", SDL_GetError()); return -1;
-	}
-	SDL_Texture *tilemapTexture = SDL_CreateTextureFromSurface(renderer, surface);
-	SDL_FreeSurface(surface);*/
-	loadMap(0);
-
 	SDL_SetRenderDrawColor(renderer, 100, 50, 150, 20);
-
 	SDL_Rect playerPos = { 0,0,0,0 }, srcRect = { 0,0,16,16 }, destRect = { 0,0,16,16 };
 	int tileBlockNum, tileNum;
 	int mapTopLeftX, mapTopLeftY, playerXOffset = 0, playerYOffset = 0, walkData;
 
+	loadMap(0);
 
 	//sprite init - load map part
-	SDL_Texture* tHiro = Sprite::loadTexture(Hiro.path);
-	SDL_Texture* tCommando = Sprite::loadTexture(Commandos.path);
-	SDL_Texture* tDiablo = Sprite::loadTexture(Diablo.path);
-	SDL_Texture* tHyperLightDrifter = Sprite::loadTexture(HyperLightDrifter.path);
-	SDL_Texture* tExplosive = Sprite::loadTexture(Explosive.path);
+	//SDL_Texture* tHiro = Sprite::loadTexture(Hiro.path);
+	//SDL_Texture* tCommando = Sprite::loadTexture(Commandos.path);
+	//SDL_Texture* tDiablo = Sprite::loadTexture(Diablo.path);
+	//SDL_Texture* tHyperLightDrifter = Sprite::loadTexture(HyperLightDrifter.path);
+	//SDL_Texture* tExplosive = Sprite::loadTexture(Explosive.path);
 	//SDL_Texture* tEnt = Sprite::loadTexture(Ent.path);
-	std::vector<Sprite*> vSprites;
-	Sprite* newSprite = new Sprite(tHiro, &Hiro, false);
-	newSprite->setPos(14 * 16, 16 * 16);
-	vSprites.push_back(newSprite);
-	Sprite* pHiro1 = newSprite;
-	newSprite = new Sprite(tCommando, &Commandos, false);
-	newSprite->setPos(11 * 16, 13 * 16);
-	vSprites.push_back(newSprite);
-	newSprite = new Sprite(tDiablo, &Diablo, false);
-	newSprite->setPos(15 * 16, 10 * 16);
-	vSprites.push_back(newSprite);
-	Sprite* pDiablo1 = newSprite;
-	newSprite = new Sprite(tHyperLightDrifter, &HyperLightDrifter, false);
-	newSprite->setPos(12 * 16, 17 * 16);
-	vSprites.push_back(newSprite);
-	curSprite = newSprite;
+	//Sprite* newSprite = new Sprite(tHiro, &Hiro, false);
+	//newSprite->setPos(14 * 16, 16 * 16);
+	//vSprites.push_back(newSprite);
+	//Sprite* pHiro1 = newSprite;
+	//newSprite = new Sprite(tCommando, &Commandos, false);
+	//newSprite->setPos(11 * 16, 13 * 16);
+	//vSprites.push_back(newSprite);
+	//newSprite = new Sprite(tDiablo, &Diablo, false);
+	//newSprite->setPos(15 * 16, 10 * 16);
+	//vSprites.push_back(newSprite);
+	//Sprite* pDiablo1 = newSprite;
+	//newSprite = new Sprite(tHyperLightDrifter, &HyperLightDrifter, false);
+	//newSprite->setPos(12 * 16, 17 * 16);
+	//vSprites.push_back(newSprite);
+	//curSprite = newSprite;
 	//newSprite = new Sprite(tEnt, &Ent, false);
 	//newSprite->setPos(300, 20);
 	//vSprites.push_back(newSprite);
-	std::vector<Sprite*>::iterator itCurSprite = vSprites.begin();
+	//itCurSprite = vSprites.begin();
 
 	char i, j;
 	bool quit = 0;
@@ -199,7 +207,7 @@ int main(int argc, char* args[])
 	while (!quit)
 	{
 		time = SDL_GetTicks();
-		
+
 		curGridPos = curSprite->mapPos;
 		curGridPos.x = (curGridPos.x / 16) - 8;
 		if (curGridPos.x < 0 && curMap->connectionData[MapData::West].mapID != -1) {
@@ -225,7 +233,7 @@ int main(int argc, char* args[])
 				loadMap(curMap->connectionData[MapData::South].mapID);
 			}
 		}
-		
+
 
 		while (SDL_PollEvent(&e) != 0)
 		{
@@ -280,7 +288,7 @@ int main(int argc, char* args[])
 			loadMap(1);
 		}
 		else if (keystates[SDL_SCANCODE_KP_6]) {
-			Sprite* newExplodeBulletRight = new Sprite(tExplosive, &Explosive, true);
+			Sprite* newExplodeBulletRight = new Sprite(&Explosive, true);
 			newExplodeBulletRight->setPos(curSprite->mapPos.x, curSprite->mapPos.y);
 			vSprites.push_back(newExplodeBulletRight);
 			const char explosivemove[] = { 0,0,1 };
@@ -297,7 +305,7 @@ int main(int argc, char* args[])
 			LastPressed[SDL_SCANCODE_KP_2] = 1;
 
 			if (KeyPressed[SDL_SCANCODE_KP_2]) {*/
-			Sprite* newHyperLightDrifter = new Sprite(tHyperLightDrifter, &HyperLightDrifter, true);
+			Sprite* newHyperLightDrifter = new Sprite(&HyperLightDrifter, true);
 			newHyperLightDrifter->setPos(100, 100);
 			vSprites.push_back(newHyperLightDrifter);
 			const char hyperlightdriftermove[] = { 7,7,1,1,5,5,3,3,7,7,1,1,5,5,3,3 };
@@ -320,12 +328,12 @@ int main(int argc, char* args[])
 			const char diablomove[] = {
 				1,1,0,7,7,3,3,7,10,8,11,9
 			};
-			pDiablo1->pushAnim(12, diablomove);
+			/*pDiablo1->pushAnim(12, diablomove);
 			const char hiromove[] = {
 				11,11,12,9,9,10,10,10,8,8,12,2,12,0
 			};
 			pHiro1->pushAnim(14, hiromove);
-			SDL_Delay(200);
+			SDL_Delay(200);*/
 		}
 		else {
 			if (animSet) {

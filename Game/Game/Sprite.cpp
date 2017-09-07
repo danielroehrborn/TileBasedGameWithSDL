@@ -82,14 +82,25 @@ SDL_Texture* Sprite::loadTexture(const char* path) {
 	return tmpTexture;
 }
 
-Sprite::Sprite(SDL_Texture* tex, const SpriteData* sd, const bool& autoDel) {
+SDL_Texture* Sprite::textures[6];
+
+Sprite::Sprite(const SpriteData* sd, const bool& autoDel) {
 	sData = sd;
 	objectInUse = true;
 	autoDelete = autoDel;
 	frameCnt = 0;
 	curAnimFrameNum = 0;
 	pushAnim(0);
-	spriteTexture = tex;
+	textures[0] = NULL;
+	textures[1] = NULL;
+	textures[2] = NULL;
+	textures[3] = NULL;
+	textures[4] = NULL;
+	textures[5] = NULL;
+	if (textures[sData->globalSpriteID] == NULL) {
+		textures[sData->globalSpriteID] = loadTexture(sData->path);
+		spriteTexture = textures[sData->globalSpriteID];
+	}
 }
 
 void Sprite::pushAnim(const char& index) {

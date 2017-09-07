@@ -17,6 +17,7 @@ public:
 		const char numFrames;
 		const AnimAndTiming list[];
 	};
+	const unsigned char globalSpriteID;
 	const char* path;
 	const char numAnimations;
 	const AnimAndTimingList* animData[];

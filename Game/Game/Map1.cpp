@@ -1,6 +1,8 @@
 #include "Map.h"
 #include "Hiro.h"
 #include "HyperLightDrifter.h"
+#include "Commandos.h"
+#include "Diablo.h"
 
 const char map1breite = 50, map1hoehe = 20, map1border = 1;
 unsigned char map1tiledata[map1hoehe*map1breite] = {
@@ -53,8 +55,8 @@ const MapData map1Data = {
 	  { 1,-2,0 }, //süd
 	  { 2,0,18 }, //west
 	  { 2,0,3 } }, //ost
-	map1border,
-	{ { &Hiro,{ 0, 0, 0, 0 }, 0 },{ &HyperLightDrifter,{ 0,0,0,0 } ,0 } }
+	map1border, 2,                                    //x,y,w,h
+	{ { &Hiro,{ 2, 2, 0, 0 }, 0 },{ &HyperLightDrifter,{ 3,4,0,0 } ,0 } }
 };
 
 const char map2breite = 20, map2hoehe = 20, map2border = 188;
@@ -104,7 +106,7 @@ unsigned char map2walkdata[map2hoehe*map2breite] = {
 };
 const MapData map2Data = {
 	"fireredtiles.bmp", map2hoehe, map2breite, map2tiledata, map2walkdata,
-	{ { 0,18,0 },{ -1,0,0 },{ -1,0,0 },{ -1,0,0 } }, map2border,
+	{ { 0,18,0 },{ -1,0,0 },{ -1,0,0 },{ -1,0,0 } }, map2border, 2,
 	{ { &Hiro,{ 0, 0, 0, 0 }, 0 },{ &HyperLightDrifter,{ 0,0,0,0 } ,0 } }
 };
 
@@ -135,6 +137,6 @@ unsigned char map3walkdata[map3hoehe*map3breite] = {
 };
 const MapData map3Data = {
 	"fireredtiles.bmp", map3hoehe, map3breite, map3tiledata, map3walkdata,
-	{ { -1,0,0 },{ -1,0,0 },{ 0,0,13 },{ 0,0,-2 } }, map3border,
-	{ { &Hiro,{ 0, 0, 0, 0 }, 0 },{ &HyperLightDrifter,{ 0,0,0,0 } ,0 } }
+	{ { -1,0,0 },{ -1,0,0 },{ 0,0,13 },{ 0,0,-2 } }, map3border, 1,
+	{ { &Diablo,{ 4, 4, 0, 0 }, 0 } }
 };

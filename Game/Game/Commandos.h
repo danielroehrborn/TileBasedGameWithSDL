@@ -8,6 +8,6 @@ const SpriteData::AnimAndTimingList CommandosWalkLeft = { 8,{ { { 237,442,25,48 
 const SpriteData::AnimAndTimingList CommandosLookRight = { 4,{ { { 603,355,17,49 },{ 0,0 },20 },{ { 585,355,17,49 },{ 0,0 },20 },{ { 603,355,17,49 },{ 0,0 },20 },{ { 621,355,17,49 },{ 0,0 },20 } } };
 const SpriteData::AnimAndTimingList CommandosWalkRight = { 8,{ { { 1,99,25,48 },{ 1,0 },6 },{ { 29,99,25,48 },{ 1,0 },8 },{ { 57,99,25,48 },{ 1,0 },10 },{ { 85,99,25,48 },{ 1,0 },6 },{ { 113,99,25,48 },{ 1,0 },8 },{ { 141,99,25,48 },{ 1,0 },6 },{ { 169,99,25,48 },{ 1,0 },10 },{ { 197,99,25,48 },{ 1,0 },8 } } };
 const SpriteData Commandos = {
-	"Commandos.png",8,{ &CommandosLookDown, &CommandosWalkDown, &CommandosLookUp, &CommandosWalkUp, &CommandosLookLeft,
+	1,"Commandos.png",8,{ &CommandosLookDown, &CommandosWalkDown, &CommandosLookUp, &CommandosWalkUp, &CommandosLookLeft,
 	&CommandosWalkLeft, &CommandosLookRight, &CommandosWalkRight, &HiroRunDown, &HiroRunUp, &HiroRunLeft, &HiroRunRight, &HiroAngelDown }
 };
