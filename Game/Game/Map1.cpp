@@ -3,6 +3,7 @@
 #include "HyperLightDrifter.h"
 #include "Commandos.h"
 #include "Diablo.h"
+#include "Explosive.h"
 
 const char map1breite = 50, map1hoehe = 20, map1border = 1;
 unsigned char map1tiledata[map1hoehe*map1breite] = {
@@ -107,7 +108,7 @@ unsigned char map2walkdata[map2hoehe*map2breite] = {
 const MapData map2Data = {
 	"fireredtiles.bmp", map2hoehe, map2breite, map2tiledata, map2walkdata,
 	{ { 0,18,0 },{ -1,0,0 },{ -1,0,0 },{ -1,0,0 } }, map2border, 2,
-	{ { &Hiro,{ 0, 0, 0, 0 }, 0 },{ &HyperLightDrifter,{ 0,0,0,0 } ,0 } }
+	{ { &Commandos,{ 8, 5, 0, 0 }, 0 },{ &Commandos,{ 9,5,0,0 } ,2 } }
 };
 
 const char map3breite = 10, map3hoehe = 10, map3border = 188;

@@ -131,6 +131,7 @@ void loadMap(unsigned const char& mapID) {
 	for (unsigned char spriteNum = 0; spriteNum < curMap->numSprites; ++spriteNum) {
 		newSprite = new Sprite(curMap->sprites[spriteNum].sprite, false);
 		newSprite->setPos((curMap->sprites[spriteNum].mapPos.x + 8) * 16, (curMap->sprites[spriteNum].mapPos.y + 8) * 16);
+		newSprite->pushAnim(curMap->sprites[spriteNum].curAnim);
 		vSprites.push_back(newSprite);
 	}
 	if (curSprite == NULL) {
