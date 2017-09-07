@@ -170,6 +170,20 @@ int main(int argc, char* args[])
 
 	loadMap(0);
 
+
+
+
+	//shadowtile test
+	/*SDL_Surface *surface = SDL_LoadBMP("shadowtile.bmp");
+	if (surface == NULL) {
+		printf("load bmp error: %s\n", SDL_GetError());
+	}
+	SDL_Texture* shadowTex = SDL_CreateTextureFromSurface(renderer, surface);
+	SDL_FreeSurface(surface);
+
+	SDL_Rect shadowRec = { 0,0,16,16 };
+	SDL_SetTextureBlendMode(shadowTex, SDL_BLENDMODE_BLEND);SDL_BlendMode(SDL_BLENDMODE_BLEND);
+	SDL_SetTextureAlphaMod(shadowTex, 50);*/
 	//sprite init - load map part
 	//SDL_Texture* tHiro = Sprite::loadTexture(Hiro.path);
 	//SDL_Texture* tCommando = Sprite::loadTexture(Commandos.path);
@@ -196,6 +210,7 @@ int main(int argc, char* args[])
 	//newSprite->setPos(300, 20);
 	//vSprites.push_back(newSprite);
 	//itCurSprite = vSprites.begin();
+	unsigned char colred = 255, colgreen = 255, colblue = 255;
 
 	char i, j;
 	bool quit = 0;
@@ -214,7 +229,7 @@ int main(int argc, char* args[])
 		if (curGridPos.x < 0 && curMap->connectionData[MapData::West].mapID != -1) {
 			curSprite->mapPos.y += (8 - curMap->connectionData[MapData::West].yOffset) * 16;
 			loadMap(curMap->connectionData[MapData::West].mapID);
-			curSprite->mapPos.x = (curMap->width + 8) * 16;
+			curSprite->mapPos.x = (curMap->width + 8) * 16 - 1;
 		}
 		else if (curGridPos.x >= curMap->width && curMap->connectionData[MapData::East].mapID != -1) {
 			curSprite->mapPos.x = 16 * 8;
@@ -223,10 +238,10 @@ int main(int argc, char* args[])
 		}
 		else {
 			curGridPos.y = (curGridPos.y / 16) - 8;
-			if (curGridPos.y < 0 && curMap->connectionData[MapData::North].mapID != -1) {
+			if (curGridPos.y < 0 && curMap->connectionData[MapData::North].mapID != -2) {
 				curSprite->mapPos.x += (8 - curMap->connectionData[MapData::North].xOffset) * 16;
 				loadMap(curMap->connectionData[MapData::North].mapID);
-				curSprite->mapPos.y = (curMap->height + 8) * 16;
+				curSprite->mapPos.y = (curMap->height + 8) * 16 - 1;
 			}
 			else if (curGridPos.y >= curMap->height && curMap->connectionData[MapData::South].mapID != -1) {
 				curSprite->mapPos.x += (8 - curMap->connectionData[MapData::South].xOffset) * 16;
@@ -283,10 +298,25 @@ int main(int argc, char* args[])
 			SDL_RenderSetLogicalSize(renderer, resolutionX, resolutionY);
 		}
 		else if (keystates[SDL_SCANCODE_KP_8]) {
-			loadMap(0);
+			//loadMap(0);
+			colred = 255;
+			colgreen = 197;
+			colblue = 157;
+			SDL_SetTextureColorMod(tilemapTexture, colred, colgreen, colblue);
 		}
 		else if (keystates[SDL_SCANCODE_KP_4]) {
-			loadMap(1);
+			//loadMap(1);
+			colred = 255;
+			colgreen = 255;
+			colblue = 255;
+			SDL_SetTextureColorMod(tilemapTexture, colred, colgreen, colblue);
+		}
+		else if (keystates[SDL_SCANCODE_KP_9]) {
+			//--colblue;
+			colred = 60;
+			colgreen = 50;
+			colblue = 135;
+			SDL_SetTextureColorMod(tilemapTexture, colred, colgreen, colblue);
 		}
 		else if (keystates[SDL_SCANCODE_KP_6]) {
 			Sprite* newExplodeBulletRight = new Sprite(&Explosive, true);
@@ -384,6 +414,10 @@ int main(int argc, char* args[])
 				}
 
 				SDL_RenderCopy(renderer, tilemapTexture, &srcRect, &destRect);
+
+				//shadow test
+				//SDL_RenderCopy(renderer, shadowTex, &shadowRec, &destRect);
+
 				destRect.x += 16;
 			}
 			destRect.x = (resolutionX / 2) - (512 / 2) - curSprite->mapPos.x % 16;
