@@ -107,8 +107,8 @@ unsigned char map2walkdata[map2hoehe*map2breite] = {
 };
 const MapData map2Data = {
 	"fireredtiles.bmp", map2hoehe, map2breite, map2tiledata, map2walkdata,
-	{ { 0,18,0 },{ -1,0,0 },{ -1,0,0 },{ -1,0,0 } }, map2border, 2,
-	{ { &Commandos,{ 8, 5, 0, 0 }, 0 },{ &Commandos,{ 9,5,0,0 } ,2 } }
+	{ { 0,18,0 },{ -1,0,0 },{ -1,0,0 },{ -1,0,0 } }, map2border, 4,
+	{ { &Commandos,{ 9, 7, 0, 0 }, 0 },{ &Commandos,{ 9,5,0,0 } ,2 },{ &Commandos,{ 7,6,0,0 } ,4 },{ &Commandos,{ 11,6,0,0 } ,6 } }
 };
 
 const char map3breite = 10, map3hoehe = 10, map3border = 188;
@@ -139,5 +139,5 @@ unsigned char map3walkdata[map3hoehe*map3breite] = {
 const MapData map3Data = {
 	"fireredtiles.bmp", map3hoehe, map3breite, map3tiledata, map3walkdata,
 	{ { -1,0,0 },{ -1,0,0 },{ 0,0,13 },{ 0,0,-2 } }, map3border, 1,
-	{ { &Diablo,{ 4, 4, 0, 0 }, 0 } }
+	{ { &Diablo,{ 5, 3, 0, 0 }, 0 } }
 };
