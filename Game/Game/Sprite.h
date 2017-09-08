@@ -2,9 +2,18 @@
 #include <queue>
 #include "SpriteData.h"
 
+class SpritePersistanceData {
+public:
+	const SpriteData* sData;
+	unsigned char curMapID;
+	SDL_Rect mapPos;
+	unsigned char curAnim;
+};
+
 class Sprite {
 public:
 	const SpriteData* sData;
+	SpritePersistanceData* pData = NULL;
 	Sprite(const SpriteData* sd, const bool& autoDel);/* {
 		sData = sd;
 		objectInUse = true;

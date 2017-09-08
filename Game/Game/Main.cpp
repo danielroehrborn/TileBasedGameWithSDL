@@ -25,6 +25,7 @@ SDL_Renderer* renderer = NULL;
 SDL_Texture *tilemapTexture;
 Sprite *curSprite = NULL;
 std::vector<Sprite*> vSprites;
+std::vector<SpritePersistanceData*> vPersistantSprites;
 std::vector<Sprite*>::iterator itCurSprite;
 unsigned int resolutionX = 640;
 unsigned int resolutionY = (resolutionX / 4) * 3;
@@ -33,6 +34,7 @@ unsigned char bgTiles[bghoehe*bgbreite] = {};
 unsigned char bgWalk[bghoehe*bgbreite] = {};
 
 void loadMap(unsigned const char& mapID) {
+	static unsigned char lastMapID = mapID;
 	//clear bg map
 	curMap = mapIDs[mapID];
 	for (int i = bghoehe*bgbreite; i--;) {
@@ -121,10 +123,19 @@ void loadMap(unsigned const char& mapID) {
 	tilemapTexture = SDL_CreateTextureFromSurface(renderer, surface);
 	SDL_FreeSurface(surface);
 	//remove sprites except current player sprite
+	SpritePersistanceData* pData;
 	if (vSprites.size() > 0)
 		for (std::vector<Sprite*>::iterator it = vSprites.begin(); it != vSprites.end() - 1; ++it)
-			if (*it != curSprite)
+			if (*it != curSprite) {
+				if ((*it)->pData != NULL) {
+					pData = (*it)->pData;
+					pData->sData = (*it)->sData;
+					pData->curMapID = lastMapID;
+					pData->mapPos = (*it)->mapPos;
+					pData->curAnim = (*it)->animList.front();
+				}
 				delete *it;
+			}
 	vSprites.clear();
 	//load new map sprites
 	Sprite* newSprite = NULL;
@@ -134,6 +145,16 @@ void loadMap(unsigned const char& mapID) {
 		newSprite->pushAnim(curMap->sprites[spriteNum].curAnim);
 		vSprites.push_back(newSprite);
 	}
+	for (std::vector<SpritePersistanceData*>::iterator it = vPersistantSprites.begin(); it != vPersistantSprites.end(); it++) {
+		if ((*it)->curMapID == mapID && (*it) != curSprite->pData) {
+			pData = *it;
+			newSprite = new Sprite(pData->sData, false);
+			newSprite->mapPos = pData->mapPos;
+			newSprite->pushAnim(pData->curAnim);
+			newSprite->pData = pData;
+			vSprites.push_back(newSprite);
+		}
+	}
 	if (curSprite == NULL) {
 		itCurSprite = vSprites.begin();
 		curSprite = *itCurSprite;
@@ -142,6 +163,7 @@ void loadMap(unsigned const char& mapID) {
 		vSprites.push_back(curSprite);
 		itCurSprite = vSprites.begin();
 	}
+	lastMapID = mapID;
 }
 
 int main(int argc, char* args[])
@@ -170,6 +192,12 @@ int main(int argc, char* args[])
 
 	loadMap(0);
 
+	/*SpritePersistanceData* newPSData = new SpritePersistanceData;
+	vPersistantSprites.push_back(newPSData);
+	newPSData->sData = &HyperLightDrifter;
+	newPSData->curAnim = 2;
+	newPSData->curMap = 0;
+	newPSData->mapPos = { 3 * 16,3 * 16,0,0 };*/
 
 
 
@@ -318,6 +346,12 @@ int main(int argc, char* args[])
 			colblue = 135;
 			SDL_SetTextureColorMod(tilemapTexture, colred, colgreen, colblue);
 		}
+		else if (keystates[SDL_SCANCODE_KP_5]) {
+			SpritePersistanceData* newPSData = new SpritePersistanceData;
+			vPersistantSprites.push_back(newPSData);
+			curSprite->pData = newPSData;
+			SDL_Delay(500);
+		}
 		else if (keystates[SDL_SCANCODE_KP_6]) {
 			Sprite* newExplodeBulletRight = new Sprite(&Explosive, true);
 			newExplodeBulletRight->setPos(curSprite->mapPos.x, curSprite->mapPos.y);
@@ -413,10 +447,11 @@ int main(int argc, char* args[])
 					}
 				}
 
-				SDL_RenderCopy(renderer, tilemapTexture, &srcRect, &destRect);
+				/*if (destRect.x > 150) {
+					SDL_SetTextureColorMod(tilemapTexture, 255, 255, 255);
+				}else SDL_SetTextureColorMod(tilemapTexture, 255, 197, 157);*/
 
-				//shadow test
-				//SDL_RenderCopy(renderer, shadowTex, &shadowRec, &destRect);
+				SDL_RenderCopy(renderer, tilemapTexture, &srcRect, &destRect);
 
 				destRect.x += 16;
 			}
