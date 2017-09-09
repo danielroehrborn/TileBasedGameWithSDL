@@ -10,7 +10,7 @@ extern unsigned char map1walkdata[20 * 50];
 
 class MapData {
 public:
-	enum Position{North,South,West,East};
+	enum Position{North,South,West,East,Unknown};
 	class ConnectionData {
 	public:
 		const char mapID;

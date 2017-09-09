@@ -26,7 +26,7 @@ SDL_Texture *tilemapTexture;
 Sprite *curSprite = NULL;
 std::vector<Sprite*> vSprites;
 std::vector<SpritePersistanceData*> vPersistantSprites;
-std::vector<Sprite*>::iterator itCurSprite;
+unsigned char vSprites_curSpriteNum = 0;
 unsigned int resolutionX = 640;
 unsigned int resolutionY = (resolutionX / 4) * 3;
 unsigned const char bghoehe = 100, bgbreite = 100;
@@ -122,10 +122,10 @@ void loadMap(unsigned const char& mapID) {
 	}
 	tilemapTexture = SDL_CreateTextureFromSurface(renderer, surface);
 	SDL_FreeSurface(surface);
-	//remove sprites except current player sprite
+	//delete all sprites except current player sprite
 	SpritePersistanceData* pData;
 	if (vSprites.size() > 0)
-		for (std::vector<Sprite*>::iterator it = vSprites.begin(); it != vSprites.end() - 1; ++it)
+		for (std::vector<Sprite*>::iterator it = vSprites.begin(); it != vSprites.end(); it++)
 			if (*it != curSprite) {
 				if ((*it)->pData != NULL) {
 					pData = (*it)->pData;
@@ -145,6 +145,7 @@ void loadMap(unsigned const char& mapID) {
 		newSprite->pushAnim(curMap->sprites[spriteNum].curAnim);
 		vSprites.push_back(newSprite);
 	}
+	//load persistant sprites
 	for (std::vector<SpritePersistanceData*>::iterator it = vPersistantSprites.begin(); it != vPersistantSprites.end(); it++) {
 		if ((*it)->curMapID == mapID && (*it) != curSprite->pData) {
 			pData = *it;
@@ -155,15 +156,79 @@ void loadMap(unsigned const char& mapID) {
 			vSprites.push_back(newSprite);
 		}
 	}
-	if (curSprite == NULL) {
+	/*if (curSprite == NULL) {
 		itCurSprite = vSprites.begin();
 		curSprite = *itCurSprite;
 	}
 	else {
 		vSprites.push_back(curSprite);
 		itCurSprite = vSprites.begin();
-	}
+	}*/
+	if (curSprite == NULL)
+		curSprite = *vSprites.begin();
+	else
+		vSprites.push_back(curSprite);
 	lastMapID = mapID;
+}
+
+SDL_Rect curGridPos;
+MapData::Position checkMapTransition(const Sprite* s) {
+	curGridPos = s->mapPos;
+	curGridPos.x = (curGridPos.x / 16) - 8;
+	if (curGridPos.x < 0 && curMap->connectionData[MapData::West].mapID != -1) {
+		return MapData::West;
+	}
+	else if (curGridPos.x >= curMap->width && curMap->connectionData[MapData::East].mapID != -1) {
+		return MapData::East;
+	}
+	else {
+		curGridPos.y = (curGridPos.y / 16) - 8;
+		if (curGridPos.y < 0 && curMap->connectionData[MapData::North].mapID != -2) {
+			return MapData::North;
+		}
+		else if (curGridPos.y >= curMap->height && curMap->connectionData[MapData::South].mapID != -1) {
+			return MapData::South;
+		}
+	}
+	return MapData::Unknown;
+}
+
+SpritePersistanceData *pData;
+MapData::Position leaveMapDirection;
+void relocateSprite(Sprite* s) {
+	leaveMapDirection = checkMapTransition(s);
+	if (leaveMapDirection == MapData::Unknown) {
+		return;
+	}
+	else {
+		s->objectInUse = false;
+		if (s->pData != NULL) {
+			pData = s->pData;
+			switch (leaveMapDirection) {
+			case MapData::West:
+				pData->mapPos.y = s->mapPos.y + (8 - curMap->connectionData[MapData::West].yOffset) * 16;
+				pData->mapPos.x = (mapIDs[curMap->connectionData[MapData::West].mapID]->width + 8) * 16 - 1;
+				pData->curMapID = curMap->connectionData[MapData::West].mapID;
+				break;
+			case MapData::East:
+				pData->mapPos.y = s->mapPos.y + (8 - curMap->connectionData[MapData::East].yOffset) * 16;
+				pData->mapPos.x = 16 * 8;
+				pData->curMapID = curMap->connectionData[MapData::East].mapID;
+				break;
+			case MapData::North:
+				pData->mapPos.y = (mapIDs[curMap->connectionData[MapData::North].mapID]->height + 8) * 16 - 1;
+				pData->mapPos.x = s->mapPos.x + (8 - curMap->connectionData[MapData::North].xOffset) * 16;
+				pData->curMapID = curMap->connectionData[MapData::North].mapID;
+				break;
+			case MapData::South:
+				pData->mapPos.y = 16 * 8;
+				pData->mapPos.x = s->mapPos.x + (8 - curMap->connectionData[MapData::South].xOffset) * 16;
+				pData->curMapID = curMap->connectionData[MapData::South].mapID;
+			}
+			pData->curAnim = s->animList.front();
+			pData->sData = s->sData;
+		}
+	}
 }
 
 int main(int argc, char* args[])
@@ -192,54 +257,7 @@ int main(int argc, char* args[])
 
 	loadMap(0);
 
-	/*SpritePersistanceData* newPSData = new SpritePersistanceData;
-	vPersistantSprites.push_back(newPSData);
-	newPSData->sData = &HyperLightDrifter;
-	newPSData->curAnim = 2;
-	newPSData->curMap = 0;
-	newPSData->mapPos = { 3 * 16,3 * 16,0,0 };*/
-
-
-
-	//shadowtile test
-	/*SDL_Surface *surface = SDL_LoadBMP("shadowtile.bmp");
-	if (surface == NULL) {
-		printf("load bmp error: %s\n", SDL_GetError());
-	}
-	SDL_Texture* shadowTex = SDL_CreateTextureFromSurface(renderer, surface);
-	SDL_FreeSurface(surface);
-
-	SDL_Rect shadowRec = { 0,0,16,16 };
-	SDL_SetTextureBlendMode(shadowTex, SDL_BLENDMODE_BLEND);SDL_BlendMode(SDL_BLENDMODE_BLEND);
-	SDL_SetTextureAlphaMod(shadowTex, 50);*/
-	//sprite init - load map part
-	//SDL_Texture* tHiro = Sprite::loadTexture(Hiro.path);
-	//SDL_Texture* tCommando = Sprite::loadTexture(Commandos.path);
-	//SDL_Texture* tDiablo = Sprite::loadTexture(Diablo.path);
-	//SDL_Texture* tHyperLightDrifter = Sprite::loadTexture(HyperLightDrifter.path);
-	//SDL_Texture* tExplosive = Sprite::loadTexture(Explosive.path);
-	//SDL_Texture* tEnt = Sprite::loadTexture(Ent.path);
-	//Sprite* newSprite = new Sprite(tHiro, &Hiro, false);
-	//newSprite->setPos(14 * 16, 16 * 16);
-	//vSprites.push_back(newSprite);
-	//Sprite* pHiro1 = newSprite;
-	//newSprite = new Sprite(tCommando, &Commandos, false);
-	//newSprite->setPos(11 * 16, 13 * 16);
-	//vSprites.push_back(newSprite);
-	//newSprite = new Sprite(tDiablo, &Diablo, false);
-	//newSprite->setPos(15 * 16, 10 * 16);
-	//vSprites.push_back(newSprite);
-	//Sprite* pDiablo1 = newSprite;
-	//newSprite = new Sprite(tHyperLightDrifter, &HyperLightDrifter, false);
-	//newSprite->setPos(12 * 16, 17 * 16);
-	//vSprites.push_back(newSprite);
-	//curSprite = newSprite;
-	//newSprite = new Sprite(tEnt, &Ent, false);
-	//newSprite->setPos(300, 20);
-	//vSprites.push_back(newSprite);
-	//itCurSprite = vSprites.begin();
 	unsigned char colred = 255, colgreen = 255, colblue = 255;
-
 	char i, j;
 	bool quit = 0;
 	SDL_Event e;
@@ -247,7 +265,7 @@ int main(int argc, char* args[])
 	static unsigned char LastPressed[100];
 	static unsigned char KeyPressed[100];
 	char tmpLastDir = 0, animSet = 0;
-	SDL_Rect curGridPos;
+	//SDL_Rect curGridPos;
 	while (!quit)
 	{
 		time = SDL_GetTicks();
@@ -277,6 +295,45 @@ int main(int argc, char* args[])
 				loadMap(curMap->connectionData[MapData::South].mapID);
 			}
 		}
+
+
+		/*for (std::vector<Sprite*>::iterator it = vSprites.begin(); it != vSprites.end(); it++) {
+			if ((*it) != curSprite) {
+				Sprite* its = *it;
+				curGridPos = its->mapPos;
+				curGridPos.x = (curGridPos.x / 16) - 8;
+				if (curGridPos.x < 0 && curMap->connectionData[MapData::West].mapID != -1) {
+					SpritePersistanceData *pData = its->pData;
+					if (pData != NULL) {
+						pData->mapPos.y = its->mapPos.y + (8 - curMap->connectionData[MapData::West].yOffset) * 16;
+						pData->mapPos.x = (curMap->width + 8) * 16 - 1;
+						pData->curAnim = its->animList.front();
+						pData->curMapID = curMap->connectionData[MapData::West].mapID;
+						pData->sData = its->sData;
+					}
+					(*it)->objectInUse = false;
+					//delete *it;
+					//vSprites.erase(it);
+					//it = vSprites.begin();
+					//itCurSprite = it;
+				}
+				else if (curGridPos.x >= curMap->width && curMap->connectionData[MapData::East].mapID != -1) {
+					its->mapPos.x = 16 * 8;
+					its->mapPos.y += (8 - curMap->connectionData[MapData::East].yOffset) * 16;
+				}
+				else {
+					curGridPos.y = (curGridPos.y / 16) - 8;
+					if (curGridPos.y < 0 && curMap->connectionData[MapData::North].mapID != -2) {
+						its->mapPos.x += (8 - curMap->connectionData[MapData::North].xOffset) * 16;
+						curSprite->mapPos.y = (curMap->height + 8) * 16 - 1;
+					}
+					else if (curGridPos.y >= curMap->height && curMap->connectionData[MapData::South].mapID != -1) {
+						its->mapPos.x += (8 - curMap->connectionData[MapData::South].xOffset) * 16;
+						its->mapPos.y = 16 * 8;
+					}
+				}
+			}
+		}*/
 
 
 		while (SDL_PollEvent(&e) != 0)
@@ -358,7 +415,7 @@ int main(int argc, char* args[])
 			vSprites.push_back(newExplodeBulletRight);
 			const char explosivemove[] = { 0,0,1 };
 			newExplodeBulletRight->pushAnim(3, explosivemove);
-			itCurSprite = vSprites.begin();
+			//itCurSprite = vSprites.begin();
 			//curSprite = newExplodeBulletRight;
 			SDL_Delay(50);
 		}
@@ -375,7 +432,7 @@ int main(int argc, char* args[])
 			vSprites.push_back(newHyperLightDrifter);
 			const char hyperlightdriftermove[] = { 7,7,1,1,5,5,3,3,7,7,1,1,5,5,3,3 };
 			newHyperLightDrifter->pushAnim(16, hyperlightdriftermove);
-			itCurSprite = vSprites.begin();
+			//itCurSprite = vSprites.begin();
 
 			//}
 		}
@@ -384,9 +441,8 @@ int main(int argc, char* args[])
 			SDL_Delay(200);
 		}
 		else if (keystates[SDL_SCANCODE_KP_0]) {
-			if (++itCurSprite == vSprites.end())
-				itCurSprite = vSprites.begin();
-			curSprite = *itCurSprite;
+			vSprites_curSpriteNum = ++vSprites_curSpriteNum % vSprites.size();
+			curSprite = vSprites[vSprites_curSpriteNum];
 			SDL_Delay(200);
 		}
 		else if (keystates[SDL_SCANCODE_KP_7]) {
@@ -469,31 +525,38 @@ int main(int argc, char* args[])
 		int ursprungX = bildmitteX - curSprite->mapPos.x;
 		int ursprungY = bildmitteY - curSprite->mapPos.y;
 		SDL_Rect tmp;
+		Sprite* its;
 		for (std::vector<Sprite*>::iterator it = vSprites.begin(); it != vSprites.end();) {
 			if ((*it)->objectInUse) {
-				if ((abs((*it)->mapPos.x - curSprite->mapPos.x) < 250) && (abs((*it)->mapPos.y - curSprite->mapPos.y) < 250)) {
-					const SDL_Rect* srcTmp = &(*it)->getFrameCoord();
-					if ((*it)->objectInUse) {
-						tmp.h = (*it)->mapPos.h;
-						tmp.w = (*it)->mapPos.w;
-						tmp.x = ursprungX + (*it)->mapPos.x;
-						tmp.y = ursprungY + (*it)->mapPos.y;
-
-						tmp.x -= (*it)->mapPos.w / 2;
-						tmp.y -= (*it)->mapPos.h / 2;
-
-						SDL_RenderCopy(renderer, (*it)->spriteTexture, srcTmp, &tmp);
+				its = *it;
+				if ((abs(its->mapPos.x - curSprite->mapPos.x) < 250) && (abs(its->mapPos.y - curSprite->mapPos.y) < 250)) {
+					const SDL_Rect* srcTmp = &its->getFrameCoord();
+					if (its != curSprite) {
+						relocateSprite(its);
+					}
+					if (its->objectInUse) {
+						tmp.h = its->mapPos.h;
+						tmp.w = its->mapPos.w;
+						tmp.x = ursprungX + its->mapPos.x;
+						tmp.y = ursprungY + its->mapPos.y;
+						tmp.x -= its->mapPos.w / 2;
+						tmp.y -= its->mapPos.h / 2;
+						SDL_RenderCopy(renderer, its->spriteTexture, srcTmp, &tmp);
 					}
 				}
 				++it;
 			}
 			else {
-				if (curSprite == (*it)) curSprite = NULL;
+				/*if (curSprite == (*it)) curSprite = NULL;
 				delete *it;
 				it = vSprites.erase(it);
 				if (it == vSprites.end()) it = vSprites.begin();
 				itCurSprite = it;
-				if (curSprite == NULL) curSprite = *itCurSprite;
+				if (curSprite == NULL) curSprite = *itCurSprite;*/
+				if (curSprite == (*it)) curSprite = NULL;
+				delete *it;
+				it = vSprites.erase(it);
+				if (curSprite == NULL) curSprite = *vSprites.begin();
 			}
 		}
 		SDL_RenderPresent(renderer);
