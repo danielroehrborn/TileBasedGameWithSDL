@@ -156,14 +156,6 @@ void loadMap(unsigned const char& mapID) {
 			vSprites.push_back(newSprite);
 		}
 	}
-	/*if (curSprite == NULL) {
-		itCurSprite = vSprites.begin();
-		curSprite = *itCurSprite;
-	}
-	else {
-		vSprites.push_back(curSprite);
-		itCurSprite = vSprites.begin();
-	}*/
 	if (curSprite == NULL)
 		curSprite = *vSprites.begin();
 	else
@@ -230,6 +222,35 @@ void relocateSprite(Sprite* s) {
 		}
 	}
 }
+void relocatePlayer() {
+	leaveMapDirection = checkMapTransition(curSprite);
+	if (leaveMapDirection == MapData::Unknown) {
+		return;
+	}
+	else {
+		switch (leaveMapDirection) {
+		case MapData::West:
+			curSprite->mapPos.y += (8 - curMap->connectionData[MapData::West].yOffset) * 16;
+			loadMap(curMap->connectionData[MapData::West].mapID);
+			curSprite->mapPos.x = (curMap->width + 8) * 16 - 1;
+			break;
+		case MapData::East:
+			curSprite->mapPos.x = 16 * 8;
+			curSprite->mapPos.y += (8 - curMap->connectionData[MapData::East].yOffset) * 16;
+			loadMap(curMap->connectionData[MapData::East].mapID);
+			break;
+		case MapData::North:
+			curSprite->mapPos.x += (8 - curMap->connectionData[MapData::North].xOffset) * 16;
+			loadMap(curMap->connectionData[MapData::North].mapID);
+			curSprite->mapPos.y = (curMap->height + 8) * 16 - 1;
+			break;
+		case MapData::South:
+			curSprite->mapPos.x += (8 - curMap->connectionData[MapData::South].xOffset) * 16;
+			curSprite->mapPos.y = 16 * 8;
+			loadMap(curMap->connectionData[MapData::South].mapID);
+		}
+	}
+}
 
 int main(int argc, char* args[])
 {
@@ -270,7 +291,9 @@ int main(int argc, char* args[])
 	{
 		time = SDL_GetTicks();
 
-		curGridPos = curSprite->mapPos;
+
+		relocatePlayer();
+		/*curGridPos = curSprite->mapPos;
 		curGridPos.x = (curGridPos.x / 16) - 8;
 		if (curGridPos.x < 0 && curMap->connectionData[MapData::West].mapID != -1) {
 			curSprite->mapPos.y += (8 - curMap->connectionData[MapData::West].yOffset) * 16;
@@ -294,47 +317,7 @@ int main(int argc, char* args[])
 				curSprite->mapPos.y = 16 * 8;
 				loadMap(curMap->connectionData[MapData::South].mapID);
 			}
-		}
-
-
-		/*for (std::vector<Sprite*>::iterator it = vSprites.begin(); it != vSprites.end(); it++) {
-			if ((*it) != curSprite) {
-				Sprite* its = *it;
-				curGridPos = its->mapPos;
-				curGridPos.x = (curGridPos.x / 16) - 8;
-				if (curGridPos.x < 0 && curMap->connectionData[MapData::West].mapID != -1) {
-					SpritePersistanceData *pData = its->pData;
-					if (pData != NULL) {
-						pData->mapPos.y = its->mapPos.y + (8 - curMap->connectionData[MapData::West].yOffset) * 16;
-						pData->mapPos.x = (curMap->width + 8) * 16 - 1;
-						pData->curAnim = its->animList.front();
-						pData->curMapID = curMap->connectionData[MapData::West].mapID;
-						pData->sData = its->sData;
-					}
-					(*it)->objectInUse = false;
-					//delete *it;
-					//vSprites.erase(it);
-					//it = vSprites.begin();
-					//itCurSprite = it;
-				}
-				else if (curGridPos.x >= curMap->width && curMap->connectionData[MapData::East].mapID != -1) {
-					its->mapPos.x = 16 * 8;
-					its->mapPos.y += (8 - curMap->connectionData[MapData::East].yOffset) * 16;
-				}
-				else {
-					curGridPos.y = (curGridPos.y / 16) - 8;
-					if (curGridPos.y < 0 && curMap->connectionData[MapData::North].mapID != -2) {
-						its->mapPos.x += (8 - curMap->connectionData[MapData::North].xOffset) * 16;
-						curSprite->mapPos.y = (curMap->height + 8) * 16 - 1;
-					}
-					else if (curGridPos.y >= curMap->height && curMap->connectionData[MapData::South].mapID != -1) {
-						its->mapPos.x += (8 - curMap->connectionData[MapData::South].xOffset) * 16;
-						its->mapPos.y = 16 * 8;
-					}
-				}
-			}
 		}*/
-
 
 		while (SDL_PollEvent(&e) != 0)
 		{
