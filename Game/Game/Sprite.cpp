@@ -10,28 +10,27 @@ extern unsigned const char bghoehe = 100, bgbreite = 100;
 //extern unsigned char bgTiles[bghoehe*bgbreite];
 extern unsigned char bgWalk[bghoehe*bgbreite];
 
+SDL_Rect collision;
+SDL_Rect object;
+int bildmitteX, bildmitteY, ursprungX, ursprungY;
 bool checkCollision(const SDL_Rect& pos) {
 	for (int i = pos.y; i < pos.y + pos.h / 2; i++) {
 		for (int j = pos.x - pos.w / 3; j < pos.x + (pos.w / 3); j++) {
-			//if ((j / 16) < map1breite && (i / 16) < map1hoehe && (map1walkdata[i / 16][j / 16] >> 5) == 7) {
-			//if ((j / 16) < map1breite && (i / 16) < map1hoehe && (map1walkdata[(i / 16)*map1breite+(j / 16)] >> 5) == 7) {
 			if ((j / 16) < bgbreite && (i / 16) < bghoehe && (bgWalk[(i / 16)*bgbreite + (j / 16)] >> 5) == 7) {
 
-				int bildmitteX = (resolutionX / 2);
-				int bildmitteY = (resolutionY / 2);
-				int ursprungX = bildmitteX - curSprite->mapPos.x;
-				int ursprungY = bildmitteY - curSprite->mapPos.y;
+				bildmitteX = (resolutionX / 2);
+				bildmitteY = (resolutionY / 2);
+				ursprungX = bildmitteX - curSprite->mapPos.x;
+				ursprungY = bildmitteY - curSprite->mapPos.y;
 
 				SDL_SetRenderDrawColor(renderer, 255, 255, 255, 80);
 				SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
-				SDL_Rect collision;
 				collision.x = ursprungX + pos.x - pos.w / 3;
 				collision.y = ursprungY + pos.y;
 				collision.h = pos.h / 2;
 				collision.w = (pos.w / 3) * 2;
 				SDL_RenderDrawRect(renderer, &collision);
 
-				SDL_Rect object;
 				object.x = ursprungX + (j / 16) * 16;
 				object.y = ursprungY + (i / 16) * 16;
 				object.h = 16;
@@ -47,29 +46,37 @@ bool checkCollision(const SDL_Rect& pos) {
 	return false;
 }
 
+extern std::vector<SDL_Rect*> vWarps;
+SDL_Rect newPos, newGridPos;
 const SDL_Rect& Sprite::getFrameCoord() {
 	if (animList.empty()) printf("AnimList empty\n");
 	if (animList.size() == 0) printf("AnimList size 0\n");
-	++frameCnt %= sData->animData[animList.front()]->list[curAnimFrameNum].displayDuration;
-	if (frameCnt == 0) {
+	++frameDurCnt %= sData->animData[animList.front()]->frames[curAnimFrameNum].displayDuration;
+	if (frameDurCnt == 0) {
 		++curAnimFrameNum %= sData->animData[animList.front()]->numFrames;
 		if (curAnimFrameNum == 0 && animList.size() > 1) {
 			animList.pop();
-			mapPos.h = sData->animData[animList.front()]->list[curAnimFrameNum].frame.h;
-			mapPos.w = sData->animData[animList.front()]->list[curAnimFrameNum].frame.w;
+			mapPos.h = sData->animData[animList.front()]->frames[curAnimFrameNum].imgPos.h;
+			mapPos.w = sData->animData[animList.front()]->frames[curAnimFrameNum].imgPos.w;
 		}
 		else if (autoDelete && curAnimFrameNum == 0 && animList.size() == 1) objectInUse = false;
 	}
-	SDL_Rect newPos;
-	newPos.x = mapPos.x + sData->animData[animList.front()]->list[curAnimFrameNum].moveFrame.moveXPixel;
-	newPos.y = mapPos.y + sData->animData[animList.front()]->list[curAnimFrameNum].moveFrame.moveYPixel;
+	newPos.x = mapPos.x + sData->animData[animList.front()]->frames[curAnimFrameNum].move.moveXPixel;
+	newPos.y = mapPos.y + sData->animData[animList.front()]->frames[curAnimFrameNum].move.moveYPixel;
 	newPos.h = mapPos.h;
 	newPos.w = mapPos.w;
-	if (!checkCollision(newPos)) {
+	if ((newPos.x != mapPos.x || newPos.y != mapPos.y) && !checkCollision(newPos)) {
 		mapPos.x = newPos.x;
 		mapPos.y = newPos.y;
+		newGridPos.x = (newPos.x / 16) - 8;
+		newGridPos.y = (newPos.y / 16) - 8;
+		if (newGridPos.x != gridPos.x || newGridPos.y != gridPos.y) {
+			gridPos.x = newGridPos.x;
+			gridPos.y = newGridPos.y;
+			//checkForCollision();
+		}
 	}
-	return sData->animData[animList.front()]->list[curAnimFrameNum].frame;
+	return sData->animData[animList.front()]->frames[curAnimFrameNum].imgPos;
 }
 
 SDL_Texture* Sprite::loadTexture(const char* path) {
@@ -83,12 +90,12 @@ SDL_Texture* Sprite::loadTexture(const char* path) {
 }
 
 SDL_Texture* Sprite::textures[6];
-
+//SDL_Rect tmpZero = { 0,0,0,0 };
 Sprite::Sprite(const SpriteData* sd, const bool& autoDel) {
 	sData = sd;
 	objectInUse = true;
 	autoDelete = autoDel;
-	frameCnt = 0;
+	frameDurCnt = 0;
 	curAnimFrameNum = 0;
 	pushAnim(0);
 	if (textures[sData->globalSpriteID] == NULL)
@@ -99,12 +106,12 @@ Sprite::Sprite(const SpriteData* sd, const bool& autoDel) {
 void Sprite::pushAnim(const char& index) {
 	if (animList.size() == 1) {
 		animList.pop();
-		frameCnt = 0;
+		frameDurCnt = 0;
 		curAnimFrameNum = 0;
 	}
 	animList.push(index);
-	mapPos.h = sData->animData[animList.front()]->list[curAnimFrameNum].frame.h;
-	mapPos.w = sData->animData[animList.front()]->list[curAnimFrameNum].frame.w;
+	mapPos.h = sData->animData[animList.front()]->frames[curAnimFrameNum].imgPos.h;
+	mapPos.w = sData->animData[animList.front()]->frames[curAnimFrameNum].imgPos.w;
 }
 
 void Sprite::pushAnim(const char& num, const char* data) {
@@ -116,6 +123,8 @@ void Sprite::pushAnim(const char& num, const char* data) {
 void Sprite::setPos(const int& x, const int&y) {
 	mapPos.x = x;
 	mapPos.y = y;
+	gridPos.x = (x / 16) - 8;
+	gridPos.y = (y / 16) - 8;
 }
 
 const SDL_Rect& Sprite::getSpriteMapCoord() {

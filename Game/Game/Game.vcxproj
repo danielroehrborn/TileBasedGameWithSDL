@@ -117,14 +117,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CollisionObject.cpp" />
+    <ClCompile Include="Event.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Map1.cpp" />
     <ClCompile Include="Sprite.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CollisionObject.h" />
     <ClInclude Include="Commandos.h" />
     <ClInclude Include="Diablo.h" />
     <ClInclude Include="Ent.h" />
+    <ClInclude Include="Event.h" />
     <ClInclude Include="Explosive.h" />
     <ClInclude Include="HyperLightDrifter.h" />
     <ClInclude Include="Map.h" />

@@ -30,6 +30,12 @@
     <ClCompile Include="Sprite.cpp">
       <Filter>Quelldateien\Sprites</Filter>
     </ClCompile>
+    <ClCompile Include="CollisionObject.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Event.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Hiro.h">
@@ -58,6 +64,12 @@
     </ClInclude>
     <ClInclude Include="SpriteData.h">
       <Filter>Quelldateien\Sprites</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionObject.h">
+      <Filter>Quelldateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Event.h">
+      <Filter>Quelldateien</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

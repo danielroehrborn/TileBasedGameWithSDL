@@ -58,9 +58,10 @@ public:
 	}*/
 	~Sprite() {};
 	SDL_Rect mapPos;
+	SDL_Rect gridPos;
 	bool objectInUse;
 	char curAnimFrameNum;
-	char frameCnt;
+	char frameDurCnt;
 	bool autoDelete;
 	std::queue<char> animList;
 	static SDL_Texture* textures[6];

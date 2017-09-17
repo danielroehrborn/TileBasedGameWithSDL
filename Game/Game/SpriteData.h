@@ -8,14 +8,14 @@ public:
 	};
 	class AnimAndTiming {
 	public:
-		const SDL_Rect frame;
-		const AnimMovement moveFrame;
+		const SDL_Rect imgPos;
+		const AnimMovement move;
 		const char displayDuration;
 	};
 	class AnimAndTimingList {
 	public:
 		const char numFrames;
-		const AnimAndTiming list[];
+		const AnimAndTiming frames[];
 	};
 	const unsigned char globalSpriteID;
 	const char* path;

@@ -12,6 +12,7 @@
 #include "HyperLightDrifter.h"
 #include "Explosive.h"
 #include "Ent.h"
+#include "Event.h"
 
 const MapData* const mapIDs[] = {
 	&map1Data,	//ID: 0
@@ -254,6 +255,10 @@ void relocatePlayer() {
 
 int main(int argc, char* args[])
 {
+	//SDL_Rect w1Pos = { 15,15,0,0 };
+	//SDL_Rect w1TPos = { 10,10,0,0 };
+	//Warp w1(w1Pos,0,w1TPos);
+
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
 		printf("SDL could not initialize! SDL Error: %s\n", SDL_GetError()); return -1;
 	}
@@ -286,38 +291,11 @@ int main(int argc, char* args[])
 	static unsigned char LastPressed[100];
 	static unsigned char KeyPressed[100];
 	char tmpLastDir = 0, animSet = 0;
-	//SDL_Rect curGridPos;
 	while (!quit)
 	{
 		time = SDL_GetTicks();
 
-
 		relocatePlayer();
-		/*curGridPos = curSprite->mapPos;
-		curGridPos.x = (curGridPos.x / 16) - 8;
-		if (curGridPos.x < 0 && curMap->connectionData[MapData::West].mapID != -1) {
-			curSprite->mapPos.y += (8 - curMap->connectionData[MapData::West].yOffset) * 16;
-			loadMap(curMap->connectionData[MapData::West].mapID);
-			curSprite->mapPos.x = (curMap->width + 8) * 16 - 1;
-		}
-		else if (curGridPos.x >= curMap->width && curMap->connectionData[MapData::East].mapID != -1) {
-			curSprite->mapPos.x = 16 * 8;
-			curSprite->mapPos.y += (8 - curMap->connectionData[MapData::East].yOffset) * 16;
-			loadMap(curMap->connectionData[MapData::East].mapID);
-		}
-		else {
-			curGridPos.y = (curGridPos.y / 16) - 8;
-			if (curGridPos.y < 0 && curMap->connectionData[MapData::North].mapID != -2) {
-				curSprite->mapPos.x += (8 - curMap->connectionData[MapData::North].xOffset) * 16;
-				loadMap(curMap->connectionData[MapData::North].mapID);
-				curSprite->mapPos.y = (curMap->height + 8) * 16 - 1;
-			}
-			else if (curGridPos.y >= curMap->height && curMap->connectionData[MapData::South].mapID != -1) {
-				curSprite->mapPos.x += (8 - curMap->connectionData[MapData::South].xOffset) * 16;
-				curSprite->mapPos.y = 16 * 8;
-				loadMap(curMap->connectionData[MapData::South].mapID);
-			}
-		}*/
 
 		while (SDL_PollEvent(&e) != 0)
 		{
@@ -398,26 +376,23 @@ int main(int argc, char* args[])
 			vSprites.push_back(newExplodeBulletRight);
 			const char explosivemove[] = { 0,0,1 };
 			newExplodeBulletRight->pushAnim(3, explosivemove);
-			//itCurSprite = vSprites.begin();
 			//curSprite = newExplodeBulletRight;
 			SDL_Delay(50);
 		}
 		else if (keystates[SDL_SCANCODE_KP_2]) {
-			/*if (LastPressed[SDL_SCANCODE_KP_2] == 0)
+			if (LastPressed[SDL_SCANCODE_KP_2] == 0)
 				KeyPressed[SDL_SCANCODE_KP_2] = 1;
 			else
 				KeyPressed[SDL_SCANCODE_KP_2] = 0;
 			LastPressed[SDL_SCANCODE_KP_2] = 1;
 
-			if (KeyPressed[SDL_SCANCODE_KP_2]) {*/
-			Sprite* newHyperLightDrifter = new Sprite(&HyperLightDrifter, true);
-			newHyperLightDrifter->setPos(100, 100);
-			vSprites.push_back(newHyperLightDrifter);
-			const char hyperlightdriftermove[] = { 7,7,1,1,5,5,3,3,7,7,1,1,5,5,3,3 };
-			newHyperLightDrifter->pushAnim(16, hyperlightdriftermove);
-			//itCurSprite = vSprites.begin();
-
-			//}
+			if (KeyPressed[SDL_SCANCODE_KP_2]) {
+				Sprite* newHyperLightDrifter = new Sprite(&HyperLightDrifter, true);
+				newHyperLightDrifter->setPos((10 + 8) * 16, (10 + 8) * 16);
+				vSprites.push_back(newHyperLightDrifter);
+				const char hyperlightdriftermove[] = { 7,7,1,1,5,5,3,3,7,7,1,1,5,5,3,3 };
+				newHyperLightDrifter->pushAnim(16, hyperlightdriftermove);
+			}
 		}
 		else if (keystates[SDL_SCANCODE_KP_3]) {
 			curSprite->pushAnim((curSprite->animList.front() + 1) % curSprite->sData->numAnimations);
