@@ -25,23 +25,31 @@ private:
 	static std::vector<Event*> vEvents;
 };
 
+extern void WarpSprite(Sprite* s, unsigned char destMapID, unsigned char destX, unsigned char destY);
 class WarpEvent :public Event {
 public:
+	WarpEvent(unsigned char x, unsigned char y, unsigned char w, unsigned char h,
+		unsigned char destMapID, unsigned char destX, unsigned char destY) :Event(x, y, w, h) {
+		this->destMapID = destMapID;
+		destPos = { destX,destY,0,0 };
+	}
+	WarpEvent(Sprite* s, unsigned char destMapID, unsigned char destX, unsigned char destY) :Event(s) {
+		this->destMapID = destMapID;
+		destPos = { destX,destY,0,0 };
+	}
 	void handleCollision(Sprite* s) {
-		//if s!=representationSprite: warpSprite(s)
+		printf("WarpEvent collision: Map%d, x%d, y%d\n", destMapID, destPos.x, destPos.y);
+		WarpSprite(s, destMapID, destPos.x, destPos.y);
 	}
 private:
-	void warpSprite(Sprite* s) {
-		//relocate s nach dest
-	}
 	unsigned char destMapID;
-	SDL_Rect* destPos;
+	SDL_Rect destPos;
 };
 
 class ChangeAnimEvent :public Event {
 public:
 	void handleCollision(Sprite* s) {
-		//if s!=representationSprite && representationSprite!=NULL: 
+		//if representationSprite!=NULL: 
 		//representationSprite add anims
 	}
 private:

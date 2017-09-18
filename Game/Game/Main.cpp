@@ -162,6 +162,10 @@ void loadMap(unsigned const char& mapID) {
 	else
 		vSprites.push_back(curSprite);
 	lastMapID = mapID;
+
+	Event::clearEventList();
+	//new WarpEvent(*vSprites.begin(), 0, 0, 0);
+	new WarpEvent(10, 10, 0, 0, 1, 5, 5);
 }
 
 SDL_Rect curGridPos;
@@ -202,21 +206,25 @@ void relocateSprite(Sprite* s) {
 				pData->mapPos.y = s->mapPos.y + (8 - curMap->connectionData[MapData::West].yOffset) * 16;
 				pData->mapPos.x = (mapIDs[curMap->connectionData[MapData::West].mapID]->width + 8) * 16 - 1;
 				pData->curMapID = curMap->connectionData[MapData::West].mapID;
+				//if(s==curSprite)loadMap(curMap->connectionData[MapData::West].mapID);
 				break;
 			case MapData::East:
 				pData->mapPos.y = s->mapPos.y + (8 - curMap->connectionData[MapData::East].yOffset) * 16;
 				pData->mapPos.x = 16 * 8;
 				pData->curMapID = curMap->connectionData[MapData::East].mapID;
+				//if (s == curSprite)loadMap(curMap->connectionData[MapData::East].mapID);
 				break;
 			case MapData::North:
 				pData->mapPos.y = (mapIDs[curMap->connectionData[MapData::North].mapID]->height + 8) * 16 - 1;
 				pData->mapPos.x = s->mapPos.x + (8 - curMap->connectionData[MapData::North].xOffset) * 16;
 				pData->curMapID = curMap->connectionData[MapData::North].mapID;
+				//if (s == curSprite)loadMap(curMap->connectionData[MapData::North].mapID);
 				break;
 			case MapData::South:
 				pData->mapPos.y = 16 * 8;
 				pData->mapPos.x = s->mapPos.x + (8 - curMap->connectionData[MapData::South].xOffset) * 16;
 				pData->curMapID = curMap->connectionData[MapData::South].mapID;
+				//if (s == curSprite)loadMap(curMap->connectionData[MapData::South].mapID);
 			}
 			pData->curAnim = s->animList.front();
 			pData->sData = s->sData;
@@ -250,6 +258,17 @@ void relocatePlayer() {
 			curSprite->mapPos.y = 16 * 8;
 			loadMap(curMap->connectionData[MapData::South].mapID);
 		}
+	}
+}
+void WarpSprite(Sprite* s, unsigned char destMapID, unsigned char destX, unsigned char destY) {
+	s->objectInUse = false;
+	if (s->pData != NULL) {
+		pData = s->pData;
+		pData->mapPos.y = (8 + destY) * 16;
+		pData->mapPos.x = (8 + destX) * 16;
+		pData->curMapID = destMapID;
+		pData->curAnim = s->animList.front();
+		pData->sData = s->sData;
 	}
 }
 
@@ -505,12 +524,6 @@ int main(int argc, char* args[])
 				++it;
 			}
 			else {
-				/*if (curSprite == (*it)) curSprite = NULL;
-				delete *it;
-				it = vSprites.erase(it);
-				if (it == vSprites.end()) it = vSprites.begin();
-				itCurSprite = it;
-				if (curSprite == NULL) curSprite = *itCurSprite;*/
 				if (curSprite == (*it)) curSprite = NULL;
 				delete *it;
 				it = vSprites.erase(it);

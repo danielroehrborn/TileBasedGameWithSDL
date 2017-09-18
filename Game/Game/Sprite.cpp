@@ -2,6 +2,7 @@
 #include <SDL_image.h>
 #include "Sprite.h"
 #include "Map.h"
+#include "Event.h"
 extern unsigned int resolutionX, resolutionY;
 extern Sprite *curSprite;
 extern SDL_Renderer* renderer;
@@ -73,6 +74,7 @@ const SDL_Rect& Sprite::getFrameCoord() {
 		if (newGridPos.x != gridPos.x || newGridPos.y != gridPos.y) {
 			gridPos.x = newGridPos.x;
 			gridPos.y = newGridPos.y;
+			Event::checkCollision(this);
 			//checkForCollision();
 		}
 	}
