@@ -16,3 +16,13 @@ const SpriteData Hiro = {
 	0,"HiroSprites.png",13,{ &HiroLookDown, &HiroWalkDown, &HiroLookUp, &HiroWalkUp, &HiroLookLeft,
 	&HiroWalkLeft, &HiroLookRight, &HiroWalkRight, &HiroRunDown, &HiroRunUp, &HiroRunLeft, &HiroRunRight, &HiroAngelDown }
 };
+
+const SpriteData::AnimAndTimingList SpectatorDown = { 1,{ { { 2,0,8,12 },{ 0,3 },4 } } };
+const SpriteData::AnimAndTimingList SpectatorUp = { 1,{ { { 2,0,8,12 },{ 0,-3 },4 } } };
+const SpriteData::AnimAndTimingList SpectatorLeft = { 1,{ { { 2,0,8,12 },{ -3,0 },4 } } };
+const SpriteData::AnimAndTimingList SpectatorRight = { 1,{ { { 2,0,8,12 },{ 3,0 },4 } } };
+const SpriteData::AnimAndTimingList SpectatorStand = { 1,{ { { 2,0,8,12 },{ 0,0 },4 } } };
+const SpriteData Spectator = {
+	6,"minipx.png",8,{ &SpectatorStand, &SpectatorDown, &SpectatorStand, &SpectatorUp, &SpectatorStand,
+	&SpectatorLeft, &SpectatorStand, &SpectatorRight }
+};

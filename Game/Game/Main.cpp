@@ -34,6 +34,7 @@ unsigned const char bghoehe = 100, bgbreite = 100;
 unsigned char bgTiles[bghoehe*bgbreite] = {};
 unsigned char bgWalk[bghoehe*bgbreite] = {};
 
+Sprite* newSprite = NULL;
 void loadMap(unsigned const char& mapID) {
 	static unsigned char lastMapID = mapID;
 	//clear bg map
@@ -124,22 +125,23 @@ void loadMap(unsigned const char& mapID) {
 	tilemapTexture = SDL_CreateTextureFromSurface(renderer, surface);
 	SDL_FreeSurface(surface);
 	//delete all sprites except current player sprite
-	SpritePersistanceData* pData;
+	SpritePersistanceData* pData, *curSpritePData = curSprite != NULL ? curSprite->pData : NULL;
 	if (vSprites.size() > 0)
-		for (std::vector<Sprite*>::iterator it = vSprites.begin(); it != vSprites.end(); it++)
-			if (*it != curSprite) {
-				if ((*it)->pData != NULL) {
-					pData = (*it)->pData;
-					pData->sData = (*it)->sData;
-					pData->curMapID = lastMapID;
-					pData->mapPos = (*it)->mapPos;
-					pData->curAnim = (*it)->animList.front();
-				}
-				delete *it;
+		for (std::vector<Sprite*>::iterator it = vSprites.begin(); it != vSprites.end(); it++) {
+			//if (*it != curSprite) { //new
+			if ((*it)->pData != NULL && (*it)->pData->curMapID == lastMapID) {
+				pData = (*it)->pData;
+				pData->sData = (*it)->sData;
+				pData->curMapID = lastMapID;
+				pData->mapPos = (*it)->mapPos;
+				pData->curAnim = (*it)->animList.front();
 			}
+			delete *it;
+			//}
+		}
 	vSprites.clear();
+	curSprite = NULL;//new
 	//load new map sprites
-	Sprite* newSprite = NULL;
 	for (unsigned char spriteNum = 0; spriteNum < curMap->numSprites; ++spriteNum) {
 		newSprite = new Sprite(curMap->sprites[spriteNum].sprite, false);
 		newSprite->setPos((curMap->sprites[spriteNum].mapPos.x + 8) * 16, (curMap->sprites[spriteNum].mapPos.y + 8) * 16);
@@ -148,19 +150,20 @@ void loadMap(unsigned const char& mapID) {
 	}
 	//load persistant sprites
 	for (std::vector<SpritePersistanceData*>::iterator it = vPersistantSprites.begin(); it != vPersistantSprites.end(); it++) {
-		if ((*it)->curMapID == mapID && (*it) != curSprite->pData) {
+		if ((*it)->curMapID == mapID) {//&& (*it) != curSprite->pData) { //new
 			pData = *it;
 			newSprite = new Sprite(pData->sData, false);
 			newSprite->mapPos = pData->mapPos;
 			newSprite->pushAnim(pData->curAnim);
 			newSprite->pData = pData;
 			vSprites.push_back(newSprite);
+			if (curSpritePData == pData) curSprite = newSprite; //new
 		}
 	}
 	if (curSprite == NULL)
 		curSprite = *vSprites.begin();
-	else
-		vSprites.push_back(curSprite);
+	//else
+		//vSprites.push_back(curSprite);//new
 	lastMapID = mapID;
 
 	Event::clearEventList();
@@ -192,44 +195,45 @@ MapData::Position checkMapTransition(const Sprite* s) {
 
 SpritePersistanceData *pData;
 MapData::Position leaveMapDirection;
-void relocateSprite(Sprite* s) {
+bool relocateSprite(Sprite* s) {
 	leaveMapDirection = checkMapTransition(s);
 	if (leaveMapDirection == MapData::Unknown) {
-		return;
+		return false;
 	}
 	else {
 		s->objectInUse = false;
 		if (s->pData != NULL) {
 			pData = s->pData;
+			pData->curAnim = s->animList.front();
+			pData->sData = s->sData;
 			switch (leaveMapDirection) {
 			case MapData::West:
 				pData->mapPos.y = s->mapPos.y + (8 - curMap->connectionData[MapData::West].yOffset) * 16;
 				pData->mapPos.x = (mapIDs[curMap->connectionData[MapData::West].mapID]->width + 8) * 16 - 1;
 				pData->curMapID = curMap->connectionData[MapData::West].mapID;
-				//if(s==curSprite)loadMap(curMap->connectionData[MapData::West].mapID);
+				if (s == curSprite) { loadMap(curMap->connectionData[MapData::West].mapID); return true; }
 				break;
 			case MapData::East:
 				pData->mapPos.y = s->mapPos.y + (8 - curMap->connectionData[MapData::East].yOffset) * 16;
 				pData->mapPos.x = 16 * 8;
 				pData->curMapID = curMap->connectionData[MapData::East].mapID;
-				//if (s == curSprite)loadMap(curMap->connectionData[MapData::East].mapID);
+				if (s == curSprite) { loadMap(curMap->connectionData[MapData::East].mapID); return true; }
 				break;
 			case MapData::North:
 				pData->mapPos.y = (mapIDs[curMap->connectionData[MapData::North].mapID]->height + 8) * 16 - 1;
 				pData->mapPos.x = s->mapPos.x + (8 - curMap->connectionData[MapData::North].xOffset) * 16;
 				pData->curMapID = curMap->connectionData[MapData::North].mapID;
-				//if (s == curSprite)loadMap(curMap->connectionData[MapData::North].mapID);
+				if (s == curSprite) { loadMap(curMap->connectionData[MapData::North].mapID); return true; }
 				break;
 			case MapData::South:
 				pData->mapPos.y = 16 * 8;
 				pData->mapPos.x = s->mapPos.x + (8 - curMap->connectionData[MapData::South].xOffset) * 16;
 				pData->curMapID = curMap->connectionData[MapData::South].mapID;
-				//if (s == curSprite)loadMap(curMap->connectionData[MapData::South].mapID);
+				if (s == curSprite) { loadMap(curMap->connectionData[MapData::South].mapID); return true; }
 			}
-			pData->curAnim = s->animList.front();
-			pData->sData = s->sData;
 		}
 	}
+	return false;
 }
 void relocatePlayer() {
 	leaveMapDirection = checkMapTransition(curSprite);
@@ -274,10 +278,6 @@ void WarpSprite(Sprite* s, unsigned char destMapID, unsigned char destX, unsigne
 
 int main(int argc, char* args[])
 {
-	//SDL_Rect w1Pos = { 15,15,0,0 };
-	//SDL_Rect w1TPos = { 10,10,0,0 };
-	//Warp w1(w1Pos,0,w1TPos);
-
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
 		printf("SDL could not initialize! SDL Error: %s\n", SDL_GetError()); return -1;
 	}
@@ -314,7 +314,7 @@ int main(int argc, char* args[])
 	{
 		time = SDL_GetTicks();
 
-		relocatePlayer();
+		//relocatePlayer();
 
 		while (SDL_PollEvent(&e) != 0)
 		{
@@ -508,9 +508,9 @@ int main(int argc, char* args[])
 				its = *it;
 				if ((abs(its->mapPos.x - curSprite->mapPos.x) < 250) && (abs(its->mapPos.y - curSprite->mapPos.y) < 250)) {
 					const SDL_Rect* srcTmp = &its->getFrameCoord();
-					if (its != curSprite) {
-						relocateSprite(its);
-					}
+					//if (its != curSprite) { //new
+					if (relocateSprite(its)) break;
+					//}
 					if (its->objectInUse) {
 						tmp.h = its->mapPos.h;
 						tmp.w = its->mapPos.w;
@@ -524,6 +524,12 @@ int main(int argc, char* args[])
 				++it;
 			}
 			else {
+				if (vSprites.size() == 1) {
+					newSprite = new Sprite(curMap->sprites[0].sprite, false);
+					newSprite->setPos((curMap->sprites[0].mapPos.x + 8) * 16, (curMap->sprites[0].mapPos.y + 8) * 16);
+					newSprite->pushAnim(curMap->sprites[0].curAnim);
+					vSprites.push_back(newSprite);
+				}
 				if (curSprite == (*it)) curSprite = NULL;
 				delete *it;
 				it = vSprites.erase(it);
