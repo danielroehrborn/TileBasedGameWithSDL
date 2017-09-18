@@ -273,6 +273,7 @@ void WarpSprite(Sprite* s, unsigned char destMapID, unsigned char destX, unsigne
 		pData->curMapID = destMapID;
 		pData->curAnim = s->animList.front();
 		pData->sData = s->sData;
+		if (s == curSprite) loadMap(destMapID);
 	}
 }
 
@@ -313,6 +314,8 @@ int main(int argc, char* args[])
 	while (!quit)
 	{
 		time = SDL_GetTicks();
+
+		ActiveEvent::RunNextEvent();
 
 		//relocatePlayer();
 
@@ -509,6 +512,7 @@ int main(int argc, char* args[])
 				if ((abs(its->mapPos.x - curSprite->mapPos.x) < 250) && (abs(its->mapPos.y - curSprite->mapPos.y) < 250)) {
 					const SDL_Rect* srcTmp = &its->getFrameCoord();
 					//if (its != curSprite) { //new
+
 					if (relocateSprite(its)) break;
 					//}
 					if (its->objectInUse) {

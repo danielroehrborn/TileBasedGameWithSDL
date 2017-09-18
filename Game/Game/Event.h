@@ -25,6 +25,34 @@ private:
 	static std::vector<Event*> vEvents;
 };
 
+class ActiveEvent {
+public:
+	ActiveEvent(Event* ev, Sprite* s, unsigned char wBefore, unsigned char wAft) {
+		e = ev;
+		param = s;
+		waitBefore = wBefore;
+		waitAfter = wAft;
+		vEventActivationQueue.push(*this);
+	}
+	Event* e;
+	char waitBefore, waitAfter;
+	Sprite* param;
+
+	static std::queue<ActiveEvent> vEventActivationQueue;
+	static void RunNextEvent() {
+		if (vEventActivationQueue.size() == 0) return;
+		ActiveEvent* curActEv = &vEventActivationQueue.front();
+		if (curActEv->waitBefore) --curActEv->waitBefore;
+		else if (curActEv->e != NULL) {
+			curActEv->e->handleCollision(curActEv->param);
+			curActEv->e = NULL;
+		}
+		else if (curActEv->waitAfter) --curActEv->waitAfter;
+		else vEventActivationQueue.pop();
+	}
+};
+
+
 extern void WarpSprite(Sprite* s, unsigned char destMapID, unsigned char destX, unsigned char destY);
 class WarpEvent :public Event {
 public:
@@ -44,6 +72,10 @@ public:
 private:
 	unsigned char destMapID;
 	SDL_Rect destPos;
+};
+
+class ChangeMapEvent :public Event {
+
 };
 
 class ChangeAnimEvent :public Event {
