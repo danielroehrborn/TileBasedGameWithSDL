@@ -1,7 +1,7 @@
 #pragma once
 #include <SDL.h>
 #include "Sprite.h"
-
+unsigned char bgTiles[];
 class Event {
 public:
 	Event(char x, char y, unsigned char w, unsigned char h) {
@@ -9,11 +9,13 @@ public:
 		gridPos = &uniquePos;
 		immuneSprite = NULL;
 		vEvents.push_back(this);
+		bgTiles[gridPos->x + 8 + (gridPos->y + 8) * 100] = 0;
 	}
 	Event(Sprite* s) {
 		gridPos = &s->gridPos;
 		immuneSprite = s;
 		vEvents.push_back(this);
+		bgTiles[gridPos->x + 8 + (gridPos->y + 8) * 100] = 0;
 	}
 	virtual void handleCollision(Sprite* s) = 0;
 	static void checkCollision(Sprite* s);

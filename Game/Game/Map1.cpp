@@ -17,7 +17,7 @@ unsigned char map1tiledata[map1hoehe*map1breite] = {
 	 7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,88,89,90,91,92,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,7,
 	 7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,5,96,97,98,99,100,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,7,
 	 7,1,1,1,1,1,1,1,1,1,1,1,1,1,5,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,7,
-	 7,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,62,63,1,1,1,1,1,1,1,1,1,1,1,7,
+	 7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,62,63,1,1,1,1,1,1,1,1,1,1,1,7,
 	 7,1,1,13,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,69,70,71,77,1,1,1,1,1,1,1,1,1,1,7,
 	 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,13,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,78,79,1,1,1,1,1,1,1,1,1,1,1,7,
 	 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,5,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,7,
@@ -51,13 +51,17 @@ unsigned char map1walkdata[map1hoehe*map1breite] = {
 	 224,224,224,224,224,224,0,0,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224
 };
 const MapData map1Data = {
-	"tilesAnim.bmp", map1hoehe, map1breite, map1tiledata, map1walkdata,
+	"tilesAnim.bmp", map1hoehe, map1breite, map1tiledata, map1walkdata,	&map1WarpEventData,
 	{ { -1,0,0 }, //nord //mapID, xOffset, yOffset
 	  { 1,-2,0 }, //süd
 	  { 2,0,18 }, //west
 	  { 2,0,3 } }, //ost
 	map1border, 2,                                    //x,y,w,h
 	{ { &Hiro,{ 2, 2, 0, 0 }, 0 },{ &HyperLightDrifter,{ 3,4,0,0 } ,0 } }
+};
+const WarpEventData map1WarpEventData = { //spriteNum, xGridPos, yGridPos, destMapID, destXGridPos, destYGridPos
+	7,{{ -1, 10, 10, 0, 5, 5 },{ -1, 6, 20, 1, 16, 0 },{ -1, 7, 20, 1, 17, 0 },{ -1, -1, 12, 2, 9, 2 },
+	{ -1, -1, 13, 2, 9, 3 },{ -1, 50, 2, 2, 0, 7 },{ -1, 50, 3, 2, 0, 8 }}
 };
 
 const char map2breite = 20, map2hoehe = 20, map2border = 188;
@@ -106,9 +110,12 @@ unsigned char map2walkdata[map2hoehe*map2breite] = {
 	224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224
 };
 const MapData map2Data = {
-	"fireredtiles.bmp", map2hoehe, map2breite, map2tiledata, map2walkdata,
+	"fireredtiles.bmp", map2hoehe, map2breite, map2tiledata, map2walkdata, &map2WarpEventData,
 	{ { 0,18,0 },{ -1,0,0 },{ -1,0,0 },{ -1,0,0 } }, map2border, 4,
 	{ { &Commandos,{ 9, 7, 0, 0 }, 0 },{ &Commandos,{ 9,5,0,0 } ,2 },{ &Commandos,{ 7,6,0,0 } ,4 },{ &Commandos,{ 11,6,0,0 } ,6 } }
+};
+const WarpEventData map2WarpEventData = { //spriteNum, xGridPos, yGridPos, destMapID, destXGridPos, destYGridPos
+	2,{ { -1, 16, -1, 0, 6, 19 },{ -1, 17, -1, 0, 7, 19 } }
 };
 
 const char map3breite = 10, map3hoehe = 10, map3border = 188;
@@ -137,7 +144,10 @@ unsigned char map3walkdata[map3hoehe*map3breite] = {
 	224,224,224,224,224,224,224,224,224,224
 };
 const MapData map3Data = {
-	"fireredtiles.bmp", map3hoehe, map3breite, map3tiledata, map3walkdata,
+	"fireredtiles.bmp", map3hoehe, map3breite, map3tiledata, map3walkdata, &map3WarpEventData,
 	{ { -1,0,0 },{ -1,0,0 },{ 0,0,13 },{ 0,0,-2 } }, map3border, 1,
 	{ { &Diablo,{ 5, 3, 0, 0 }, 0 } }
+};
+const WarpEventData map3WarpEventData = { //spriteNum, xGridPos, yGridPos, destMapID, destXGridPos, destYGridPos
+	4,{ { -1, 10, 2, 0, 0, 12 },{ -1, 10, 3, 0, 0, 13 },{ -1, -1, 7, 0, 49, 2 },{ -1, -1, 8, 0, 49, 3 }}
 };

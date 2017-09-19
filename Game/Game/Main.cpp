@@ -167,27 +167,17 @@ void loadMap(unsigned const char& mapID) {
 	lastMapID = mapID;
 
 	Event::clearEventList();
-	//new WarpEvent(*vSprites.begin(), 0, 0, 0);
-	new WarpEvent(10, 10, 0, 0, 1, 5, 5);
-	new WarpEvent(6, 20, 0, 0, 1, 16, 0);
-	new WarpEvent(7, 20, 0, 0, 1, 17, 0);
-	new WarpEvent(-1, 12, 0, 0, 2, 9, 2);
-	new WarpEvent(-1, 13, 0, 0, 2, 9, 3);
-	new WarpEvent(50, 2, 0, 0, 2, 0, 7);
-	new WarpEvent(50, 3, 0, 0, 2, 0, 8);
-
-	new WarpEvent(10, 2, 0, 0, 0, 0, 12);
-	new WarpEvent(10, 3, 0, 0, 0, 0, 13);
-	new WarpEvent(-1, 7, 0, 0, 0, 49, 2);
-	new WarpEvent(-1, 8, 0, 0, 0, 49, 3);
-
-
-	new WarpEvent(16, -1, 0, 0, 0, 6, 19);
-	new WarpEvent(17, -1, 0, 0, 0, 7, 19);
-
+	for (unsigned char eventNum = 0; eventNum < curMap->warpEvents->numWarpEvents; ++eventNum) {
+		if (curMap->warpEvents->wepList[eventNum].spriteNum != -1)
+			new WarpEvent(vSprites[curMap->warpEvents->wepList[eventNum].spriteNum], curMap->warpEvents->wepList[eventNum].destMapID,
+				curMap->warpEvents->wepList[eventNum].destXGridPos, curMap->warpEvents->wepList[eventNum].destYGridPos);
+		else
+			new WarpEvent(curMap->warpEvents->wepList[eventNum].xGridPos, curMap->warpEvents->wepList[eventNum].yGridPos, 0, 0,
+				curMap->warpEvents->wepList[eventNum].destMapID, curMap->warpEvents->wepList[eventNum].destXGridPos,
+				curMap->warpEvents->wepList[eventNum].destYGridPos);
+	}
 }
-
-SDL_Rect curGridPos;
+/*SDL_Rect curGridPos;
 MapData::Position checkMapTransition(const Sprite* s) {
 	curGridPos = s->mapPos;
 	curGridPos.x = (curGridPos.x / 16) - 8;
@@ -208,8 +198,6 @@ MapData::Position checkMapTransition(const Sprite* s) {
 	}
 	return MapData::Unknown;
 }
-
-SpritePersistanceData *pData;
 MapData::Position leaveMapDirection;
 bool relocateSprite(Sprite* s) {
 	leaveMapDirection = checkMapTransition(s);
@@ -279,17 +267,24 @@ void relocatePlayer() {
 			loadMap(curMap->connectionData[MapData::South].mapID);
 		}
 	}
-}
+}*/
+SpritePersistanceData *pData;
 void WarpSprite(Sprite* s, unsigned char destMapID, char destX, char destY) {
-	s->objectInUse = false;
-	if (s->pData != NULL) {
-		pData = s->pData;
-		pData->mapPos.y = (8 + destY) * 16 + s->mapPos.y % 16;
-		pData->mapPos.x = (8 + destX) * 16 + s->mapPos.x % 16;
-		pData->curMapID = destMapID;
-		pData->curAnim = s->animList.front();
-		pData->sData = s->sData;
-		if (s == curSprite) loadMap(destMapID);
+	if (mapIDs[destMapID] == curMap) {
+		s->mapPos.y = (8 + destY) * 16 + s->mapPos.y % 16;
+		s->mapPos.x = (8 + destX) * 16 + s->mapPos.x % 16;
+	}
+	else {
+		s->objectInUse = false;
+		if (s->pData != NULL) {
+			pData = s->pData;
+			pData->mapPos.y = (8 + destY) * 16 + s->mapPos.y % 16;
+			pData->mapPos.x = (8 + destX) * 16 + s->mapPos.x % 16;
+			pData->curMapID = destMapID;
+			pData->curAnim = s->animList.front();
+			pData->sData = s->sData;
+			if (s == curSprite) loadMap(destMapID);
+		}
 	}
 }
 
