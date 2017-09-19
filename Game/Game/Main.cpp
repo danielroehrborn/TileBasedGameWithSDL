@@ -169,6 +169,22 @@ void loadMap(unsigned const char& mapID) {
 	Event::clearEventList();
 	//new WarpEvent(*vSprites.begin(), 0, 0, 0);
 	new WarpEvent(10, 10, 0, 0, 1, 5, 5);
+	new WarpEvent(6, 20, 0, 0, 1, 16, 0);
+	new WarpEvent(7, 20, 0, 0, 1, 17, 0);
+	new WarpEvent(-1, 12, 0, 0, 2, 9, 2);
+	new WarpEvent(-1, 13, 0, 0, 2, 9, 3);
+	new WarpEvent(50, 2, 0, 0, 2, 0, 7);
+	new WarpEvent(50, 3, 0, 0, 2, 0, 8);
+
+	new WarpEvent(10, 2, 0, 0, 0, 0, 12);
+	new WarpEvent(10, 3, 0, 0, 0, 0, 13);
+	new WarpEvent(-1, 7, 0, 0, 0, 49, 2);
+	new WarpEvent(-1, 8, 0, 0, 0, 49, 3);
+
+
+	new WarpEvent(16, -1, 0, 0, 0, 6, 19);
+	new WarpEvent(17, -1, 0, 0, 0, 7, 19);
+
 }
 
 SDL_Rect curGridPos;
@@ -264,12 +280,12 @@ void relocatePlayer() {
 		}
 	}
 }
-void WarpSprite(Sprite* s, unsigned char destMapID, unsigned char destX, unsigned char destY) {
+void WarpSprite(Sprite* s, unsigned char destMapID, char destX, char destY) {
 	s->objectInUse = false;
 	if (s->pData != NULL) {
 		pData = s->pData;
-		pData->mapPos.y = (8 + destY) * 16;
-		pData->mapPos.x = (8 + destX) * 16;
+		pData->mapPos.y = (8 + destY) * 16 + s->mapPos.y % 16;
+		pData->mapPos.x = (8 + destX) * 16 + s->mapPos.x % 16;
 		pData->curMapID = destMapID;
 		pData->curAnim = s->animList.front();
 		pData->sData = s->sData;
@@ -513,7 +529,7 @@ int main(int argc, char* args[])
 					const SDL_Rect* srcTmp = &its->getFrameCoord();
 					//if (its != curSprite) { //new
 
-					if (relocateSprite(its)) break;
+					/////////////////////////if (relocateSprite(its)) break;
 					//}
 					if (its->objectInUse) {
 						tmp.h = its->mapPos.h;

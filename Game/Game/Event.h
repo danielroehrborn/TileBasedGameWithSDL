@@ -4,7 +4,7 @@
 
 class Event {
 public:
-	Event(unsigned char x, unsigned char y, unsigned char w, unsigned char h) {
+	Event(char x, char y, unsigned char w, unsigned char h) {
 		uniquePos = { x,y,w,h };
 		gridPos = &uniquePos;
 		immuneSprite = NULL;
@@ -53,15 +53,15 @@ public:
 };
 
 
-extern void WarpSprite(Sprite* s, unsigned char destMapID, unsigned char destX, unsigned char destY);
+extern void WarpSprite(Sprite* s, unsigned char destMapID, char destX, char destY);
 class WarpEvent :public Event {
 public:
-	WarpEvent(unsigned char x, unsigned char y, unsigned char w, unsigned char h,
-		unsigned char destMapID, unsigned char destX, unsigned char destY) :Event(x, y, w, h) {
+	WarpEvent(char x, char y, unsigned char w, unsigned char h,
+		unsigned char destMapID, char destX, char destY) :Event(x, y, w, h) {
 		this->destMapID = destMapID;
 		destPos = { destX,destY,0,0 };
 	}
-	WarpEvent(Sprite* s, unsigned char destMapID, unsigned char destX, unsigned char destY) :Event(s) {
+	WarpEvent(Sprite* s, unsigned char destMapID, char destX, char destY) :Event(s) {
 		this->destMapID = destMapID;
 		destPos = { destX,destY,0,0 };
 	}
