@@ -162,19 +162,31 @@ void loadMap(unsigned const char& mapID) {
 	}
 	if (curSprite == NULL)
 		curSprite = *vSprites.begin();
-	//else
-		//vSprites.push_back(curSprite);//new
 	lastMapID = mapID;
 
+	//load warp events
+	unsigned char eventNum;
+	const WarpEventData::WarpEventPos* curWarpEvent;
 	Event::clearEventList();
-	for (unsigned char eventNum = 0; eventNum < curMap->warpEvents->numWarpEvents; ++eventNum) {
-		if (curMap->warpEvents->wepList[eventNum].spriteNum != -1)
-			new WarpEvent(vSprites[curMap->warpEvents->wepList[eventNum].spriteNum], curMap->warpEvents->wepList[eventNum].destMapID,
-				curMap->warpEvents->wepList[eventNum].destXGridPos, curMap->warpEvents->wepList[eventNum].destYGridPos);
+	for (eventNum = 0; eventNum < curMap->warpEvents->numWarpEvents; ++eventNum) {
+		curWarpEvent = &curMap->warpEvents->wepList[eventNum];
+		if (curWarpEvent->spriteNum != -1)
+			new WarpEvent(vSprites[curWarpEvent->spriteNum], curWarpEvent->destMapID,
+				curWarpEvent->destXGridPos, curWarpEvent->destYGridPos);
 		else
-			new WarpEvent(curMap->warpEvents->wepList[eventNum].xGridPos, curMap->warpEvents->wepList[eventNum].yGridPos, 0, 0,
-				curMap->warpEvents->wepList[eventNum].destMapID, curMap->warpEvents->wepList[eventNum].destXGridPos,
-				curMap->warpEvents->wepList[eventNum].destYGridPos);
+			new WarpEvent(curWarpEvent->xGridPos, curWarpEvent->yGridPos, 0, 0,
+				curWarpEvent->destMapID, curWarpEvent->destXGridPos, curWarpEvent->destYGridPos);
+	}
+	//load anim events
+	const AnimEventData::AnimEventPos* curAnimEvent;
+	for (eventNum = 0; eventNum < curMap->animEvents->numAnimEvents; ++eventNum) {
+		curAnimEvent = &curMap->animEvents->aepList[eventNum];
+		if (curAnimEvent->spriteNum != -1)
+			new ChangeAnimEvent(vSprites[curAnimEvent->spriteNum], curAnimEvent->numAnims, 
+				&curAnimEvent->anims, curAnimEvent->waitBefore, curAnimEvent->waitAfter);
+		else
+			new ChangeAnimEvent(curAnimEvent->xGridPos, curAnimEvent->yGridPos, curAnimEvent->numAnims,
+				&curAnimEvent->anims, curAnimEvent->waitBefore, curAnimEvent->waitAfter);
 	}
 }
 /*SDL_Rect curGridPos;
@@ -407,7 +419,7 @@ int main(int argc, char* args[])
 			Sprite* newExplodeBulletRight = new Sprite(&Explosive, true);
 			newExplodeBulletRight->setPos(curSprite->mapPos.x, curSprite->mapPos.y);
 			vSprites.push_back(newExplodeBulletRight);
-			const char explosivemove[] = { 0,0,1 };
+			const unsigned char explosivemove[] = { 0,0,1 };
 			newExplodeBulletRight->pushAnim(3, explosivemove);
 			//curSprite = newExplodeBulletRight;
 			SDL_Delay(50);
@@ -423,7 +435,7 @@ int main(int argc, char* args[])
 				Sprite* newHyperLightDrifter = new Sprite(&HyperLightDrifter, true);
 				newHyperLightDrifter->setPos((10 + 8) * 16, (10 + 8) * 16);
 				vSprites.push_back(newHyperLightDrifter);
-				const char hyperlightdriftermove[] = { 7,7,1,1,5,5,3,3,7,7,1,1,5,5,3,3 };
+				const unsigned char hyperlightdriftermove[] = { 7,7,1,1,5,5,3,3,7,7,1,1,5,5,3,3 };
 				newHyperLightDrifter->pushAnim(16, hyperlightdriftermove);
 			}
 		}

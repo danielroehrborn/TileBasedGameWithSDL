@@ -105,7 +105,7 @@ Sprite::Sprite(const SpriteData* sd, const bool& autoDel) {
 	spriteTexture = textures[sData->globalSpriteID];
 }
 
-void Sprite::pushAnim(const char& index) {
+void Sprite::pushAnim(const unsigned char& index) {
 	if (animList.size() == 1) {
 		animList.pop();
 		frameDurCnt = 0;
@@ -116,7 +116,7 @@ void Sprite::pushAnim(const char& index) {
 	mapPos.w = sData->animData[animList.front()]->frames[curAnimFrameNum].imgPos.w;
 }
 
-void Sprite::pushAnim(const char& num, const char* data) {
+void Sprite::pushAnim(const unsigned char& num, const unsigned char* data) {
 	for (int i = 0; i < num; i++) {
 		animList.push(data[i]);
 	}

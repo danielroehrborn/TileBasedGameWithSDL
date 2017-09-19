@@ -33,7 +33,7 @@ public:
 		SDL_FreeSurface(tmpSurface);
 		return tmpTexture;
 	}*/
-	void pushAnim(const char& index);/* {
+	void pushAnim(const unsigned char& index);/* {
 		if (animList.size() == 1) {
 			animList.pop();
 			frameCnt = 0;
@@ -43,7 +43,7 @@ public:
 		mapPos.h = sData->animData[animList.front()]->list[curAnimFrameNum].frame.h;
 		mapPos.w = sData->animData[animList.front()]->list[curAnimFrameNum].frame.w;
 	}*/
-	void pushAnim(const char& num, const char* data);/* {
+	void pushAnim(const unsigned char& num, const unsigned char* data);/* {
 		for (int i = 0; i < num; i++) {
 			animList.push(data[i]);
 		}

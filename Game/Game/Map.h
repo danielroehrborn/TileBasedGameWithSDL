@@ -23,6 +23,22 @@ public:
 	const WarpEventPos const wepList[];
 };
 
+class AnimEventData {
+public:
+	class AnimEventPos {
+	public:
+		const char spriteNum;
+		const char xGridPos;
+		const char yGridPos;
+		const char waitBefore;
+		const char waitAfter;
+		const unsigned char numAnims;
+		const unsigned char* const anims;
+	};
+	const unsigned char numAnimEvents;
+	const AnimEventPos const aepList[];
+};
+
 class MapData {
 public:
 	enum Position { North, South, West, East, Unknown };
@@ -41,6 +57,7 @@ public:
 	unsigned const char height, width;
 	unsigned char* const tileData, *const walkData;
 	const WarpEventData* warpEvents;
+	const AnimEventData* animEvents;
 	const ConnectionData const connectionData[4];
 	unsigned const char borderTile;
 	const unsigned char numSprites;

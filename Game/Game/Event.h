@@ -4,26 +4,31 @@
 unsigned char bgTiles[];
 class Event {
 public:
-	Event(char x, char y, unsigned char w, unsigned char h) {
+	Event(char x, char y, unsigned char w, unsigned char h, char wBefore = 0, char wAfter = 0) {
 		uniquePos = { x,y,w,h };
 		gridPos = &uniquePos;
-		immuneSprite = NULL;
+		assignedSprite = NULL;
 		vEvents.push_back(this);
+		waitBefore = wBefore;
+		waitAfter = wAfter;
 		bgTiles[gridPos->x + 8 + (gridPos->y + 8) * 100] = 0;
 	}
-	Event(Sprite* s) {
+	Event(Sprite* s, char wBefore = 0, char wAfter = 0) {
 		gridPos = &s->gridPos;
-		immuneSprite = s;
+		assignedSprite = s;
 		vEvents.push_back(this);
+		waitBefore = wBefore;
+		waitAfter = wAfter;
 		bgTiles[gridPos->x + 8 + (gridPos->y + 8) * 100] = 0;
 	}
 	virtual void handleCollision(Sprite* s) = 0;
 	static void checkCollision(Sprite* s);
 	static void clearEventList();
-private:
+	//private:
 	SDL_Rect* gridPos;
 	SDL_Rect uniquePos;
-	Sprite* immuneSprite;
+	Sprite* assignedSprite;
+	char waitBefore, waitAfter;
 	static std::vector<Event*> vEvents;
 };
 
@@ -82,13 +87,24 @@ class ChangeMapEvent :public Event {
 
 class ChangeAnimEvent :public Event {
 public:
+	ChangeAnimEvent(char x, char y, unsigned char numAnims, const unsigned char* const * anims, char wBefore, char wAfter) :Event(x, y, 0, 0, wBefore, wAfter) {
+		this->numAnims = numAnims;
+		this->anims = anims;
+	}
+	ChangeAnimEvent(Sprite* s, unsigned char numAnims, const unsigned char* const * anims, char wBefore, char wAfter) :Event(s, wBefore, wAfter) {
+		this->numAnims = numAnims;
+		this->anims = anims;
+	}
 	void handleCollision(Sprite* s) {
-		//if representationSprite!=NULL: 
-		//representationSprite add anims
+		if (assignedSprite != NULL) s = assignedSprite;
+		if (numAnims == 1)
+			s->pushAnim(*anims[0]);
+		else
+			s->pushAnim(numAnims, *anims);
 	}
 private:
 	unsigned char numAnims;
-	unsigned char* anims;
+	const unsigned char* const * anims;
 };
 
 class ChangeBGTileEvent :public Event {
