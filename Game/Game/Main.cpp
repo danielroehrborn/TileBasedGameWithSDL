@@ -182,11 +182,22 @@ void loadMap(unsigned const char& mapID) {
 	for (eventNum = 0; eventNum < curMap->animEvents->numAnimEvents; ++eventNum) {
 		curAnimEvent = &curMap->animEvents->aepList[eventNum];
 		if (curAnimEvent->spriteNum != -1)
-			new ChangeAnimEvent(vSprites[curAnimEvent->spriteNum], curAnimEvent->numAnims, 
+			new ChangeAnimEvent(vSprites[curAnimEvent->spriteNum], curAnimEvent->numAnims,
 				&curAnimEvent->anims, curAnimEvent->waitBefore, curAnimEvent->waitAfter);
 		else
 			new ChangeAnimEvent(curAnimEvent->xGridPos, curAnimEvent->yGridPos, curAnimEvent->numAnims,
 				&curAnimEvent->anims, curAnimEvent->waitBefore, curAnimEvent->waitAfter);
+	}
+	//load state machine trigger events
+	const StateMachineTriggerEventData::TriggerEvent* curTriggerEvent;
+	for (eventNum = 0; eventNum < curMap->stateMachineTriggerEvents->numStateMachineTriggerEvents; ++eventNum) {
+		curTriggerEvent = &curMap->stateMachineTriggerEvents->TriggerEventList[eventNum];
+		if (curTriggerEvent->spriteNum != -1)
+			new StateMachineTriggerEvent(vSprites[curTriggerEvent->spriteNum], curTriggerEvent->mapID,
+				curTriggerEvent->eventFlagBitIndex);
+		else
+			new StateMachineTriggerEvent(curTriggerEvent->xGridPos, curTriggerEvent->yGridPos, curTriggerEvent->mapID,
+				curTriggerEvent->eventFlagBitIndex);
 	}
 }
 /*SDL_Rect curGridPos;

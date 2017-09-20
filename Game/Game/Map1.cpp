@@ -50,6 +50,9 @@ unsigned char map1walkdata[map1hoehe*map1breite] = {
 	 224,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,224,
 	 224,224,224,224,224,224,0,0,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224
 };
+const StateMachineTriggerEventData map1StateMachineTriggerEventData = { //spriteNum, xGridPos, yGridPos, mapID, eventFlagBitIndex
+	2,{   {-1,10,5,0,30},   {-1,12,5,1,31}   }
+};
 const WarpEventData map1WarpEventData = { //spriteNum, xGridPos, yGridPos, destMapID, destXGridPos, destYGridPos
 	7,{{ -1, 10, 10, 0, 5, 5 },{ -1, 6, 20, 1, 16, 0 },{ -1, 7, 20, 1, 17, 0 },{ -1, -1, 12, 2, 9, 2 },
 	{ -1, -1, 13, 2, 9, 3 },{ -1, 50, 2, 2, 0, 7 },{ -1, 50, 3, 2, 0, 8 }}
@@ -60,7 +63,7 @@ const AnimEventData map1AnimEventData = {// spriteNum, xGridPos, yGridPos, waitB
 	2,{{0,0,0,16,16,4,anim1HiroWalkCircle},{-1,5,10,16,16,3,anim1AllWalkDown}}
 };
 const MapData map1Data = {
-	"tilesAnim.bmp", map1hoehe, map1breite, map1tiledata, map1walkdata,	&map1WarpEventData, &map1AnimEventData,
+	"tilesAnim.bmp", map1hoehe, map1breite, map1tiledata, map1walkdata,	&map1WarpEventData, &map1AnimEventData, &map1StateMachineTriggerEventData,
 	{ { -1,0,0 }, //nord //mapID, xOffset, yOffset
 	  { 1,-2,0 }, //süd
 	  { 2,0,18 }, //west
@@ -123,7 +126,7 @@ const AnimEventData map2AnimEventData = {
 	2,{ { 0,3,3,16,16,4,anim2CommandoWalkCircle },{ -1,3,5,16,16,3,anim2AllWalkDown } }
 };
 const MapData map2Data = {
-	"fireredtiles.bmp", map2hoehe, map2breite, map2tiledata, map2walkdata, &map2WarpEventData, &map2AnimEventData,
+	"fireredtiles.bmp", map2hoehe, map2breite, map2tiledata, map2walkdata, &map2WarpEventData, &map2AnimEventData, NULL,
 	{ { 0,18,0 },{ -1,0,0 },{ -1,0,0 },{ -1,0,0 } }, map2border, 4,
 	{ { &Commandos,{ 9, 7, 0, 0 }, 0 },{ &Commandos,{ 9,5,0,0 } ,2 },{ &Commandos,{ 7,6,0,0 } ,4 },{ &Commandos,{ 11,6,0,0 } ,6 } }
 };
@@ -160,7 +163,7 @@ const AnimEventData map3AnimEventData = {
 	0,{ }
 };
 const MapData map3Data = {
-	"fireredtiles.bmp", map3hoehe, map3breite, map3tiledata, map3walkdata, &map3WarpEventData, &map3AnimEventData,
+	"fireredtiles.bmp", map3hoehe, map3breite, map3tiledata, map3walkdata, &map3WarpEventData, &map3AnimEventData, NULL,
 	{ { -1,0,0 },{ -1,0,0 },{ 0,0,13 },{ 0,0,-2 } }, map3border, 1,
 	{ { &Diablo,{ 5, 3, 0, 0 }, 0 } }
 };

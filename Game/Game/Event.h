@@ -107,6 +107,28 @@ private:
 	const unsigned char* const * anims;
 };
 
+class StateMachineTriggerEvent :public Event {
+public:
+	StateMachineTriggerEvent(char x, char y, unsigned char mapID, unsigned char eventFlagBitIndex) :Event(x, y, 0, 0, 0, 0) {
+		this->eventFlagBitIndex = eventFlagBitIndex;
+		this->mapID = mapID;
+	}
+	StateMachineTriggerEvent(Sprite* s, unsigned char mapID, unsigned char eventFlagBitIndex) :Event(s, 0, 0) {
+		this->eventFlagBitIndex = eventFlagBitIndex;
+		this->mapID = mapID;
+	}
+	void handleCollision(Sprite* s) {
+		printf("Event\n");
+		if (assignedSprite != NULL) assignedSprite->objectInUse = false;
+		mapEventFlagBitmap[mapID] |= 1 << eventFlagBitIndex;
+		vEvents.erase(std::find(vEvents.begin(), vEvents.end(), this));
+	}
+	static unsigned int mapEventFlagBitmap[];
+	unsigned char mapID;
+private:
+	unsigned char eventFlagBitIndex;
+};
+
 class ChangeBGTileEvent :public Event {
 public:
 	void handleCollision(Sprite* s) {

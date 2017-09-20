@@ -8,6 +8,20 @@ extern char const map1border;
 extern unsigned char map1tiledata[20 * 50];
 extern unsigned char map1walkdata[20 * 50];
 
+class StateMachineTriggerEventData {
+public:
+	class TriggerEvent {
+	public:
+		const char spriteNum;
+		const char xGridPos;
+		const char yGridPos;
+		const unsigned char mapID;
+		const unsigned char eventFlagBitIndex;
+	};
+	const unsigned char numStateMachineTriggerEvents;
+	const TriggerEvent const TriggerEventList[];
+};
+
 class WarpEventData {
 public:
 	class WarpEventPos {
@@ -58,6 +72,7 @@ public:
 	unsigned char* const tileData, *const walkData;
 	const WarpEventData* warpEvents;
 	const AnimEventData* animEvents;
+	const StateMachineTriggerEventData* stateMachineTriggerEvents;
 	const ConnectionData const connectionData[4];
 	unsigned const char borderTile;
 	const unsigned char numSprites;
