@@ -7,6 +7,7 @@ std::vector<Event*> Event::vEvents;
 std::queue<ActiveEvent> ActiveEvent::vEventActivationQueue;
 
 unsigned int StateMachineTriggerEvent::mapEventFlagBitmap[3];
+StateMachineTriggerEvent::MapScriptState* StateMachineTriggerEvent::MapScriptState::mapScriptStates[3];
 
 void Event::checkCollision(Sprite* s) {
 	Sprite* sTmp;

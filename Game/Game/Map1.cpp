@@ -1,4 +1,5 @@
 #include "Map.h"
+#include "Event.h"
 #include "Hiro.h"
 #include "HyperLightDrifter.h"
 #include "Commandos.h"
@@ -50,6 +51,27 @@ unsigned char map1walkdata[map1hoehe*map1breite] = {
 	 224,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,224,
 	 224,224,224,224,224,224,0,0,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224
 };
+class Map1Script1 :public StateMachineTriggerEvent::MapScriptState {
+public:
+	void init() {
+		printf("map1 init: create map border warps\n");
+		//WarpEvent(char x, char y, unsigned char w, unsigned char h,unsigned char destMapID, char destX, char destY)
+		//new WarpEvent(curWarpEvent->xGridPos, curWarpEvent->yGridPos, 0, 0,curWarpEvent->destMapID, curWarpEvent->destXGridPos, curWarpEvent->destYGridPos);
+		new WarpEvent(10, 10, 0, 0, 0, 5, 5);//selbe map nach oben links
+		new WarpEvent(6, 20, 0, 0, 1, 16, 0);
+		new WarpEvent(7, 20, 0, 0, 1, 17, 0);
+		new WarpEvent(-1, 12, 0, 0, 2, 9, 2);
+		new WarpEvent(-1, 13, 0, 0, 2, 9, 3);
+		new WarpEvent(50, 2, 0, 0, 2, 0, 7);
+		new WarpEvent(50, 3, 0, 0, 2, 0, 8);
+	}
+	void exit() {
+		printf("map1 exit\n");
+	}
+	void handleEvents() {
+		printf("map1 handleEvents\n");
+	}
+};
 const StateMachineTriggerEventData map1StateMachineTriggerEventData = { //spriteNum, xGridPos, yGridPos, mapID, eventFlagBitIndex
 	2,{   {-1,10,5,0,30},   {-1,12,5,1,31}   }
 };
@@ -63,7 +85,7 @@ const AnimEventData map1AnimEventData = {// spriteNum, xGridPos, yGridPos, waitB
 	2,{{0,0,0,16,16,4,anim1HiroWalkCircle},{-1,5,10,16,16,3,anim1AllWalkDown}}
 };
 const MapData map1Data = {
-	"tilesAnim.bmp", map1hoehe, map1breite, map1tiledata, map1walkdata,	&map1WarpEventData, &map1AnimEventData, &map1StateMachineTriggerEventData,
+	"tilesAnim.bmp", map1hoehe, map1breite, map1tiledata, map1walkdata,	&map1WarpEventData, &map1AnimEventData, &map1StateMachineTriggerEventData, new Map1Script1(),
 	{ { -1,0,0 }, //nord //mapID, xOffset, yOffset
 	  { 1,-2,0 }, //süd
 	  { 2,0,18 }, //west
@@ -71,6 +93,7 @@ const MapData map1Data = {
 	map1border, 2,                                     //x,y,w,h
 	{ { &Hiro,{ 2, 2, 0, 0 }, 0 },{ &HyperLightDrifter,{ 3,4,0,0 } ,0 } }
 };
+
 
 const char map2breite = 20, map2hoehe = 20, map2border = 188;
 unsigned char map2tiledata[map2hoehe*map2breite] = {
@@ -117,6 +140,9 @@ unsigned char map2walkdata[map2hoehe*map2breite] = {
 	224,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,224,
 	224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224
 };
+const StateMachineTriggerEventData map2StateMachineTriggerEventData = {
+	0,{  }
+};
 const WarpEventData map2WarpEventData = {
 	2,{ { -1, 16, -1, 0, 6, 19 },{ -1, 17, -1, 0, 7, 19 } }
 };
@@ -126,10 +152,11 @@ const AnimEventData map2AnimEventData = {
 	2,{ { 0,3,3,16,16,4,anim2CommandoWalkCircle },{ -1,3,5,16,16,3,anim2AllWalkDown } }
 };
 const MapData map2Data = {
-	"fireredtiles.bmp", map2hoehe, map2breite, map2tiledata, map2walkdata, &map2WarpEventData, &map2AnimEventData, NULL,
+	"fireredtiles.bmp", map2hoehe, map2breite, map2tiledata, map2walkdata, &map2WarpEventData, &map2AnimEventData, &map2StateMachineTriggerEventData, NULL,
 	{ { 0,18,0 },{ -1,0,0 },{ -1,0,0 },{ -1,0,0 } }, map2border, 4,
 	{ { &Commandos,{ 9, 7, 0, 0 }, 0 },{ &Commandos,{ 9,5,0,0 } ,2 },{ &Commandos,{ 7,6,0,0 } ,4 },{ &Commandos,{ 11,6,0,0 } ,6 } }
 };
+
 
 const char map3breite = 10, map3hoehe = 10, map3border = 188;
 unsigned char map3tiledata[map3hoehe*map3breite] = {
@@ -156,6 +183,9 @@ unsigned char map3walkdata[map3hoehe*map3breite] = {
 	0,0,0,0,0,0,0,0,0,224,
 	224,224,224,224,224,224,224,224,224,224
 };
+const StateMachineTriggerEventData map3StateMachineTriggerEventData = {
+	0,{}
+};
 const WarpEventData map3WarpEventData = {
 	4,{ { -1, 10, 2, 0, 0, 12 },{ -1, 10, 3, 0, 0, 13 },{ -1, -1, 7, 0, 49, 2 },{ -1, -1, 8, 0, 49, 3 }}
 };
@@ -163,7 +193,7 @@ const AnimEventData map3AnimEventData = {
 	0,{ }
 };
 const MapData map3Data = {
-	"fireredtiles.bmp", map3hoehe, map3breite, map3tiledata, map3walkdata, &map3WarpEventData, &map3AnimEventData, NULL,
+	"fireredtiles.bmp", map3hoehe, map3breite, map3tiledata, map3walkdata, &map3WarpEventData, &map3AnimEventData, &map3StateMachineTriggerEventData, NULL,
 	{ { -1,0,0 },{ -1,0,0 },{ 0,0,13 },{ 0,0,-2 } }, map3border, 1,
 	{ { &Diablo,{ 5, 3, 0, 0 }, 0 } }
 };

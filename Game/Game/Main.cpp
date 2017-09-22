@@ -164,9 +164,9 @@ void loadMap(unsigned const char& mapID) {
 		curSprite = *vSprites.begin();
 	lastMapID = mapID;
 
-	//load warp events
 	unsigned char eventNum;
-	const WarpEventData::WarpEventPos* curWarpEvent;
+	//load warp events
+	/*const WarpEventData::WarpEventPos* curWarpEvent;
 	Event::clearEventList();
 	for (eventNum = 0; eventNum < curMap->warpEvents->numWarpEvents; ++eventNum) {
 		curWarpEvent = &curMap->warpEvents->wepList[eventNum];
@@ -176,9 +176,9 @@ void loadMap(unsigned const char& mapID) {
 		else
 			new WarpEvent(curWarpEvent->xGridPos, curWarpEvent->yGridPos, 0, 0,
 				curWarpEvent->destMapID, curWarpEvent->destXGridPos, curWarpEvent->destYGridPos);
-	}
+	}*/
 	//load anim events
-	const AnimEventData::AnimEventPos* curAnimEvent;
+	/*const AnimEventData::AnimEventPos* curAnimEvent;
 	for (eventNum = 0; eventNum < curMap->animEvents->numAnimEvents; ++eventNum) {
 		curAnimEvent = &curMap->animEvents->aepList[eventNum];
 		if (curAnimEvent->spriteNum != -1)
@@ -187,7 +187,7 @@ void loadMap(unsigned const char& mapID) {
 		else
 			new ChangeAnimEvent(curAnimEvent->xGridPos, curAnimEvent->yGridPos, curAnimEvent->numAnims,
 				&curAnimEvent->anims, curAnimEvent->waitBefore, curAnimEvent->waitAfter);
-	}
+	}*/
 	//load state machine trigger events
 	const StateMachineTriggerEventData::TriggerEvent* curTriggerEvent;
 	for (eventNum = 0; eventNum < curMap->stateMachineTriggerEvents->numStateMachineTriggerEvents; ++eventNum) {
@@ -199,6 +199,11 @@ void loadMap(unsigned const char& mapID) {
 			new StateMachineTriggerEvent(curTriggerEvent->xGridPos, curTriggerEvent->yGridPos, curTriggerEvent->mapID,
 				curTriggerEvent->eventFlagBitIndex);
 	}
+	//load map script state if uninitialised
+	if (StateMachineTriggerEvent::MapScriptState::mapScriptStates[mapID] == NULL && curMap->initState != NULL)
+		StateMachineTriggerEvent::MapScriptState::changeState(mapID, const_cast<StateMachineTriggerEvent::MapScriptState*>(curMap->initState));
+	else if (StateMachineTriggerEvent::MapScriptState::mapScriptStates[mapID] != NULL)
+		StateMachineTriggerEvent::MapScriptState::mapScriptStates[mapID]->init();
 }
 /*SDL_Rect curGridPos;
 MapData::Position checkMapTransition(const Sprite* s) {

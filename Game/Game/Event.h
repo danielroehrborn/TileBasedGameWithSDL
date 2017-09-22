@@ -109,6 +109,21 @@ private:
 
 class StateMachineTriggerEvent :public Event {
 public:
+	class MapScriptState {
+	public:
+		virtual void init() = 0;
+		virtual void exit() = 0;
+		virtual void handleEvents() = 0;
+		static void changeState(unsigned char mapID, MapScriptState* newState) {
+			if (mapScriptStates[mapID] != NULL) {
+				mapScriptStates[mapID]->exit();
+				delete mapScriptStates[mapID];
+			}
+			mapScriptStates[mapID] = newState;
+			newState->init();
+		}
+		static MapScriptState* mapScriptStates[];
+	};
 	StateMachineTriggerEvent(char x, char y, unsigned char mapID, unsigned char eventFlagBitIndex) :Event(x, y, 0, 0, 0, 0) {
 		this->eventFlagBitIndex = eventFlagBitIndex;
 		this->mapID = mapID;
@@ -122,6 +137,9 @@ public:
 		if (assignedSprite != NULL) assignedSprite->objectInUse = false;
 		mapEventFlagBitmap[mapID] |= 1 << eventFlagBitIndex;
 		vEvents.erase(std::find(vEvents.begin(), vEvents.end(), this));
+		if (MapScriptState::mapScriptStates[mapID] != NULL)
+			MapScriptState::mapScriptStates[mapID]->handleEvents();
+		//run map script state machine
 	}
 	static unsigned int mapEventFlagBitmap[];
 	unsigned char mapID;

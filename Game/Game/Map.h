@@ -1,6 +1,7 @@
 #pragma once
 #include <SDL.h>
 #include "SpriteData.h"
+#include "Event.h"
 
 extern char const map1breite;
 extern const char map1hoehe;
@@ -73,6 +74,7 @@ public:
 	const WarpEventData* warpEvents;
 	const AnimEventData* animEvents;
 	const StateMachineTriggerEventData* stateMachineTriggerEvents;
+	const StateMachineTriggerEvent::MapScriptState* initState;
 	const ConnectionData const connectionData[4];
 	unsigned const char borderTile;
 	const unsigned char numSprites;
