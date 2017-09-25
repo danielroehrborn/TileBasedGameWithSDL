@@ -236,10 +236,7 @@ public:
 		this->tileData = tileData;
 		this->walkData = walkData;
 	}
-	void handleCollision(Sprite* s);/* {
-		bgTiles[8 * bgbreite + tileGridY * bgbreite + 8 + tileGridX] = tileData;
-		bgWalk[8 * bgbreite + tileGridY * bgbreite + 8 + tileGridX] = walkData;
-	}*/
+	void handleCollision(Sprite* s);
 	ChangeBGTileEvent* clone() const {
 		return new ChangeBGTileEvent(gridPos->x, gridPos->y, tileGridX, tileGridY, tileData, walkData);
 	}
@@ -252,7 +249,17 @@ private:
 
 class ChangeTimeEvent :public Event {
 public:
-
+	ChangeTimeEvent(unsigned char x, unsigned char y, unsigned char colRed, unsigned char colGreen, unsigned char colBlue) :Event(x, y) {
+		this->colRed = colRed;
+		this->colGreen = colGreen;
+		this->colBlue = colBlue;
+	}
 private:
-	void changeLight();
+	unsigned char colRed;
+	unsigned char colGreen;
+	unsigned char colBlue;
+	void handleCollision(Sprite* s);
+	ChangeTimeEvent* clone() const {
+		return new ChangeTimeEvent(gridPos->x, gridPos->y, colRed, colGreen, colBlue);
+	}
 };

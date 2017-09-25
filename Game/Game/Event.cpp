@@ -5,10 +5,14 @@
 extern unsigned const char bghoehe, bgbreite;
 extern unsigned char bgTiles[];
 extern unsigned char bgWalk[];
+extern SDL_Texture *tilemapTexture;
 
 void ChangeBGTileEvent::handleCollision(Sprite* s) {
 	bgTiles[8 * bgbreite + tileGridY * bgbreite + 8 + tileGridX] = tileData;
 	bgWalk[8 * bgbreite + tileGridY * bgbreite + 8 + tileGridX] = walkData;
+}
+void ChangeTimeEvent::handleCollision(Sprite* s) {
+	SDL_SetTextureColorMod(tilemapTexture, colRed, colGreen, colBlue);
 }
 
 //std::vector<Event*> Event::vEvents;

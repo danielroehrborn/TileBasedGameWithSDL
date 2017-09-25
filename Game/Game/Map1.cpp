@@ -57,6 +57,7 @@ public:
 	void init() {
 		printf("map1 script 2 init, create 1 doNothingEvent (5,10)\n");
 		Event* doNothingEvent = EventManagement::addEvent(new StateMachineTriggerEvent(10, 10, 0, 5), false);
+		EventManagement::delEvent(EventManagement::addEvent(new ChangeTimeEvent(0,0,255,197,157), true));
 	}
 	void exit() {
 		printf("map1 script 2 exit\n");
