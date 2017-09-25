@@ -51,29 +51,44 @@ unsigned char map1walkdata[map1hoehe*map1breite] = {
 	 224,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,224,
 	 224,224,224,224,224,224,0,0,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224
 };
-class Map1Script1 :public StateMachineTriggerEvent::MapScriptState {
+class Map1Script2 :public StateMachineTriggerEvent::MapScriptState {
+	Event* doNothingEvent;
 public:
 	void init() {
-		printf("map1 init: create map border warps\n");
-		//WarpEvent(char x, char y, unsigned char w, unsigned char h,unsigned char destMapID, char destX, char destY)
-		//new WarpEvent(curWarpEvent->xGridPos, curWarpEvent->yGridPos, 0, 0,curWarpEvent->destMapID, curWarpEvent->destXGridPos, curWarpEvent->destYGridPos);
-		new WarpEvent(10, 10, 0, 0, 0, 5, 5);//selbe map nach oben links
-		new WarpEvent(6, 20, 0, 0, 1, 16, 0);
-		new WarpEvent(7, 20, 0, 0, 1, 17, 0);
-		new WarpEvent(-1, 12, 0, 0, 2, 9, 2);
-		new WarpEvent(-1, 13, 0, 0, 2, 9, 3);
-		new WarpEvent(50, 2, 0, 0, 2, 0, 7);
-		new WarpEvent(50, 3, 0, 0, 2, 0, 8);
+		printf("map1 script 2 init, create 1 doNothingEvent (5,10)\n");
+		Event* doNothingEvent = EventManagement::addEvent(new StateMachineTriggerEvent(5, 10, 0, 5), false);
 	}
 	void exit() {
-		printf("map1 exit\n");
+		printf("map1 script 2 exit\n");
 	}
 	void handleEvents() {
-		printf("map1 handleEvents\n");
+		printf("map1 script 2 handleEvents\n");
+	}
+};
+class Map1Script1 :public StateMachineTriggerEvent::MapScriptState {
+	Event* jumpTopLeft;
+	Event* setFlag5ByWarp;
+public:
+	void init() {
+		printf("map1 init script 1, create 1 warp (10,10), create 1 setFlag5Event (10,5)\n");
+		jumpTopLeft = EventManagement::addEvent(new WarpEvent(10, 10, 0, 0, 0, 5, 5), false);//selbe map nach oben links
+		setFlag5ByWarp = EventManagement::addEvent(new StateMachineTriggerEvent(10, 5, 0, 5), false);
+	}
+	void exit() {
+		printf("map1 script 1 exit\n");
+	}
+	void handleEvents() {
+		printf("map1 script 1 handleEvents\n");
+		if (StateMachineTriggerEvent::mapEventFlagBitmap[0] & 1 << 5) {
+			EventManagement::delEvent(jumpTopLeft);
+			EventManagement::delEvent(setFlag5ByWarp);
+			printf("map1 script 1 handleEvents, flag 5 == 1 -> change state to script 2\n");
+			StateMachineTriggerEvent::MapScriptState::changeState(0, new Map1Script2());
+		}
 	}
 };
 const StateMachineTriggerEventData map1StateMachineTriggerEventData = { //spriteNum, xGridPos, yGridPos, mapID, eventFlagBitIndex
-	2,{   {-1,10,5,0,30},   {-1,12,5,1,31}   }
+	1,{   {-1,10,5,0,5} }
 };
 const WarpEventData map1WarpEventData = { //spriteNum, xGridPos, yGridPos, destMapID, destXGridPos, destYGridPos
 	7,{{ -1, 10, 10, 0, 5, 5 },{ -1, 6, 20, 1, 16, 0 },{ -1, 7, 20, 1, 17, 0 },{ -1, -1, 12, 2, 9, 2 },

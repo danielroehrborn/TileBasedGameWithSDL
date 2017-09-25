@@ -4,7 +4,7 @@
 
 std::vector<Event*> Event::vEvents;
 
-std::queue<ActiveEvent> ActiveEvent::vEventActivationQueue;
+//std::queue<ActiveEvent> ActiveEvent::vEventActivationQueue;
 
 std::list<Event*> EventManagement::lEvents;
 std::queue<EventManagement::ActivatedEvent*> EventManagement::lEventActivationQueues[4];
@@ -12,7 +12,7 @@ std::queue<EventManagement::ActivatedEvent*> EventManagement::lEventActivationQu
 unsigned int StateMachineTriggerEvent::mapEventFlagBitmap[3];
 StateMachineTriggerEvent::MapScriptState* StateMachineTriggerEvent::MapScriptState::mapScriptStates[3];
 
-void Event::checkCollision(Sprite* s) {
+/*void Event::checkCollision(Sprite* s) {
 	Sprite* sTmp;
 	for (std::vector<Event*>::iterator it = vEvents.begin(); it != vEvents.end(); ++it) {
 		sTmp = (*it)->assignedSprite;
@@ -25,7 +25,7 @@ void Event::checkCollision(Sprite* s) {
 			//return;
 		}
 	}
-}
+}*/
 
 void Event::handleCollision(Sprite* s) {
 	printf("Default handler\n");

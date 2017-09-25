@@ -23,7 +23,7 @@ public:
 		bgTiles[gridPos->x + 8 + (gridPos->y + 8) * 100] = 0;
 	}
 	virtual void handleCollision(Sprite* s) = 0;
-	static void checkCollision(Sprite* s);
+	//static void checkCollision(Sprite* s);
 	static void clearEventList();
 	virtual Event* clone() const = 0;
 	//private:
@@ -97,8 +97,7 @@ public:
 private:
 	EventManagement() {};
 };
-
-class ActiveEvent {
+/*class ActiveEvent {
 public:
 	ActiveEvent(Event* ev, Sprite* s, unsigned char wBefore, unsigned char wAft) {
 		e = ev;
@@ -123,8 +122,7 @@ public:
 		else if (curActEv->waitAfter) --curActEv->waitAfter;
 		else vEventActivationQueue.pop();
 	}
-};
-
+};*/
 
 extern void WarpSprite(Sprite* s, unsigned char destMapID, char destX, char destY);
 class WarpEvent :public Event {
@@ -210,12 +208,14 @@ public:
 		printf("Event\n");
 		if (assignedSprite != NULL) assignedSprite->objectInUse = false;
 		mapEventFlagBitmap[mapID] |= 1 << eventFlagBitIndex;
-		vEvents.erase(std::find(vEvents.begin(), vEvents.end(), this));
 		if (MapScriptState::mapScriptStates[mapID] != NULL)
 			MapScriptState::mapScriptStates[mapID]->handleEvents();
-		//run map script state machine
 	}
-	StateMachineTriggerEvent* clone() const { return NULL; }
+	StateMachineTriggerEvent* clone() const { 
+		if (assignedSprite != NULL)
+			return new StateMachineTriggerEvent(assignedSprite, mapID, eventFlagBitIndex);
+		return new StateMachineTriggerEvent(uniquePos.x, uniquePos.y, mapID, eventFlagBitIndex);
+	}
 	static unsigned int mapEventFlagBitmap[];
 	unsigned char mapID;
 private:

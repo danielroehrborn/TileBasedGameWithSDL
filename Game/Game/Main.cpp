@@ -165,17 +165,17 @@ void loadMap(unsigned const char& mapID) {
 	lastMapID = mapID;
 
 	unsigned char eventNum;
+	EventManagement::delAllEvents();
 	//load warp events
 	/*const WarpEventData::WarpEventPos* curWarpEvent;
-	Event::clearEventList();
 	for (eventNum = 0; eventNum < curMap->warpEvents->numWarpEvents; ++eventNum) {
 		curWarpEvent = &curMap->warpEvents->wepList[eventNum];
 		if (curWarpEvent->spriteNum != -1)
-			new WarpEvent(vSprites[curWarpEvent->spriteNum], curWarpEvent->destMapID,
-				curWarpEvent->destXGridPos, curWarpEvent->destYGridPos);
+			EventManagement::addEvent(new WarpEvent(vSprites[curWarpEvent->spriteNum], curWarpEvent->destMapID,
+				curWarpEvent->destXGridPos, curWarpEvent->destYGridPos), false);
 		else
-			new WarpEvent(curWarpEvent->xGridPos, curWarpEvent->yGridPos, 0, 0,
-				curWarpEvent->destMapID, curWarpEvent->destXGridPos, curWarpEvent->destYGridPos);
+			EventManagement::addEvent(new WarpEvent(curWarpEvent->xGridPos, curWarpEvent->yGridPos, 0, 0,
+				curWarpEvent->destMapID, curWarpEvent->destXGridPos, curWarpEvent->destYGridPos), false);
 	}*/
 	//load anim events
 	/*const AnimEventData::AnimEventPos* curAnimEvent;
@@ -193,81 +193,20 @@ void loadMap(unsigned const char& mapID) {
 	for (eventNum = 0; eventNum < curMap->stateMachineTriggerEvents->numStateMachineTriggerEvents; ++eventNum) {
 		curTriggerEvent = &curMap->stateMachineTriggerEvents->TriggerEventList[eventNum];
 		if (curTriggerEvent->spriteNum != -1)
-			new StateMachineTriggerEvent(vSprites[curTriggerEvent->spriteNum], curTriggerEvent->mapID,
-				curTriggerEvent->eventFlagBitIndex);
+			EventManagement::addEvent(new StateMachineTriggerEvent(vSprites[curTriggerEvent->spriteNum], curTriggerEvent->mapID,
+				curTriggerEvent->eventFlagBitIndex), false);
 		else
-			new StateMachineTriggerEvent(curTriggerEvent->xGridPos, curTriggerEvent->yGridPos, curTriggerEvent->mapID,
-				curTriggerEvent->eventFlagBitIndex);
+			EventManagement::addEvent(new StateMachineTriggerEvent(curTriggerEvent->xGridPos, curTriggerEvent->yGridPos, curTriggerEvent->mapID,
+				curTriggerEvent->eventFlagBitIndex), false);
 	}*/
 	//load map script state if uninitialised
-	/*if (StateMachineTriggerEvent::MapScriptState::mapScriptStates[mapID] == NULL && curMap->initState != NULL)
+	if (StateMachineTriggerEvent::MapScriptState::mapScriptStates[mapID] == NULL && curMap->initState != NULL)
 		StateMachineTriggerEvent::MapScriptState::changeState(mapID, const_cast<StateMachineTriggerEvent::MapScriptState*>(curMap->initState));
 	else if (StateMachineTriggerEvent::MapScriptState::mapScriptStates[mapID] != NULL)
-		StateMachineTriggerEvent::MapScriptState::mapScriptStates[mapID]->init();*/
+		StateMachineTriggerEvent::MapScriptState::mapScriptStates[mapID]->init();
 }
 SDL_Rect curGridPos;
 SpritePersistanceData *pData;
-/*MapData::Position checkMapTransition(const Sprite* s) {
-	curGridPos = s->mapPos;
-	curGridPos.x = (curGridPos.x / 16) - 8;
-	if (curGridPos.x < 0 && curMap->connectionData[MapData::West].mapID != -1) {
-		return MapData::West;
-	}
-	else if (curGridPos.x >= curMap->width && curMap->connectionData[MapData::East].mapID != -1) {
-		return MapData::East;
-	}
-	else {
-		curGridPos.y = (curGridPos.y / 16) - 8;
-		if (curGridPos.y < 0 && curMap->connectionData[MapData::North].mapID != -2) {
-			return MapData::North;
-		}
-		else if (curGridPos.y >= curMap->height && curMap->connectionData[MapData::South].mapID != -1) {
-			return MapData::South;
-		}
-	}
-	return MapData::Unknown;
-}
-MapData::Position leaveMapDirection;
-bool relocateSprite(Sprite* s) {
-	leaveMapDirection = checkMapTransition(s);
-	if (leaveMapDirection == MapData::Unknown) {
-		return false;
-	}
-	else {
-		s->objectInUse = false;
-		if (s->pData != NULL) {
-			pData = s->pData;
-			pData->curAnim = s->animList.front();
-			pData->sData = s->sData;
-			switch (leaveMapDirection) {
-			case MapData::West:
-				pData->mapPos.y = s->mapPos.y + (8 - curMap->connectionData[MapData::West].yOffset) * 16;
-				pData->mapPos.x = (mapIDs[curMap->connectionData[MapData::West].mapID]->width + 8) * 16 - 1;
-				pData->curMapID = curMap->connectionData[MapData::West].mapID;
-				if (s == curSprite) { loadMap(curMap->connectionData[MapData::West].mapID); return true; }
-				break;
-			case MapData::East:
-				pData->mapPos.y = s->mapPos.y + (8 - curMap->connectionData[MapData::East].yOffset) * 16;
-				pData->mapPos.x = 16 * 8;
-				pData->curMapID = curMap->connectionData[MapData::East].mapID;
-				if (s == curSprite) { loadMap(curMap->connectionData[MapData::East].mapID); return true; }
-				break;
-			case MapData::North:
-				pData->mapPos.y = (mapIDs[curMap->connectionData[MapData::North].mapID]->height + 8) * 16 - 1;
-				pData->mapPos.x = s->mapPos.x + (8 - curMap->connectionData[MapData::North].xOffset) * 16;
-				pData->curMapID = curMap->connectionData[MapData::North].mapID;
-				if (s == curSprite) { loadMap(curMap->connectionData[MapData::North].mapID); return true; }
-				break;
-			case MapData::South:
-				pData->mapPos.y = 16 * 8;
-				pData->mapPos.x = s->mapPos.x + (8 - curMap->connectionData[MapData::South].xOffset) * 16;
-				pData->curMapID = curMap->connectionData[MapData::South].mapID;
-				if (s == curSprite) { loadMap(curMap->connectionData[MapData::South].mapID); return true; }
-			}
-		}
-	}
-	return false;
-}*/
 void checkAndDoMapTransition(Sprite* s) {
 	if (s->gridPos.x < 0 && curMap->connectionData[MapData::West].mapID != -1) {
 		EventManagement::delEvent(EventManagement::addEvent(new WarpEvent(s->gridPos.x, s->gridPos.y, 0, 0,
@@ -294,35 +233,6 @@ void checkAndDoMapTransition(Sprite* s) {
 			0), true, s));
 	}
 }
-/*void relocatePlayer() {
-	leaveMapDirection = checkMapTransition(curSprite);
-	if (leaveMapDirection == MapData::Unknown) {
-		return;
-	}
-	else {
-		switch (leaveMapDirection) {
-		case MapData::West:
-			curSprite->mapPos.y += (8 - curMap->connectionData[MapData::West].yOffset) * 16;
-			loadMap(curMap->connectionData[MapData::West].mapID);
-			curSprite->mapPos.x = (curMap->width + 8) * 16 - 1;
-			break;
-		case MapData::East:
-			curSprite->mapPos.x = 16 * 8;
-			curSprite->mapPos.y += (8 - curMap->connectionData[MapData::East].yOffset) * 16;
-			loadMap(curMap->connectionData[MapData::East].mapID);
-			break;
-		case MapData::North:
-			curSprite->mapPos.x += (8 - curMap->connectionData[MapData::North].xOffset) * 16;
-			loadMap(curMap->connectionData[MapData::North].mapID);
-			curSprite->mapPos.y = (curMap->height + 8) * 16 - 1;
-			break;
-		case MapData::South:
-			curSprite->mapPos.x += (8 - curMap->connectionData[MapData::South].xOffset) * 16;
-			curSprite->mapPos.y = 16 * 8;
-			loadMap(curMap->connectionData[MapData::South].mapID);
-		}
-	}
-}*/
 void WarpSprite(Sprite* s, unsigned char destMapID, char destX, char destY) {
 	if (mapIDs[destMapID] == curMap) {
 		s->mapPos.y = (8 + destY) * 16 + s->mapPos.y % 16;
@@ -400,10 +310,7 @@ int main(int argc, char* args[])
 	{
 		time = SDL_GetTicks();
 
-		//ActiveEvent::RunNextEvent();
 		EventManagement::RunNextEvent();
-
-		//relocatePlayer();
 
 		while (SDL_PollEvent(&e) != 0)
 		{
