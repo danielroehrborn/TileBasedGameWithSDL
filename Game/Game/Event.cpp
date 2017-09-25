@@ -6,6 +6,9 @@ std::vector<Event*> Event::vEvents;
 
 std::queue<ActiveEvent> ActiveEvent::vEventActivationQueue;
 
+std::list<Event*> EventManagement::lEvents;
+std::queue<EventManagement::ActivatedEvent*> EventManagement::lEventActivationQueues[4];
+
 unsigned int StateMachineTriggerEvent::mapEventFlagBitmap[3];
 StateMachineTriggerEvent::MapScriptState* StateMachineTriggerEvent::MapScriptState::mapScriptStates[3];
 

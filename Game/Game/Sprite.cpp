@@ -49,6 +49,7 @@ bool checkCollision(const SDL_Rect& pos) {
 
 extern std::vector<SDL_Rect*> vWarps;
 SDL_Rect newPos, newGridPos;
+extern void checkAndDoMapTransition(Sprite* s);
 const SDL_Rect& Sprite::getFrameCoord() {
 	if (animList.empty()) printf("AnimList empty\n");
 	if (animList.size() == 0) printf("AnimList size 0\n");
@@ -66,7 +67,7 @@ const SDL_Rect& Sprite::getFrameCoord() {
 	newPos.y = mapPos.y + sData->animData[animList.front()]->frames[curAnimFrameNum].move.moveYPixel;
 	newPos.h = mapPos.h;
 	newPos.w = mapPos.w;
-	if ((newPos.x != mapPos.x || newPos.y != mapPos.y) && !checkCollision(newPos)) {
+	if ((newPos.x != mapPos.x || newPos.y != mapPos.y)){// && !checkCollision(newPos)) {
 		mapPos.x = newPos.x;
 		mapPos.y = newPos.y;
 		newGridPos.x = (newPos.x / 16) - 8;
@@ -74,7 +75,8 @@ const SDL_Rect& Sprite::getFrameCoord() {
 		if (newGridPos.x != gridPos.x || newGridPos.y != gridPos.y) {
 			gridPos.x = newGridPos.x;
 			gridPos.y = newGridPos.y;
-			Event::checkCollision(this);
+			//Event::checkCollision(this);
+			checkAndDoMapTransition(this);
 			//checkForCollision();
 		}
 	}

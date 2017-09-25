@@ -189,7 +189,7 @@ void loadMap(unsigned const char& mapID) {
 				&curAnimEvent->anims, curAnimEvent->waitBefore, curAnimEvent->waitAfter);
 	}*/
 	//load state machine trigger events
-	const StateMachineTriggerEventData::TriggerEvent* curTriggerEvent;
+	/*const StateMachineTriggerEventData::TriggerEvent* curTriggerEvent;
 	for (eventNum = 0; eventNum < curMap->stateMachineTriggerEvents->numStateMachineTriggerEvents; ++eventNum) {
 		curTriggerEvent = &curMap->stateMachineTriggerEvents->TriggerEventList[eventNum];
 		if (curTriggerEvent->spriteNum != -1)
@@ -198,15 +198,16 @@ void loadMap(unsigned const char& mapID) {
 		else
 			new StateMachineTriggerEvent(curTriggerEvent->xGridPos, curTriggerEvent->yGridPos, curTriggerEvent->mapID,
 				curTriggerEvent->eventFlagBitIndex);
-	}
+	}*/
 	//load map script state if uninitialised
-	if (StateMachineTriggerEvent::MapScriptState::mapScriptStates[mapID] == NULL && curMap->initState != NULL)
+	/*if (StateMachineTriggerEvent::MapScriptState::mapScriptStates[mapID] == NULL && curMap->initState != NULL)
 		StateMachineTriggerEvent::MapScriptState::changeState(mapID, const_cast<StateMachineTriggerEvent::MapScriptState*>(curMap->initState));
 	else if (StateMachineTriggerEvent::MapScriptState::mapScriptStates[mapID] != NULL)
-		StateMachineTriggerEvent::MapScriptState::mapScriptStates[mapID]->init();
+		StateMachineTriggerEvent::MapScriptState::mapScriptStates[mapID]->init();*/
 }
-/*SDL_Rect curGridPos;
-MapData::Position checkMapTransition(const Sprite* s) {
+SDL_Rect curGridPos;
+SpritePersistanceData *pData;
+/*MapData::Position checkMapTransition(const Sprite* s) {
 	curGridPos = s->mapPos;
 	curGridPos.x = (curGridPos.x / 16) - 8;
 	if (curGridPos.x < 0 && curMap->connectionData[MapData::West].mapID != -1) {
@@ -266,8 +267,34 @@ bool relocateSprite(Sprite* s) {
 		}
 	}
 	return false;
+}*/
+void checkAndDoMapTransition(Sprite* s) {
+	if (s->gridPos.x < 0 && curMap->connectionData[MapData::West].mapID != -1) {
+		EventManagement::delEvent(EventManagement::addEvent(new WarpEvent(s->gridPos.x, s->gridPos.y, 0, 0,
+			curMap->connectionData[MapData::West].mapID,
+			mapIDs[curMap->connectionData[MapData::West].mapID]->width - 1,
+			s->gridPos.y + 8 - curMap->connectionData[MapData::West].yOffset), true, s));
+	}
+	else if (s->gridPos.x >= curMap->width && curMap->connectionData[MapData::East].mapID != -1) {
+		EventManagement::delEvent(EventManagement::addEvent(new WarpEvent(s->gridPos.x, s->gridPos.y, 0, 0,
+			curMap->connectionData[MapData::East].mapID,
+			0,
+			s->gridPos.y + 8 - curMap->connectionData[MapData::East].yOffset), true, s));
+	}
+	else if (s->gridPos.y < 0 && curMap->connectionData[MapData::North].mapID != -1) {
+		EventManagement::delEvent(EventManagement::addEvent(new WarpEvent(s->gridPos.x, s->gridPos.y, 0, 0,
+			curMap->connectionData[MapData::North].mapID,
+			s->gridPos.x + 8 - curMap->connectionData[MapData::North].xOffset,
+			mapIDs[curMap->connectionData[MapData::North].mapID]->height - 1), true, s));
+	}
+	else if (s->gridPos.y >= curMap->height && curMap->connectionData[MapData::South].mapID != -1) {
+		EventManagement::delEvent(EventManagement::addEvent(new WarpEvent(s->gridPos.x, s->gridPos.y, 0, 0,
+			curMap->connectionData[MapData::South].mapID,
+			s->gridPos.x + 8 - curMap->connectionData[MapData::South].xOffset,
+			0), true, s));
+	}
 }
-void relocatePlayer() {
+/*void relocatePlayer() {
 	leaveMapDirection = checkMapTransition(curSprite);
 	if (leaveMapDirection == MapData::Unknown) {
 		return;
@@ -296,7 +323,6 @@ void relocatePlayer() {
 		}
 	}
 }*/
-SpritePersistanceData *pData;
 void WarpSprite(Sprite* s, unsigned char destMapID, char destX, char destY) {
 	if (mapIDs[destMapID] == curMap) {
 		s->mapPos.y = (8 + destY) * 16 + s->mapPos.y % 16;
@@ -318,6 +344,26 @@ void WarpSprite(Sprite* s, unsigned char destMapID, char destX, char destY) {
 
 int main(int argc, char* args[])
 {
+	/*Event* e1 = EventManagement::addEvent(new WarpEvent(0, 0, 0, 0, 0, 0, 0, 10, 10));
+	Event* e2 = EventManagement::addEvent(new WarpEvent(1, 1, 1, 1, 1, 1, 1, 11, 11));
+	Event* e3 = EventManagement::addEvent(new WarpEvent(2, 2, 2, 2, 2, 2, 2, 12, 12));
+	Event* e4 = EventManagement::addEvent(new WarpEvent(3, 3, 3, 3, 3, 3, 3, 13, 13));
+	e1->waitBefore = 1; e1->waitAfter = 1;
+	e2->waitBefore = 2; e2->waitAfter = 2;
+	e3->waitBefore = 5; e3->waitAfter = 5;
+	e4->waitBefore = 10; e4->waitAfter = 10;
+	EventManagement::activateEvent(e1, NULL);
+	EventManagement::activateEvent(e2, NULL);
+	EventManagement::activateEvent(e3, NULL, 2);
+	EventManagement::activateEvent(e4, NULL, 2);*/
+	//EventManagement::delEvent(EventManagement::addEvent(new WarpEvent(0, 0, 0, 0, 0, 0, 0, 10, 10)));
+	//for(int i=0;i<100;i++)
+		//EventManagement::RunNextEvent();
+	/*EventManagement::delEvent(e3);
+	EventManagement::delAllEvents();*/
+	//return 0;
+
+
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
 		printf("SDL could not initialize! SDL Error: %s\n", SDL_GetError()); return -1;
 	}
@@ -354,7 +400,8 @@ int main(int argc, char* args[])
 	{
 		time = SDL_GetTicks();
 
-		ActiveEvent::RunNextEvent();
+		//ActiveEvent::RunNextEvent();
+		EventManagement::RunNextEvent();
 
 		//relocatePlayer();
 
@@ -426,10 +473,11 @@ int main(int argc, char* args[])
 			SDL_SetTextureColorMod(tilemapTexture, colred, colgreen, colblue);
 		}
 		else if (keystates[SDL_SCANCODE_KP_5]) {
-			SpritePersistanceData* newPSData = new SpritePersistanceData;
-			vPersistantSprites.push_back(newPSData);
-			curSprite->pData = newPSData;
-			SDL_Delay(500);
+			if (curSprite->pData == NULL) {
+				SpritePersistanceData* newPSData = new SpritePersistanceData;
+				vPersistantSprites.push_back(newPSData);
+				curSprite->pData = newPSData;
+			}
 		}
 		else if (keystates[SDL_SCANCODE_KP_6]) {
 			Sprite* newExplodeBulletRight = new Sprite(&Explosive, true);
@@ -552,7 +600,7 @@ int main(int argc, char* args[])
 					const SDL_Rect* srcTmp = &its->getFrameCoord();
 					//if (its != curSprite) { //new
 
-					/////////////////////////if (relocateSprite(its)) break;
+					///////////////////////////if (relocateSprite(its)) break;
 					//}
 					if (its->objectInUse) {
 						tmp.h = its->mapPos.h;
