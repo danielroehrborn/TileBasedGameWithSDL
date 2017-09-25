@@ -149,6 +149,8 @@ public:
 	void init() {
 		printf("map2 script 1 init, create 1 doNothingEvent (3,3)\n");
 		Event* doNothingEvent = EventManagement::addEvent(new StateMachineTriggerEvent(3, 3, 0, 5), false);
+		Event* changeTileEvent = EventManagement::addEvent(new ChangeBGTileEvent(10, 3, 0, 0, 3, 0), false);
+		EventManagement::delEvent(EventManagement::addEvent(new ChangeBGTileEvent(0, 0, 1, 0, 3, 0), true));
 	}
 	void exit() {
 		printf("map2 script 1 exit\n");

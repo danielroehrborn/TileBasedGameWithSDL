@@ -2,7 +2,16 @@
 #include <queue>
 #include "Event.h"
 
-std::vector<Event*> Event::vEvents;
+extern unsigned const char bghoehe, bgbreite;
+extern unsigned char bgTiles[];
+extern unsigned char bgWalk[];
+
+void ChangeBGTileEvent::handleCollision(Sprite* s) {
+	bgTiles[8 * bgbreite + tileGridY * bgbreite + 8 + tileGridX] = tileData;
+	bgWalk[8 * bgbreite + tileGridY * bgbreite + 8 + tileGridX] = walkData;
+}
+
+//std::vector<Event*> Event::vEvents;
 
 //std::queue<ActiveEvent> ActiveEvent::vEventActivationQueue;
 
@@ -31,9 +40,9 @@ void Event::handleCollision(Sprite* s) {
 	printf("Default handler\n");
 }
 
-void Event::clearEventList() {
+/*void Event::clearEventList() {
 	for (std::vector<Event*>::iterator it = vEvents.begin(); it != vEvents.end(); ++it) {
 		delete *it;
 	}
 	vEvents.clear();
-}
+}*/

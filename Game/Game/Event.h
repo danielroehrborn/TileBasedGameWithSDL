@@ -6,11 +6,11 @@ extern unsigned char curMapID;
 unsigned char bgTiles[];
 class Event {
 public:
-	Event(char x, char y, unsigned char w, unsigned char h, char wBefore = 0, char wAfter = 0) {
+	Event(char x, char y, unsigned char w = 0, unsigned char h = 0, char wBefore = 0, char wAfter = 0) {
 		uniquePos = { x,y,w,h };
 		gridPos = &uniquePos;
 		assignedSprite = NULL;
-		vEvents.push_back(this);
+		//vEvents.push_back(this);
 		waitBefore = wBefore;
 		waitAfter = wAfter;
 		bgTiles[gridPos->x + 8 + (gridPos->y + 8) * 100] = 0;
@@ -18,21 +18,21 @@ public:
 	Event(Sprite* s, char wBefore = 0, char wAfter = 0) {
 		gridPos = &s->gridPos;
 		assignedSprite = s;
-		vEvents.push_back(this);
+		//vEvents.push_back(this);
 		waitBefore = wBefore;
 		waitAfter = wAfter;
 		bgTiles[gridPos->x + 8 + (gridPos->y + 8) * 100] = 0;
 	}
 	virtual void handleCollision(Sprite* s) = 0;
 	//static void checkCollision(Sprite* s);
-	static void clearEventList();
+	//static void clearEventList();
 	virtual Event* clone() const = 0;
 	//private:
 	SDL_Rect* gridPos;
 	SDL_Rect uniquePos;
 	Sprite* assignedSprite;
 	char waitBefore, waitAfter;
-	static std::vector<Event*> vEvents;
+	//static std::vector<Event*> vEvents;
 };
 
 class EventManagement {
@@ -153,10 +153,6 @@ private:
 	unsigned char destMapID;
 	SDL_Rect destPos;
 };
-
-class ChangeMapEvent :public Event {
-
-};
 /*const unsigned char anim2CommandoWalkCircle[] = { 1,2,3,4 };
 const unsigned char anim2AllWalkDown[] = { 2,2,1 };
 const AnimEventData map2AnimEventData = {
@@ -234,14 +230,24 @@ private:
 
 class ChangeBGTileEvent :public Event {
 public:
-	void handleCollision(Sprite* s) {
-		//if s!=representationSprite: 
-		//set bg data
+	ChangeBGTileEvent(unsigned char bgGridX, unsigned char bgGridY, unsigned char bgTileGridX, unsigned char bgTileGridY, unsigned char tileData, unsigned char walkData) :Event(bgGridX, bgGridY) {
+		tileGridX = bgTileGridX;
+		tileGridY = bgTileGridY;
+		this->tileData = tileData;
+		this->walkData = walkData;
+	}
+	void handleCollision(Sprite* s);/* {
+		bgTiles[8 * bgbreite + tileGridY * bgbreite + 8 + tileGridX] = tileData;
+		bgWalk[8 * bgbreite + tileGridY * bgbreite + 8 + tileGridX] = walkData;
+	}*/
+	ChangeBGTileEvent* clone() const {
+		return new ChangeBGTileEvent(gridPos->x, gridPos->y, tileGridX, tileGridY, tileData, walkData);
 	}
 private:
-	unsigned char bgTileIndex;
-	unsigned char bgTileData;
-	unsigned char bgWalkData;
+	unsigned char tileGridX;
+	unsigned char tileGridY;
+	unsigned char tileData;
+	unsigned char walkData;
 };
 
 class ChangeTimeEvent :public Event {
