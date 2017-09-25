@@ -33,12 +33,14 @@ unsigned int resolutionY = (resolutionX / 4) * 3;
 unsigned const char bghoehe = 100, bgbreite = 100;
 unsigned char bgTiles[bghoehe*bgbreite] = {};
 unsigned char bgWalk[bghoehe*bgbreite] = {};
+unsigned char curMapID = 0;
+unsigned char lastMapID = 0;
 
 Sprite* newSprite = NULL;
-void loadMap(unsigned const char& mapID) {
-	static unsigned char lastMapID = mapID;
+void loadMap(unsigned const char& newMapID) {
+	curMapID = newMapID;//static unsigned char lastMapID = mapID;
 	//clear bg map
-	curMap = mapIDs[mapID];
+	curMap = mapIDs[newMapID];
 	for (int i = bghoehe*bgbreite; i--;) {
 		bgTiles[i] = curMap->borderTile;
 		bgWalk[i] = 0;
@@ -150,7 +152,7 @@ void loadMap(unsigned const char& mapID) {
 	}
 	//load persistant sprites
 	for (std::vector<SpritePersistanceData*>::iterator it = vPersistantSprites.begin(); it != vPersistantSprites.end(); it++) {
-		if ((*it)->curMapID == mapID) {//&& (*it) != curSprite->pData) { //new
+		if ((*it)->curMapID == newMapID) {//&& (*it) != curSprite->pData) { //new
 			pData = *it;
 			newSprite = new Sprite(pData->sData, false);
 			newSprite->mapPos = pData->mapPos;
@@ -162,7 +164,7 @@ void loadMap(unsigned const char& mapID) {
 	}
 	if (curSprite == NULL)
 		curSprite = *vSprites.begin();
-	lastMapID = mapID;
+	lastMapID = newMapID;
 
 	unsigned char eventNum;
 	EventManagement::delAllEvents();
@@ -200,10 +202,11 @@ void loadMap(unsigned const char& mapID) {
 				curTriggerEvent->eventFlagBitIndex), false);
 	}*/
 	//load map script state if uninitialised
-	if (StateMachineTriggerEvent::MapScriptState::mapScriptStates[mapID] == NULL && curMap->initState != NULL)
-		StateMachineTriggerEvent::MapScriptState::changeState(mapID, const_cast<StateMachineTriggerEvent::MapScriptState*>(curMap->initState));
-	else if (StateMachineTriggerEvent::MapScriptState::mapScriptStates[mapID] != NULL)
-		StateMachineTriggerEvent::MapScriptState::mapScriptStates[mapID]->init();
+	if (StateMachineTriggerEvent::MapScriptState::mapScriptStates[newMapID] == NULL && curMap->initState != NULL)
+		StateMachineTriggerEvent::MapScriptState::changeState(newMapID, const_cast<StateMachineTriggerEvent::MapScriptState*>(curMap->initState));
+	else if (StateMachineTriggerEvent::MapScriptState::mapScriptStates[newMapID] != NULL)
+		StateMachineTriggerEvent::MapScriptState::mapScriptStates[newMapID]->init();
+	StateMachineTriggerEvent::MapScriptState::mapScriptStates[newMapID]->handleEvents();
 }
 SDL_Rect curGridPos;
 SpritePersistanceData *pData;

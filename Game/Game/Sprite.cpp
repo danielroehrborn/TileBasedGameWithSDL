@@ -75,8 +75,8 @@ const SDL_Rect& Sprite::getFrameCoord() {
 		if (newGridPos.x != gridPos.x || newGridPos.y != gridPos.y) {
 			gridPos.x = newGridPos.x;
 			gridPos.y = newGridPos.y;
-			checkAndDoMapTransition(this);
 			EventManagement::checkCollision(this);
+			checkAndDoMapTransition(this);
 		}
 	}
 	return sData->animData[animList.front()]->frames[curAnimFrameNum].imgPos;

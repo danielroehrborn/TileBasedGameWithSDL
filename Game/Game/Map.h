@@ -23,37 +23,6 @@ public:
 	const TriggerEvent const TriggerEventList[];
 };
 
-class WarpEventData {
-public:
-	class WarpEventPos {
-	public:
-		const char spriteNum;
-		const char xGridPos;
-		const char yGridPos;
-		const unsigned char destMapID;
-		const char destXGridPos;
-		const char destYGridPos;
-	};
-	const unsigned char numWarpEvents;
-	const WarpEventPos const wepList[];
-};
-
-class AnimEventData {
-public:
-	class AnimEventPos {
-	public:
-		const char spriteNum;
-		const char xGridPos;
-		const char yGridPos;
-		const char waitBefore;
-		const char waitAfter;
-		const unsigned char numAnims;
-		const unsigned char* const anims;
-	};
-	const unsigned char numAnimEvents;
-	const AnimEventPos const aepList[];
-};
-
 class MapData {
 public:
 	enum Position { North, South, West, East, Unknown };
@@ -71,9 +40,6 @@ public:
 	const char* pathTileset;
 	unsigned const char height, width;
 	unsigned char* const tileData, *const walkData;
-	const WarpEventData* warpEvents;
-	const AnimEventData* animEvents;
-	const StateMachineTriggerEventData* stateMachineTriggerEvents;
 	const StateMachineTriggerEvent::MapScriptState* initState;
 	const ConnectionData const connectionData[4];
 	unsigned const char borderTile;
@@ -82,10 +48,5 @@ public:
 };
 
 extern const MapData map1Data;
-extern const WarpEventData map1WarpEventData;
-
 extern const MapData map2Data;
-extern const WarpEventData map2WarpEventData;
-
 extern const MapData map3Data;
-extern const WarpEventData map3WarpEventData;

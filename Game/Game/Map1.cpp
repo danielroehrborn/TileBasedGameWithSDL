@@ -56,7 +56,7 @@ class Map1Script2 :public StateMachineTriggerEvent::MapScriptState {
 public:
 	void init() {
 		printf("map1 script 2 init, create 1 doNothingEvent (5,10)\n");
-		Event* doNothingEvent = EventManagement::addEvent(new StateMachineTriggerEvent(5, 10, 0, 5), false);
+		Event* doNothingEvent = EventManagement::addEvent(new StateMachineTriggerEvent(10, 10, 0, 5), false);
 	}
 	void exit() {
 		printf("map1 script 2 exit\n");
@@ -71,8 +71,8 @@ class Map1Script1 :public StateMachineTriggerEvent::MapScriptState {
 public:
 	void init() {
 		printf("map1 init script 1, create 1 warp (10,10), create 1 setFlag5Event (10,5)\n");
-		jumpTopLeft = EventManagement::addEvent(new WarpEvent(10, 10, 0, 0, 0, 5, 5), false);//selbe map nach oben links
-		setFlag5ByWarp = EventManagement::addEvent(new StateMachineTriggerEvent(10, 5, 0, 5), false);
+		jumpTopLeft = EventManagement::addEvent(new WarpEvent(5, 10, 0, 0, 0, 5, 5), false);//selbe map nach oben links
+		setFlag5ByWarp = EventManagement::addEvent(new StateMachineTriggerEvent(8, 10, 0, 5), false);
 	}
 	void exit() {
 		printf("map1 script 1 exit\n");
@@ -87,20 +87,8 @@ public:
 		}
 	}
 };
-const StateMachineTriggerEventData map1StateMachineTriggerEventData = { //spriteNum, xGridPos, yGridPos, mapID, eventFlagBitIndex
-	1,{   {-1,10,5,0,5} }
-};
-const WarpEventData map1WarpEventData = { //spriteNum, xGridPos, yGridPos, destMapID, destXGridPos, destYGridPos
-	7,{{ -1, 10, 10, 0, 5, 5 },{ -1, 6, 20, 1, 16, 0 },{ -1, 7, 20, 1, 17, 0 },{ -1, -1, 12, 2, 9, 2 },
-	{ -1, -1, 13, 2, 9, 3 },{ -1, 50, 2, 2, 0, 7 },{ -1, 50, 3, 2, 0, 8 }}
-};
-const unsigned char anim1HiroWalkCircle[] = { 1,2,3,4 };
-const unsigned char anim1AllWalkDown[] = { 2,2,1 };
-const AnimEventData map1AnimEventData = {// spriteNum, xGridPos, yGridPos, waitBefore, waitAfter, numAnims, *anims
-	2,{{0,0,0,16,16,4,anim1HiroWalkCircle},{-1,5,10,16,16,3,anim1AllWalkDown}}
-};
 const MapData map1Data = {
-	"tilesAnim.bmp", map1hoehe, map1breite, map1tiledata, map1walkdata,	&map1WarpEventData, &map1AnimEventData, &map1StateMachineTriggerEventData, new Map1Script1(),
+	"tilesAnim.bmp", map1hoehe, map1breite, map1tiledata, map1walkdata, new Map1Script1(),
 	{ { -1,0,0 }, //nord //mapID, xOffset, yOffset
 	  { 1,-2,0 }, //süd
 	  { 2,0,18 }, //west
@@ -155,19 +143,22 @@ unsigned char map2walkdata[map2hoehe*map2breite] = {
 	224,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,224,
 	224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224
 };
-const StateMachineTriggerEventData map2StateMachineTriggerEventData = {
-	0,{  }
-};
-const WarpEventData map2WarpEventData = {
-	2,{ { -1, 16, -1, 0, 6, 19 },{ -1, 17, -1, 0, 7, 19 } }
-};
-const unsigned char anim2CommandoWalkCircle[] = { 1,2,3,4 };
-const unsigned char anim2AllWalkDown[] = { 2,2,1 };
-const AnimEventData map2AnimEventData = {
-	2,{ { 0,3,3,16,16,4,anim2CommandoWalkCircle },{ -1,3,5,16,16,3,anim2AllWalkDown } }
+class Map2Script1 :public StateMachineTriggerEvent::MapScriptState {
+	Event* doNothingEvent;
+public:
+	void init() {
+		printf("map2 script 1 init, create 1 doNothingEvent (3,3)\n");
+		Event* doNothingEvent = EventManagement::addEvent(new StateMachineTriggerEvent(3, 3, 0, 5), false);
+	}
+	void exit() {
+		printf("map2 script 1 exit\n");
+	}
+	void handleEvents() {
+		printf("map2 script 1 handleEvents\n");
+	}
 };
 const MapData map2Data = {
-	"fireredtiles.bmp", map2hoehe, map2breite, map2tiledata, map2walkdata, &map2WarpEventData, &map2AnimEventData, &map2StateMachineTriggerEventData, NULL,
+	"fireredtiles.bmp", map2hoehe, map2breite, map2tiledata, map2walkdata, new Map2Script1(),
 	{ { 0,18,0 },{ -1,0,0 },{ -1,0,0 },{ -1,0,0 } }, map2border, 4,
 	{ { &Commandos,{ 9, 7, 0, 0 }, 0 },{ &Commandos,{ 9,5,0,0 } ,2 },{ &Commandos,{ 7,6,0,0 } ,4 },{ &Commandos,{ 11,6,0,0 } ,6 } }
 };
@@ -198,17 +189,22 @@ unsigned char map3walkdata[map3hoehe*map3breite] = {
 	0,0,0,0,0,0,0,0,0,224,
 	224,224,224,224,224,224,224,224,224,224
 };
-const StateMachineTriggerEventData map3StateMachineTriggerEventData = {
-	0,{}
-};
-const WarpEventData map3WarpEventData = {
-	4,{ { -1, 10, 2, 0, 0, 12 },{ -1, 10, 3, 0, 0, 13 },{ -1, -1, 7, 0, 49, 2 },{ -1, -1, 8, 0, 49, 3 }}
-};
-const AnimEventData map3AnimEventData = {
-	0,{ }
+class Map3Script1 :public StateMachineTriggerEvent::MapScriptState {
+	Event* doNothingEvent;
+public:
+	void init() {
+		printf("map3 script 1 init, create 1 doNothingEvent (3,3)\n");
+		Event* doNothingEvent = EventManagement::addEvent(new StateMachineTriggerEvent(3, 3, 2, 5), false);
+	}
+	void exit() {
+		printf("map3 script 1 exit\n");
+	}
+	void handleEvents() {
+		printf("map3 script 1 handleEvents\n");
+	}
 };
 const MapData map3Data = {
-	"fireredtiles.bmp", map3hoehe, map3breite, map3tiledata, map3walkdata, &map3WarpEventData, &map3AnimEventData, &map3StateMachineTriggerEventData, NULL,
+	"fireredtiles.bmp", map3hoehe, map3breite, map3tiledata, map3walkdata, new Map3Script1(),
 	{ { -1,0,0 },{ -1,0,0 },{ 0,0,13 },{ 0,0,-2 } }, map3border, 1,
 	{ { &Diablo,{ 5, 3, 0, 0 }, 0 } }
 };

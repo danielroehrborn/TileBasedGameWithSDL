@@ -2,6 +2,7 @@
 #include <list>
 #include <SDL.h>
 #include "Sprite.h"
+extern unsigned char curMapID;
 unsigned char bgTiles[];
 class Event {
 public:
@@ -156,7 +157,16 @@ private:
 class ChangeMapEvent :public Event {
 
 };
-
+/*const unsigned char anim2CommandoWalkCircle[] = { 1,2,3,4 };
+const unsigned char anim2AllWalkDown[] = { 2,2,1 };
+const AnimEventData map2AnimEventData = {
+	2,{ { 0,3,3,16,16,4,anim2CommandoWalkCircle },{ -1,3,5,16,16,3,anim2AllWalkDown } }
+};
+const unsigned char anim1HiroWalkCircle[] = { 1,2,3,4 };
+const unsigned char anim1AllWalkDown[] = { 2,2,1 };
+const AnimEventData map1AnimEventData = {// spriteNum, xGridPos, yGridPos, waitBefore, waitAfter, numAnims, *anims
+2,{{0,0,0,16,16,4,anim1HiroWalkCircle},{-1,5,10,16,16,3,anim1AllWalkDown}}
+};*/
 class ChangeAnimEvent :public Event {
 public:
 	ChangeAnimEvent(char x, char y, unsigned char numAnims, const unsigned char* const * anims, char wBefore, char wAfter) :Event(x, y, 0, 0, wBefore, wAfter) {
@@ -208,10 +218,10 @@ public:
 		printf("Event\n");
 		if (assignedSprite != NULL) assignedSprite->objectInUse = false;
 		mapEventFlagBitmap[mapID] |= 1 << eventFlagBitIndex;
-		if (MapScriptState::mapScriptStates[mapID] != NULL)
+		if (mapID == curMapID && MapScriptState::mapScriptStates[mapID] != NULL)
 			MapScriptState::mapScriptStates[mapID]->handleEvents();
 	}
-	StateMachineTriggerEvent* clone() const { 
+	StateMachineTriggerEvent* clone() const {
 		if (assignedSprite != NULL)
 			return new StateMachineTriggerEvent(assignedSprite, mapID, eventFlagBitIndex);
 		return new StateMachineTriggerEvent(uniquePos.x, uniquePos.y, mapID, eventFlagBitIndex);
