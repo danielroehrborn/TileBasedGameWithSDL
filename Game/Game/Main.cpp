@@ -126,11 +126,10 @@ void loadMap(unsigned const char& newMapID) {
 	}
 	tilemapTexture = SDL_CreateTextureFromSurface(renderer, surface);
 	SDL_FreeSurface(surface);
-	//delete all sprites except current player sprite
+	//delete all sprites
 	SpritePersistanceData* pData, *curSpritePData = curSprite != NULL ? curSprite->pData : NULL;
 	if (vSprites.size() > 0)
 		for (std::vector<Sprite*>::iterator it = vSprites.begin(); it != vSprites.end(); it++) {
-			//if (*it != curSprite) { //new
 			if ((*it)->pData != NULL && (*it)->pData->curMapID == lastMapID) {
 				pData = (*it)->pData;
 				pData->sData = (*it)->sData;
@@ -139,11 +138,10 @@ void loadMap(unsigned const char& newMapID) {
 				pData->curAnim = (*it)->animList.front();
 			}
 			delete *it;
-			//}
 		}
 	vSprites.clear();
 	curSprite = NULL;//new
-	//load new map sprites
+	//load new map sprites -> zukünftig in state machine
 	for (unsigned char spriteNum = 0; spriteNum < curMap->numSprites; ++spriteNum) {
 		newSprite = new Sprite(curMap->sprites[spriteNum].sprite, false);
 		newSprite->setPos((curMap->sprites[spriteNum].mapPos.x + 8) * 16, (curMap->sprites[spriteNum].mapPos.y + 8) * 16);
@@ -152,7 +150,7 @@ void loadMap(unsigned const char& newMapID) {
 	}
 	//load persistant sprites
 	for (std::vector<SpritePersistanceData*>::iterator it = vPersistantSprites.begin(); it != vPersistantSprites.end(); it++) {
-		if ((*it)->curMapID == newMapID) {//&& (*it) != curSprite->pData) { //new
+		if ((*it)->curMapID == newMapID) {
 			pData = *it;
 			newSprite = new Sprite(pData->sData, false);
 			newSprite->mapPos = pData->mapPos;
@@ -393,8 +391,8 @@ int main(int argc, char* args[])
 			Sprite* newExplodeBulletRight = new Sprite(&Explosive, true);
 			newExplodeBulletRight->setPos(curSprite->mapPos.x, curSprite->mapPos.y);
 			vSprites.push_back(newExplodeBulletRight);
-			const unsigned char explosivemove[] = { 0,0,1 };
-			newExplodeBulletRight->pushAnim(3, explosivemove);
+			std::vector<unsigned char> explosivemove = { 0,0,1 };
+			newExplodeBulletRight->pushAnim(3, &explosivemove);
 			//curSprite = newExplodeBulletRight;
 			SDL_Delay(50);
 		}
@@ -409,8 +407,9 @@ int main(int argc, char* args[])
 				Sprite* newHyperLightDrifter = new Sprite(&HyperLightDrifter, true);
 				newHyperLightDrifter->setPos((10 + 8) * 16, (10 + 8) * 16);
 				vSprites.push_back(newHyperLightDrifter);
-				const unsigned char hyperlightdriftermove[] = { 7,7,1,1,5,5,3,3,7,7,1,1,5,5,3,3 };
-				newHyperLightDrifter->pushAnim(16, hyperlightdriftermove);
+				std::vector<unsigned char> hyperlightdriftermove = { 7, 7, 1, 1, 5, 5, 3, 3, 7, 7, 1, 1, 5, 5, 3, 3 };
+				//const unsigned char hyperlightdriftermove[] = { 7,7,1,1,5,5,3,3,7,7,1,1,5,5,3,3 };
+				newHyperLightDrifter->pushAnim(16, &hyperlightdriftermove);
 			}
 		}
 		else if (keystates[SDL_SCANCODE_KP_3]) {
@@ -508,10 +507,7 @@ int main(int argc, char* args[])
 				its = *it;
 				if ((abs(its->mapPos.x - curSprite->mapPos.x) < 250) && (abs(its->mapPos.y - curSprite->mapPos.y) < 250)) {
 					const SDL_Rect* srcTmp = &its->getFrameCoord();
-					//if (its != curSprite) { //new
 
-					///////////////////////////if (relocateSprite(its)) break;
-					//}
 					if (its->objectInUse) {
 						tmp.h = its->mapPos.h;
 						tmp.w = its->mapPos.w;

@@ -10,7 +10,6 @@ public:
 		uniquePos = { x,y,w,h };
 		gridPos = &uniquePos;
 		assignedSprite = NULL;
-		//vEvents.push_back(this);
 		waitBefore = wBefore;
 		waitAfter = wAfter;
 		bgTiles[gridPos->x + 8 + (gridPos->y + 8) * 100] = 0;
@@ -18,21 +17,17 @@ public:
 	Event(Sprite* s, char wBefore = 0, char wAfter = 0) {
 		gridPos = &s->gridPos;
 		assignedSprite = s;
-		//vEvents.push_back(this);
 		waitBefore = wBefore;
 		waitAfter = wAfter;
 		bgTiles[gridPos->x + 8 + (gridPos->y + 8) * 100] = 0;
 	}
 	virtual void handleCollision(Sprite* s) = 0;
-	//static void checkCollision(Sprite* s);
-	//static void clearEventList();
 	virtual Event* clone() const = 0;
 	//private:
 	SDL_Rect* gridPos;
 	SDL_Rect uniquePos;
 	Sprite* assignedSprite;
 	char waitBefore, waitAfter;
-	//static std::vector<Event*> vEvents;
 };
 
 class EventManagement {
@@ -153,36 +148,42 @@ private:
 	unsigned char destMapID;
 	SDL_Rect destPos;
 };
-/*const unsigned char anim2CommandoWalkCircle[] = { 1,2,3,4 };
-const unsigned char anim2AllWalkDown[] = { 2,2,1 };
-const AnimEventData map2AnimEventData = {
-	2,{ { 0,3,3,16,16,4,anim2CommandoWalkCircle },{ -1,3,5,16,16,3,anim2AllWalkDown } }
-};
-const unsigned char anim1HiroWalkCircle[] = { 1,2,3,4 };
-const unsigned char anim1AllWalkDown[] = { 2,2,1 };
-const AnimEventData map1AnimEventData = {// spriteNum, xGridPos, yGridPos, waitBefore, waitAfter, numAnims, *anims
-2,{{0,0,0,16,16,4,anim1HiroWalkCircle},{-1,5,10,16,16,3,anim1AllWalkDown}}
-};*/
 class ChangeAnimEvent :public Event {
 public:
-	ChangeAnimEvent(char x, char y, unsigned char numAnims, const unsigned char* const * anims, char wBefore, char wAfter) :Event(x, y, 0, 0, wBefore, wAfter) {
+	ChangeAnimEvent(char x, char y, unsigned char numAnims, std::vector<unsigned char>* anims, Sprite* movingSprite = NULL, bool autoDel = false, char wBefore = 0, char wAfter = 0) :Event(x, y, 0, 0, wBefore, wAfter) {
+		this->movingSprite = movingSprite;
+		setAutoDel = autoDel;
 		this->numAnims = numAnims;
 		this->anims = anims;
 	}
-	ChangeAnimEvent(Sprite* s, unsigned char numAnims, const unsigned char* const * anims, char wBefore, char wAfter) :Event(s, wBefore, wAfter) {
+	ChangeAnimEvent(Sprite* s, unsigned char numAnims, std::vector<unsigned char>* anims, Sprite* movingSprite = NULL, bool autoDel = false, char wBefore = 0, char wAfter = 0) :Event(s, wBefore, wAfter) {
+		this->movingSprite = movingSprite;
+		setAutoDel = autoDel;
 		this->numAnims = numAnims;
 		this->anims = anims;
 	}
 	void handleCollision(Sprite* s) {
-		if (assignedSprite != NULL) s = assignedSprite;
+		if (movingSprite != NULL) s = movingSprite;
 		if (numAnims == 1)
-			s->pushAnim(*anims[0]);
+			s->pushAnim((*anims)[0]);
 		else
-			s->pushAnim(numAnims, *anims);
+			s->pushAnim(numAnims, anims);
+		s->autoDelete = setAutoDel;
+	}
+	ChangeAnimEvent* clone() const {
+		if (assignedSprite != NULL)
+			return new ChangeAnimEvent(assignedSprite, numAnims, anims, movingSprite, setAutoDel, waitBefore, waitAfter);
+		return new ChangeAnimEvent(uniquePos.x, uniquePos.y, numAnims, anims, movingSprite, setAutoDel, waitBefore, waitAfter);
+	}
+	~ChangeAnimEvent() {
+		delete anims;
 	}
 private:
+	Sprite* movingSprite;
+	bool setAutoDel;
 	unsigned char numAnims;
-	const unsigned char* const * anims;
+	std::vector<unsigned char>* anims;
+	//unsigned char** anims;
 };
 
 class StateMachineTriggerEvent :public Event {
@@ -202,25 +203,25 @@ public:
 		}
 		static MapScriptState* mapScriptStates[];
 	};
-	StateMachineTriggerEvent(char x, char y, unsigned char mapID, unsigned char eventFlagBitIndex) :Event(x, y, 0, 0, 0, 0) {
+	StateMachineTriggerEvent(char x, char y, unsigned char mapID, unsigned char eventFlagBitIndex, char wBefore = 0, char wAfter = 0) :Event(x, y, 0, 0, wBefore, wAfter) {
 		this->eventFlagBitIndex = eventFlagBitIndex;
 		this->mapID = mapID;
 	}
-	StateMachineTriggerEvent(Sprite* s, unsigned char mapID, unsigned char eventFlagBitIndex) :Event(s, 0, 0) {
+	StateMachineTriggerEvent(Sprite* s, unsigned char mapID, unsigned char eventFlagBitIndex, char wBefore = 0, char wAfter = 0) :Event(s, wBefore, wAfter) {
 		this->eventFlagBitIndex = eventFlagBitIndex;
 		this->mapID = mapID;
 	}
 	void handleCollision(Sprite* s) {
 		printf("Event\n");
-		if (assignedSprite != NULL) assignedSprite->objectInUse = false;
+		if (assignedSprite != NULL) assignedSprite->autoDelete = true;//assignedSprite->objectInUse = false;
 		mapEventFlagBitmap[mapID] |= 1 << eventFlagBitIndex;
 		if (mapID == curMapID && MapScriptState::mapScriptStates[mapID] != NULL)
 			MapScriptState::mapScriptStates[mapID]->handleEvents();
 	}
 	StateMachineTriggerEvent* clone() const {
 		if (assignedSprite != NULL)
-			return new StateMachineTriggerEvent(assignedSprite, mapID, eventFlagBitIndex);
-		return new StateMachineTriggerEvent(uniquePos.x, uniquePos.y, mapID, eventFlagBitIndex);
+			return new StateMachineTriggerEvent(assignedSprite, mapID, eventFlagBitIndex, waitBefore, waitAfter);
+		return new StateMachineTriggerEvent(uniquePos.x, uniquePos.y, mapID, eventFlagBitIndex, waitBefore, waitAfter);
 	}
 	static unsigned int mapEventFlagBitmap[];
 	unsigned char mapID;

@@ -33,7 +33,7 @@ public:
 		SDL_FreeSurface(tmpSurface);
 		return tmpTexture;
 	}*/
-	void pushAnim(const unsigned char& index);/* {
+	void pushAnim(unsigned char index);/* {
 		if (animList.size() == 1) {
 			animList.pop();
 			frameCnt = 0;
@@ -43,7 +43,7 @@ public:
 		mapPos.h = sData->animData[animList.front()]->list[curAnimFrameNum].frame.h;
 		mapPos.w = sData->animData[animList.front()]->list[curAnimFrameNum].frame.w;
 	}*/
-	void pushAnim(const unsigned char& num, const unsigned char* data);/* {
+	void pushAnim(const unsigned char& num, std::vector<unsigned char>* data);/* {
 		for (int i = 0; i < num; i++) {
 			animList.push(data[i]);
 		}
@@ -58,11 +58,11 @@ public:
 	}*/
 	~Sprite() {};
 	SDL_Rect mapPos;
-	SDL_Rect gridPos;
+	SDL_Rect gridPos;//pointer machen, uniquePos wenn nicht an anderes sprite pos gebunden
 	bool objectInUse;
 	char curAnimFrameNum;
 	char frameDurCnt;
 	bool autoDelete;
-	std::queue<char> animList;
+	std::queue<unsigned char> animList;
 	static SDL_Texture* textures[6];
 };
