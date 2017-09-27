@@ -103,6 +103,7 @@ class Map1SwitchSpriteScript :public StateMachineTriggerEvent::MapScriptState {
 	Sprite* switchSprite;
 	Event* spriteTriggerBit30;
 	Event* spriteAngelHochGehenAnimUndAutoDel;
+	bool darkerLight = false;
 public:
 	void init() {
 		/*StateMachineTriggerEvent::mapEventFlagBitmap[0] = 0;////////hiro
@@ -121,6 +122,7 @@ public:
 		spriteAngelHochGehenAnimUndAutoDel = EventManagement::addEvent(new ChangeAnimEvent(switchSprite, vAnim_Angel_WalkUp->size(), vAnim_Angel_WalkUp, switchSprite, true), false);
 		//sprite event: setze trigger bit 30 mit waitBefore (ca. halbe angel anim)
 		spriteTriggerBit30 = EventManagement::addEvent(new StateMachineTriggerEvent(switchSprite, 0, 30, 40), false);*/
+		darkerLight = 0;
 		StateMachineTriggerEvent::mapEventFlagBitmap[0] = 0;
 		printf("scrip init, create switch-sprite, add trigger-event(bit30)\n");
 		switchSprite = new Sprite(&Switch, false);
@@ -134,7 +136,8 @@ public:
 										 //sprite event: add animations: angel, gehe hoch außerdem set autoDel
 		spriteAngelHochGehenAnimUndAutoDel = EventManagement::addEvent(new ChangeAnimEvent(switchSprite, vAnim_Angel_WalkUp->size(), vAnim_Angel_WalkUp, switchSprite, true), false);
 		//sprite event: setze trigger bit 30 mit waitBefore (ca. halbe angel anim)
-		spriteTriggerBit30 = EventManagement::addEvent(new StateMachineTriggerEvent(switchSprite, 0, 30, 152), false);
+		//spriteTriggerBit30 = EventManagement::addEvent(new StateMachineTriggerEvent(switchSprite, 0, 30, 152), false); sofort auslösen
+		spriteTriggerBit30 = EventManagement::addEvent(new StateMachineTriggerEvent(switchSprite, 0, 30), false);
 
 		/*printf("map1 init script 1, create 1 warp (10,10), create 1 setFlag5Event (10,5)\n");
 		jumpTopLeft = EventManagement::addEvent(new WarpEvent(5, 10, 0, 0, 0, 5, 5), false);//selbe map nach oben links
@@ -147,8 +150,24 @@ public:
 	void handleEvents() {
 		printf("map1 script 1 handleEvents\n");
 		if (StateMachineTriggerEvent::mapEventFlagBitmap[0] & 1 << 30) {
-			EventManagement::delEvent(EventManagement::addEvent(new ChangeTimeEvent(0, 0, 255, 197, 157), true));
-			EventManagement::delEvent(spriteAngelHochGehenAnimUndAutoDel);
+			if (spriteAngelHochGehenAnimUndAutoDel != NULL) {//mehrfachaufruf, nicht nötig bei state change
+				EventManagement::delEvent(spriteAngelHochGehenAnimUndAutoDel);
+				spriteAngelHochGehenAnimUndAutoDel = NULL;
+			}
+			if (spriteTriggerBit30 != NULL) {
+				EventManagement::delEvent(spriteTriggerBit30);
+				spriteTriggerBit30 = NULL;
+			}
+			if (!darkerLight) {
+				darkerLight = true;
+				EventManagement::delEvent(EventManagement::addEvent(new ChangeTimeEvent(0, 0, 255, 244, 236, 145), true));
+				EventManagement::delEvent(EventManagement::addEvent(new ChangeTimeEvent(0, 0, 255, 233, 217, 15), true));
+				EventManagement::delEvent(EventManagement::addEvent(new ChangeTimeEvent(0, 0, 255, 222, 198, 15), true));
+				EventManagement::delEvent(EventManagement::addEvent(new ChangeTimeEvent(0, 0, 255, 211, 179, 15), true));
+				EventManagement::delEvent(EventManagement::addEvent(new ChangeTimeEvent(0, 0, 255, 197, 157, 15), true));
+			}
+			//EventManagement::delEvent(EventManagement::addEvent(new ChangeTimeEvent(0, 0, 255, 197, 157, 150), true));
+			//weitere dunkelheitsstufen
 		}
 		/*EventManagement::delEvent(jumpTopLeft);
 		EventManagement::delEvent(setFlag5ByWarp);

@@ -12,14 +12,14 @@ public:
 		assignedSprite = NULL;
 		waitBefore = wBefore;
 		waitAfter = wAfter;
-		bgTiles[gridPos->x + 8 + (gridPos->y + 8) * 100] = 0;
+		//bgTiles[gridPos->x + 8 + (gridPos->y + 8) * 100] = 0;
 	}
 	Event(Sprite* s, char wBefore = 0, char wAfter = 0) {
 		gridPos = &s->gridPos;
 		assignedSprite = s;
 		waitBefore = wBefore;
 		waitAfter = wAfter;
-		bgTiles[gridPos->x + 8 + (gridPos->y + 8) * 100] = 0;
+		//bgTiles[gridPos->x + 8 + (gridPos->y + 8) * 100] = 0;
 	}
 	virtual void handleCollision(Sprite* s) = 0;
 	virtual Event* clone() const = 0;
@@ -56,8 +56,8 @@ public:
 		Sprite* sTmp;
 		for (std::list<Event*>::iterator it = lEvents.begin(); it != lEvents.end(); ++it) {
 			sTmp = (*it)->assignedSprite;
-			if ((sTmp != NULL && sTmp != s && s->gridPos.x == sTmp->gridPos.x && s->gridPos.y == sTmp->gridPos.y) ||
-				(sTmp == NULL && s->gridPos.x == (*it)->uniquePos.x && s->gridPos.y == (*it)->uniquePos.y))
+			if ((sTmp != NULL && sTmp != s && (s->gridPos.x == sTmp->gridPos.x || s->gridPos.x == sTmp->gridPos.x - 1) && (s->gridPos.y == sTmp->gridPos.y || s->gridPos.y == sTmp->gridPos.y - 1)) ||
+				(sTmp == NULL && (s->gridPos.x == (*it)->uniquePos.x || s->gridPos.x == (*it)->uniquePos.x - 1) && (s->gridPos.y == (*it)->uniquePos.y || s->gridPos.y == (*it)->uniquePos.y - 1)))
 				activateEvent(*it, s);
 		}
 	}
@@ -250,7 +250,7 @@ private:
 
 class ChangeTimeEvent :public Event {
 public:
-	ChangeTimeEvent(unsigned char x, unsigned char y, unsigned char colRed, unsigned char colGreen, unsigned char colBlue) :Event(x, y) {
+	ChangeTimeEvent(unsigned char x, unsigned char y, unsigned char colRed, unsigned char colGreen, unsigned char colBlue, char wBefore = 0, char wAfter = 0) :Event(x, y, 0, 0, wBefore, wAfter) {
 		this->colRed = colRed;
 		this->colGreen = colGreen;
 		this->colBlue = colBlue;
@@ -261,6 +261,6 @@ private:
 	unsigned char colBlue;
 	void handleCollision(Sprite* s);
 	ChangeTimeEvent* clone() const {
-		return new ChangeTimeEvent(gridPos->x, gridPos->y, colRed, colGreen, colBlue);
+		return new ChangeTimeEvent(gridPos->x, gridPos->y, colRed, colGreen, colBlue, waitBefore, waitAfter);
 	}
 };
