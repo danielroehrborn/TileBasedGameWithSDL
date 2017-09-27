@@ -11,6 +11,7 @@
 #include "Diablo.h"
 #include "HyperLightDrifter.h"
 #include "Explosive.h"
+#include "Switch.h"
 #include "Ent.h"
 #include "Event.h"
 

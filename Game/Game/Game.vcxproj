@@ -135,6 +135,7 @@
     <ClInclude Include="Hiro.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="SpriteData.h" />
+    <ClInclude Include="Switch.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

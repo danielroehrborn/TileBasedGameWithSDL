@@ -64,5 +64,5 @@ public:
 	char frameDurCnt;
 	bool autoDelete;
 	std::queue<unsigned char> animList;
-	static SDL_Texture* textures[6];
+	static SDL_Texture* textures[7];
 };

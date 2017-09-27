@@ -5,6 +5,7 @@
 #include "Commandos.h"
 #include "Diablo.h"
 #include "Explosive.h"
+#include "Switch.h"
 
 extern std::vector<Sprite*> vSprites;
 
@@ -104,7 +105,7 @@ class Map1SwitchSpriteScript :public StateMachineTriggerEvent::MapScriptState {
 	Event* spriteAngelHochGehenAnimUndAutoDel;
 public:
 	void init() {
-		StateMachineTriggerEvent::mapEventFlagBitmap[0] = 0;
+		/*StateMachineTriggerEvent::mapEventFlagBitmap[0] = 0;////////hiro
 		printf("scrip init, create switch-sprite, add trigger-event(bit30)\n");
 		switchSprite = new Sprite(&Hiro, false);
 		switchSprite->setPos((20 + 8) * 16, (10 + 8) * 16);
@@ -119,7 +120,21 @@ public:
 		//sprite event: add animations: angel, gehe hoch außerdem set autoDel
 		spriteAngelHochGehenAnimUndAutoDel = EventManagement::addEvent(new ChangeAnimEvent(switchSprite, vAnim_Angel_WalkUp->size(), vAnim_Angel_WalkUp, switchSprite, true), false);
 		//sprite event: setze trigger bit 30 mit waitBefore (ca. halbe angel anim)
-		spriteTriggerBit30 = EventManagement::addEvent(new StateMachineTriggerEvent(switchSprite, 0, 30, 40), false);
+		spriteTriggerBit30 = EventManagement::addEvent(new StateMachineTriggerEvent(switchSprite, 0, 30, 40), false);*/
+		StateMachineTriggerEvent::mapEventFlagBitmap[0] = 0;
+		printf("scrip init, create switch-sprite, add trigger-event(bit30)\n");
+		switchSprite = new Sprite(&Switch, false);
+		switchSprite->setPos((20 + 8) * 16, (10 + 8) * 16);
+		switchSprite->pushAnim(0);
+		vSprites.push_back(switchSprite);
+
+		std::vector<unsigned char>* vAnim_Angel_WalkUp = new std::vector<unsigned char>;
+		vAnim_Angel_WalkUp->push_back(1);//angel
+		vAnim_Angel_WalkUp->push_back(2);//walk up
+										 //sprite event: add animations: angel, gehe hoch außerdem set autoDel
+		spriteAngelHochGehenAnimUndAutoDel = EventManagement::addEvent(new ChangeAnimEvent(switchSprite, vAnim_Angel_WalkUp->size(), vAnim_Angel_WalkUp, switchSprite, true), false);
+		//sprite event: setze trigger bit 30 mit waitBefore (ca. halbe angel anim)
+		spriteTriggerBit30 = EventManagement::addEvent(new StateMachineTriggerEvent(switchSprite, 0, 30, 152), false);
 
 		/*printf("map1 init script 1, create 1 warp (10,10), create 1 setFlag5Event (10,5)\n");
 		jumpTopLeft = EventManagement::addEvent(new WarpEvent(5, 10, 0, 0, 0, 5, 5), false);//selbe map nach oben links

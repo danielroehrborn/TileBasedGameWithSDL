@@ -92,7 +92,7 @@ SDL_Texture* Sprite::loadTexture(const char* path) {
 	return tmpTexture;
 }
 
-SDL_Texture* Sprite::textures[6];
+SDL_Texture* Sprite::textures[7];
 //SDL_Rect tmpZero = { 0,0,0,0 };
 Sprite::Sprite(const SpriteData* sd, const bool& autoDel) {
 	sData = sd;
