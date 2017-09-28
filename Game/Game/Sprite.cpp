@@ -104,18 +104,6 @@ const SDL_Rect& Sprite::getFrameCoord() {
 					newPos.y = mapPos.y;
 					newPos.x = (newPos.x + newPos.w / 4) % 16 > 8 ? newPos.x + 1 : (newPos.x + newPos.w / 4) % 16 > 0 ? newPos.x - 1 : newPos.x;
 				}
-				/*if ((newPos.x != mapPos.x || newPos.y != mapPos.y) && !checkCollision(newPos)) {
-					mapPos.x = newPos.x;
-					mapPos.y = newPos.y;
-					newGridPos.x = (newPos.x / 16) - 8;
-					newGridPos.y = (newPos.y / 16) - 8;
-					if (newGridPos.x != gridPos.x || newGridPos.y != gridPos.y) {
-						gridPos.x = newGridPos.x;
-						gridPos.y = newGridPos.y;
-						EventManagement::checkCollision(this);
-						checkAndDoMapTransition(this);
-					}
-				}*/
 			}
 		}
 	} while (doSpriteSlide--);

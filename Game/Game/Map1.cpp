@@ -126,7 +126,7 @@ public:
 		StateMachineTriggerEvent::mapEventFlagBitmap[0] = 0;
 		printf("scrip init, create switch-sprite, add trigger-event(bit30)\n");
 		switchSprite = new Sprite(&Switch, false);
-		switchSprite->setPos((26 + 8) * 16+8, (8 + 8) * 16+8);
+		switchSprite->setPos((26 + 8) * 16 + 8, (8 + 8) * 16 + 8);
 		switchSprite->pushAnim(0);
 		vSprites.push_back(switchSprite);
 
@@ -160,11 +160,11 @@ public:
 			}
 			if (!darkerLight) {
 				darkerLight = true;
-				EventManagement::delEvent(EventManagement::addEvent(new ChangeTimeEvent(0, 0, 255, 244, 236, 145), true));
-				EventManagement::delEvent(EventManagement::addEvent(new ChangeTimeEvent(0, 0, 255, 233, 217, 15), true));
-				EventManagement::delEvent(EventManagement::addEvent(new ChangeTimeEvent(0, 0, 255, 222, 198, 15), true));
-				EventManagement::delEvent(EventManagement::addEvent(new ChangeTimeEvent(0, 0, 255, 211, 179, 15), true));
-				EventManagement::delEvent(EventManagement::addEvent(new ChangeTimeEvent(0, 0, 255, 197, 157, 15), true));
+				EventManagement::delEvent(EventManagement::addEvent(new ChangeTimeEvent(0, 0, 255, 244, 236, 145), true, 0, 1));
+				EventManagement::delEvent(EventManagement::addEvent(new ChangeTimeEvent(0, 0, 255, 233, 217, 15), true, 0, 1));
+				EventManagement::delEvent(EventManagement::addEvent(new ChangeTimeEvent(0, 0, 255, 222, 198, 15), true, 0, 1));
+				EventManagement::delEvent(EventManagement::addEvent(new ChangeTimeEvent(0, 0, 255, 211, 179, 15), true, 0, 1));
+				EventManagement::delEvent(EventManagement::addEvent(new ChangeTimeEvent(0, 0, 255, 197, 157, 15), true, 0, 1));
 			}
 			//EventManagement::delEvent(EventManagement::addEvent(new ChangeTimeEvent(0, 0, 255, 197, 157, 150), true));
 			//weitere dunkelheitsstufen

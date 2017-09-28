@@ -45,10 +45,10 @@ public:
 		Sprite* param;
 		bool executed = false;
 	};
-	static Event* addEvent(Event* newEvent, bool runNow = true, Sprite* param = NULL) {
+	static Event* addEvent(Event* newEvent, bool runNow = true, Sprite* param = NULL, unsigned char queueID = 0) {
 		lEvents.push_back(newEvent);
 		if (runNow) {
-			activateEvent(newEvent, param);
+			activateEvent(newEvent, param, queueID);
 		}
 		return newEvent;
 	}
@@ -57,22 +57,13 @@ public:
 		for (std::list<Event*>::iterator it = lEvents.begin(); it != lEvents.end(); ++it) {
 			sTmp = (*it)->assignedSprite;
 			if (
-					(sTmp != NULL && sTmp != s &&
-						(
-							(s->mapPos.x >= sTmp->mapPos.x - sTmp->mapPos.w / 2) && (s->mapPos.x <= sTmp->mapPos.x + sTmp->mapPos.w / 2)
-						) &&
-						(
-							(s->mapPos.y + s->mapPos.h / 2 > sTmp->mapPos.y - sTmp->mapPos.h / 2) && (s->mapPos.y /*+ s->mapPos.h / 3*/ <= sTmp->mapPos.y + sTmp->mapPos.h )
-						)
-					)||
-					(sTmp == NULL &&
-						(
-							(s->mapPos.x >= (*it)->uniquePos.x - (*it)->uniquePos.w / 2) && (s->mapPos.x <= (*it)->uniquePos.x + (*it)->uniquePos.w / 2)
-						) &&
-						(
-							(s->mapPos.y >= (*it)->uniquePos.y - (*it)->uniquePos.h / 2) && (s->mapPos.y <= (*it)->uniquePos.y + (*it)->uniquePos.h / 2)
-						)
-					)
+				(sTmp != NULL && sTmp != s &&
+				((s->mapPos.x >= sTmp->mapPos.x - sTmp->mapPos.w / 2) && (s->mapPos.x <= sTmp->mapPos.x + sTmp->mapPos.w / 2)) &&
+					((s->mapPos.y + s->mapPos.h / 2 > sTmp->mapPos.y - sTmp->mapPos.h / 2) && (s->mapPos.y <= sTmp->mapPos.y + sTmp->mapPos.h)))
+				||
+				(sTmp == NULL &&
+				((s->mapPos.x >= (*it)->uniquePos.x - (*it)->uniquePos.w / 2) && (s->mapPos.x <= (*it)->uniquePos.x + (*it)->uniquePos.w / 2)) &&
+					((s->mapPos.y >= (*it)->uniquePos.y - (*it)->uniquePos.h / 2) && (s->mapPos.y <= (*it)->uniquePos.y + (*it)->uniquePos.h / 2)))
 				)
 				/*(s->gridPos.x == sTmp->gridPos.x || s->gridPos.x == sTmp->gridPos.x - 1) &&
 				(s->gridPos.y == sTmp->gridPos.y || s->gridPos.y == sTmp->gridPos.y - 1)) ||
