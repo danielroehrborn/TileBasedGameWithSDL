@@ -126,7 +126,7 @@ public:
 		StateMachineTriggerEvent::mapEventFlagBitmap[0] = 0;
 		printf("scrip init, create switch-sprite, add trigger-event(bit30)\n");
 		switchSprite = new Sprite(&Switch, false);
-		switchSprite->setPos((20 + 8) * 16, (10 + 8) * 16);
+		switchSprite->setPos((26 + 8) * 16+8, (8 + 8) * 16+8);
 		switchSprite->pushAnim(0);
 		vSprites.push_back(switchSprite);
 

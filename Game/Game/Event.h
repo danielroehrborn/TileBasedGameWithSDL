@@ -62,7 +62,7 @@ public:
 							(s->mapPos.x >= sTmp->mapPos.x - sTmp->mapPos.w / 2) && (s->mapPos.x <= sTmp->mapPos.x + sTmp->mapPos.w / 2)
 						) &&
 						(
-							(s->mapPos.y + s->mapPos.h / 2 > sTmp->mapPos.y - sTmp->mapPos.h / 2) && (s->mapPos.y + s->mapPos.h / 2 < sTmp->mapPos.y + sTmp->mapPos.h / 2)
+							(s->mapPos.y + s->mapPos.h / 2 > sTmp->mapPos.y - sTmp->mapPos.h / 2) && (s->mapPos.y /*+ s->mapPos.h / 3*/ <= sTmp->mapPos.y + sTmp->mapPos.h )
 						)
 					)||
 					(sTmp == NULL &&

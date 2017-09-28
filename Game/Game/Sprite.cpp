@@ -16,7 +16,7 @@ SDL_Rect object;
 int bildmitteX, bildmitteY, ursprungX, ursprungY;
 bool checkCollision(const SDL_Rect& pos) {
 	for (int i = pos.y; i < pos.y + pos.h / 2; i++) {
-		for (int j = pos.x - pos.w / 3; j < pos.x + (pos.w / 3); j++) {
+		for (int j = pos.x - pos.w / 4; j < pos.x + (pos.w / 4); j++) {//for (int j = pos.x - pos.w / 3; j < pos.x + (pos.w / 3); j++) {
 			if ((j / 16) < bgbreite && (i / 16) < bghoehe && (bgWalk[(i / 16)*bgbreite + (j / 16)] >> 5) == 7) {
 
 				bildmitteX = (resolutionX / 2);
@@ -26,10 +26,10 @@ bool checkCollision(const SDL_Rect& pos) {
 
 				SDL_SetRenderDrawColor(renderer, 255, 255, 255, 80);
 				SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
-				collision.x = ursprungX + pos.x - pos.w / 3;
+				collision.x = ursprungX + pos.x - pos.w / 4;//collision.x = ursprungX + pos.x - pos.w / 3;
 				collision.y = ursprungY + pos.y;
 				collision.h = pos.h / 2;
-				collision.w = (pos.w / 3) * 2;
+				collision.w = (pos.w / 2);//collision.w = (pos.w / 3) * 2;
 				SDL_RenderDrawRect(renderer, &collision);
 
 				object.x = ursprungX + (j / 16) * 16;
@@ -67,7 +67,7 @@ const SDL_Rect& Sprite::getFrameCoord() {
 	newPos.y = mapPos.y + sData->animData[animList.front()]->frames[curAnimFrameNum].move.moveYPixel;
 	newPos.h = mapPos.h;
 	newPos.w = mapPos.w;
-	if ((newPos.x != mapPos.x || newPos.y != mapPos.y) /*&& !checkCollision(newPos)*/) {
+	/*if ((newPos.x != mapPos.x || newPos.y != mapPos.y) && !checkCollision(newPos)) {
 		mapPos.x = newPos.x;
 		mapPos.y = newPos.y;
 		newGridPos.x = (newPos.x / 16) - 8;
@@ -78,7 +78,47 @@ const SDL_Rect& Sprite::getFrameCoord() {
 			EventManagement::checkCollision(this);
 			checkAndDoMapTransition(this);
 		}
-	}
+	}*/
+	unsigned char doSpriteSlide = 1;
+	do {
+		if ((newPos.x != mapPos.x || newPos.y != mapPos.y)) {
+			if (!checkCollision(newPos)) {
+				mapPos.x = newPos.x;
+				mapPos.y = newPos.y;
+				newGridPos.x = (newPos.x / 16) - 8;
+				newGridPos.y = (newPos.y / 16) - 8;
+				if (newGridPos.x != gridPos.x || newGridPos.y != gridPos.y) {
+					gridPos.x = newGridPos.x;
+					gridPos.y = newGridPos.y;
+					EventManagement::checkCollision(this);
+					checkAndDoMapTransition(this);
+				}
+				break;
+			}
+			else {
+				if (newPos.x != mapPos.x) {
+					newPos.x = mapPos.x;
+					newPos.y = newPos.y % 16 > 7 ? newPos.y + 1 : newPos.y % 16 > 0 ? newPos.y - 1 : newPos.y;
+				}
+				else if (newPos.y != mapPos.y) {
+					newPos.y = mapPos.y;
+					newPos.x = (newPos.x + newPos.w / 4) % 16 > 8 ? newPos.x + 1 : (newPos.x + newPos.w / 4) % 16 > 0 ? newPos.x - 1 : newPos.x;
+				}
+				/*if ((newPos.x != mapPos.x || newPos.y != mapPos.y) && !checkCollision(newPos)) {
+					mapPos.x = newPos.x;
+					mapPos.y = newPos.y;
+					newGridPos.x = (newPos.x / 16) - 8;
+					newGridPos.y = (newPos.y / 16) - 8;
+					if (newGridPos.x != gridPos.x || newGridPos.y != gridPos.y) {
+						gridPos.x = newGridPos.x;
+						gridPos.y = newGridPos.y;
+						EventManagement::checkCollision(this);
+						checkAndDoMapTransition(this);
+					}
+				}*/
+			}
+		}
+	} while (doSpriteSlide--);
 	return sData->animData[animList.front()]->frames[curAnimFrameNum].imgPos;
 }
 
