@@ -56,8 +56,29 @@ public:
 		Sprite* sTmp;
 		for (std::list<Event*>::iterator it = lEvents.begin(); it != lEvents.end(); ++it) {
 			sTmp = (*it)->assignedSprite;
-			if ((sTmp != NULL && sTmp != s && (s->gridPos.x == sTmp->gridPos.x || s->gridPos.x == sTmp->gridPos.x - 1) && (s->gridPos.y == sTmp->gridPos.y || s->gridPos.y == sTmp->gridPos.y - 1)) ||
-				(sTmp == NULL && (s->gridPos.x == (*it)->uniquePos.x || s->gridPos.x == (*it)->uniquePos.x - 1) && (s->gridPos.y == (*it)->uniquePos.y || s->gridPos.y == (*it)->uniquePos.y - 1)))
+			if (
+					(sTmp != NULL && sTmp != s &&
+						(
+							(s->mapPos.x >= sTmp->mapPos.x - sTmp->mapPos.w / 2) && (s->mapPos.x <= sTmp->mapPos.x + sTmp->mapPos.w / 2)
+						) &&
+						(
+							(s->mapPos.y + s->mapPos.h / 2 > sTmp->mapPos.y - sTmp->mapPos.h / 2) && (s->mapPos.y + s->mapPos.h / 2 < sTmp->mapPos.y + sTmp->mapPos.h / 2)
+						)
+					)||
+					(sTmp == NULL &&
+						(
+							(s->mapPos.x >= (*it)->uniquePos.x - (*it)->uniquePos.w / 2) && (s->mapPos.x <= (*it)->uniquePos.x + (*it)->uniquePos.w / 2)
+						) &&
+						(
+							(s->mapPos.y >= (*it)->uniquePos.y - (*it)->uniquePos.h / 2) && (s->mapPos.y <= (*it)->uniquePos.y + (*it)->uniquePos.h / 2)
+						)
+					)
+				)
+				/*(s->gridPos.x == sTmp->gridPos.x || s->gridPos.x == sTmp->gridPos.x - 1) &&
+				(s->gridPos.y == sTmp->gridPos.y || s->gridPos.y == sTmp->gridPos.y - 1)) ||
+				(sTmp == NULL &&
+				(s->gridPos.x == (*it)->uniquePos.x || s->gridPos.x == (*it)->uniquePos.x - 1) &&
+				(s->gridPos.y == (*it)->uniquePos.y || s->gridPos.y == (*it)->uniquePos.y - 1)))*/
 				activateEvent(*it, s);
 		}
 	}

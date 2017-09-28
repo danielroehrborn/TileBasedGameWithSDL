@@ -384,6 +384,7 @@ int main(int argc, char* args[])
 		else if (keystates[SDL_SCANCODE_KP_5]) {
 			if (curSprite->pData == NULL) {
 				SpritePersistanceData* newPSData = new SpritePersistanceData;
+				newPSData->curMapID = curMapID;
 				vPersistantSprites.push_back(newPSData);
 				curSprite->pData = newPSData;
 			}
