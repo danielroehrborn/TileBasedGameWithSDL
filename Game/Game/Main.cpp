@@ -26,6 +26,7 @@ SDL_Window* window = NULL;
 SDL_Renderer* renderer = NULL;
 SDL_Texture *tilemapTexture;
 Sprite *curSprite = NULL;
+SDL_Rect curCamera;
 std::vector<Sprite*> vSprites;
 std::vector<SpritePersistanceData*> vPersistantSprites;
 unsigned char vSprites_curSpriteNum = 0;
@@ -163,6 +164,8 @@ void loadMap(unsigned const char& newMapID) {
 	}
 	if (curSprite == NULL)
 		curSprite = *vSprites.begin();
+	curCamera.x = curSprite->mapPos.x;//new
+	curCamera.y = curSprite->mapPos.y;//new
 	lastMapID = newMapID;
 
 	unsigned char eventNum;
@@ -442,12 +445,19 @@ int main(int argc, char* args[])
 			LastPressed[SDL_SCANCODE_KP_2] = 0;
 		}
 
-		destRect.x = (resolutionX / 2) - (512 / 2) - curSprite->mapPos.x % 16;
-		destRect.y = (resolutionY / 2) - (512 / 2) - curSprite->mapPos.y % 16;
+
+		if (curCamera.x != curSprite->mapPos.x && curCamera.x < curSprite->mapPos.x) curCamera.x += (curSprite->mapPos.x - curCamera.x) / 10;
+		else if (curCamera.x != curSprite->mapPos.x && curCamera.x > curSprite->mapPos.x) curCamera.x -= (curCamera.x - curSprite->mapPos.x) / 10;
+		if (curCamera.y != curSprite->mapPos.y && curCamera.y < curSprite->mapPos.y) curCamera.y += (curSprite->mapPos.y - curCamera.y) / 10;
+		else if (curCamera.y != curSprite->mapPos.y && curCamera.y > curSprite->mapPos.y) curCamera.y -= (curCamera.y - curSprite->mapPos.y) / 10;
+
+
+		destRect.x = (resolutionX / 2) - (512 / 2) - curCamera.x % 16;//curSprite->mapPos.x % 16;
+		destRect.y = (resolutionY / 2) - (512 / 2) - curCamera.y % 16;//curSprite->mapPos.y % 16;
 		SDL_RenderClear(renderer);
 		for (i = 0; i < 32; i++) {
-			mapTopLeftY = (curSprite->mapPos.y / 16) - 16 + i;
-			mapTopLeftX = (curSprite->mapPos.x / 16) - 17;
+			mapTopLeftY = (curCamera.y / 16) - 16 + i;//(curSprite->mapPos.y / 16) - 16 + i;
+			mapTopLeftX = (curCamera.x / 16) - 17;//(curSprite->mapPos.x / 16) - 17;
 			for (j = 0; j < 32; j++) {
 				++mapTopLeftX;
 
@@ -489,7 +499,7 @@ int main(int argc, char* args[])
 
 				destRect.x += 16;
 			}
-			destRect.x = (resolutionX / 2) - (512 / 2) - curSprite->mapPos.x % 16;
+			destRect.x = (resolutionX / 2) - (512 / 2) - curCamera.x % 16;//curSprite->mapPos.x % 16;
 			destRect.y += 16;
 		}
 		//sprite drawing order
@@ -500,14 +510,14 @@ int main(int argc, char* args[])
 		//add sprites to BG
 		int bildmitteX = (resolutionX / 2);
 		int bildmitteY = (resolutionY / 2);
-		int ursprungX = bildmitteX - curSprite->mapPos.x;
-		int ursprungY = bildmitteY - curSprite->mapPos.y;
+		int ursprungX = bildmitteX - curCamera.x;//curSprite->mapPos.x;
+		int ursprungY = bildmitteY - curCamera.y;//curSprite->mapPos.y;
 		SDL_Rect tmp;
 		Sprite* its;
 		for (std::vector<Sprite*>::iterator it = vSprites.begin(); it != vSprites.end();) {
 			if ((*it)->objectInUse) {
 				its = *it;
-				if ((abs(its->mapPos.x - curSprite->mapPos.x) < 250) && (abs(its->mapPos.y - curSprite->mapPos.y) < 250)) {
+				if ((abs(its->mapPos.x - curCamera.x) < 250) && (abs(its->mapPos.y - curCamera.y) < 250)) {//if ((abs(its->mapPos.x - curSprite->mapPos.x) < 250) && (abs(its->mapPos.y - curSprite->mapPos.y) < 250)) {
 					const SDL_Rect* srcTmp = &its->getFrameCoord();
 
 					if (its->objectInUse) {
