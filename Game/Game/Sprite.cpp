@@ -6,6 +6,7 @@
 extern unsigned int resolutionX, resolutionY;
 extern Sprite *curSprite;
 extern SDL_Renderer* renderer;
+extern SDL_Rect curCamera;
 
 extern unsigned const char bghoehe = 100, bgbreite = 100;
 //extern unsigned char bgTiles[bghoehe*bgbreite];
@@ -21,8 +22,8 @@ bool checkCollision(const SDL_Rect& pos) {
 
 				bildmitteX = (resolutionX / 2);
 				bildmitteY = (resolutionY / 2);
-				ursprungX = bildmitteX - curSprite->mapPos.x;
-				ursprungY = bildmitteY - curSprite->mapPos.y;
+				ursprungX = bildmitteX - curCamera.x;//curSprite->mapPos.x;
+				ursprungY = bildmitteY - curCamera.y;//curSprite->mapPos.y;
 
 				SDL_SetRenderDrawColor(renderer, 255, 255, 255, 80);
 				SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);

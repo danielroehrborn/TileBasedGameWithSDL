@@ -27,6 +27,7 @@ SDL_Renderer* renderer = NULL;
 SDL_Texture *tilemapTexture;
 Sprite *curSprite = NULL;
 SDL_Rect curCamera;
+bool detachedCamera = false;
 std::vector<Sprite*> vSprites;
 std::vector<SpritePersistanceData*> vPersistantSprites;
 unsigned char vSprites_curSpriteNum = 0;
@@ -384,6 +385,24 @@ int main(int argc, char* args[])
 			colblue = 135;
 			SDL_SetTextureColorMod(tilemapTexture, colred, colgreen, colblue);
 		}
+		else if (keystates[SDL_SCANCODE_Q]) {
+			detachedCamera = true;
+		}
+		else if (keystates[SDL_SCANCODE_E]) {
+			detachedCamera = false;
+		}
+		else if (keystates[SDL_SCANCODE_W]) {
+			if (detachedCamera) curCamera.y -= 4;
+		}
+		else if (keystates[SDL_SCANCODE_S]) {
+			if (detachedCamera) curCamera.y += 4;
+		}
+		else if (keystates[SDL_SCANCODE_A]) {
+			if (detachedCamera) curCamera.x -= 4;
+		}
+		else if (keystates[SDL_SCANCODE_D]) {
+			if (detachedCamera) curCamera.x += 4;
+		}
 		else if (keystates[SDL_SCANCODE_KP_5]) {
 			if (curSprite->pData == NULL) {
 				SpritePersistanceData* newPSData = new SpritePersistanceData;
@@ -445,12 +464,12 @@ int main(int argc, char* args[])
 			LastPressed[SDL_SCANCODE_KP_2] = 0;
 		}
 
-
-		if (curCamera.x != curSprite->mapPos.x && curCamera.x < curSprite->mapPos.x) curCamera.x += (curSprite->mapPos.x - curCamera.x) / 10;
-		else if (curCamera.x != curSprite->mapPos.x && curCamera.x > curSprite->mapPos.x) curCamera.x -= (curCamera.x - curSprite->mapPos.x) / 10;
-		if (curCamera.y != curSprite->mapPos.y && curCamera.y < curSprite->mapPos.y) curCamera.y += (curSprite->mapPos.y - curCamera.y) / 10;
-		else if (curCamera.y != curSprite->mapPos.y && curCamera.y > curSprite->mapPos.y) curCamera.y -= (curCamera.y - curSprite->mapPos.y) / 10;
-
+		if (!detachedCamera) {
+			if (curCamera.x != curSprite->mapPos.x && curCamera.x < curSprite->mapPos.x) curCamera.x += (curSprite->mapPos.x - curCamera.x) / 10;
+			else if (curCamera.x != curSprite->mapPos.x && curCamera.x > curSprite->mapPos.x) curCamera.x -= (curCamera.x - curSprite->mapPos.x) / 10;
+			if (curCamera.y != curSprite->mapPos.y && curCamera.y < curSprite->mapPos.y) curCamera.y += (curSprite->mapPos.y - curCamera.y) / 10;
+			else if (curCamera.y != curSprite->mapPos.y && curCamera.y > curSprite->mapPos.y) curCamera.y -= (curCamera.y - curSprite->mapPos.y) / 10;
+		}
 
 		destRect.x = (resolutionX / 2) - (512 / 2) - curCamera.x % 16;//curSprite->mapPos.x % 16;
 		destRect.y = (resolutionY / 2) - (512 / 2) - curCamera.y % 16;//curSprite->mapPos.y % 16;
