@@ -3,21 +3,21 @@
 
 extern SDL_Renderer* renderer;
 
-SpriteGroup::SpriteGroup(const SpriteData* sd, const bool& autoDel, int groupTexH, int groupTexW) :Sprite(sd, autoDel) {
+SpriteGroup::SpriteGroup(int groupTexH, int groupTexW) :Sprite(NULL, false) {
 	spriteTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, groupTexW, groupTexH);
 	mapPos.w = groupTexW;
 	mapPos.h = groupTexH;
 }
 
 const SDL_Rect& SpriteGroup::getFrameCoord() {
-	GroupSpriteAnim* curGroupSpriteAnim = &groupAnimList[animList.front()];
+	GroupAnim* curGroupSpriteAnim = &vGroupAnimList[animList.front()];
 	++animDurCnt %= curGroupSpriteAnim->duration;
 	if (animDurCnt == 0 && animList.size() > 1) {
 		animList.pop();
 		for (int i = 0; i < vGroupSprites.size(); ++i) {
-			SDL_Rect tmpPos = curGroupSpriteAnim->memberSpriteAnims[i].SpriteAnimStartPos;
+			SDL_Rect tmpPos = curGroupSpriteAnim->memberSpriteAnims[i].AnimStartPos;
 			if (tmpPos.x != 0) vGroupSprites[i]->mapPos = tmpPos;
-			vGroupSprites[i]->pushAnim(curGroupSpriteAnim->memberSpriteAnims[i].SpriteAnimNum);
+			vGroupSprites[i]->pushAnim(curGroupSpriteAnim->memberSpriteAnims[i].AnimNum);
 		}
 	}
 	//todo: groupSprite collision check
@@ -60,4 +60,8 @@ void SpriteGroup::addAnimToMemberSprite(unsigned char spriteID, SDL_Rect startPo
 	if (startPos.x != 0) vGroupSprites[spriteID]->mapPos = startPos;                   //separate member animation
 	if (animNum == 1) vGroupSprites[spriteID]->pushAnim(anims->front());
 	else vGroupSprites[spriteID]->pushAnim(animNum, anims);
+}
+
+SpriteGroup::~SpriteGroup() {
+	SDL_DestroyTexture(spriteTexture);
 }

@@ -404,6 +404,25 @@ int main(int argc, char* args[])
 		else if (keystates[SDL_SCANCODE_D]) {
 			if (detachedCamera) curCamera.x += 4;
 		}
+		else if (keystates[SDL_SCANCODE_X]) {
+			static bool created = false;
+			if (!created) {
+				SpriteGroup* g1 = new SpriteGroup(64, 64);
+				Sprite* h1 = new Sprite(&Hiro, false);
+				Sprite* h2 = new Sprite(&Hiro, false);
+				g1->vGroupSprites.push_back(h1);
+				g1->vGroupSprites.push_back(h2);
+				SpriteGroup::GroupMemberAnim gmaH1 = { 0,{ 10,10,10,10 } };
+				SpriteGroup::GroupMemberAnim gmaH2 = { 0,{ 20,20,20,20 } };
+				SpriteGroup::GroupAnim ga1;
+				ga1.memberSpriteAnims.push_back(gmaH1);
+				ga1.memberSpriteAnims.push_back(gmaH2);
+				ga1.duration = 10;
+				ga1.move = { 0,2,0,0 };
+				g1->vGroupAnimList.push_back(ga1);
+				vSprites.push_back(g1);
+			}
+		}
 		else if (keystates[SDL_SCANCODE_KP_5]) {
 			if (curSprite->pData == NULL) {
 				SpritePersistanceData* newPSData = new SpritePersistanceData;
