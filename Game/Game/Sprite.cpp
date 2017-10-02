@@ -48,7 +48,7 @@ bool checkCollision(const SDL_Rect& pos) {
 	return false;
 }
 
-extern std::vector<SDL_Rect*> vWarps;
+//extern std::vector<SDL_Rect*> vWarps;
 SDL_Rect newPos, newGridPos;
 extern void checkAndDoMapTransition(Sprite* s);
 const SDL_Rect& Sprite::getFrameCoord() {

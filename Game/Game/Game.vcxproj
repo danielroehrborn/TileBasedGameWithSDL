@@ -122,6 +122,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Map1.cpp" />
     <ClCompile Include="Sprite.cpp" />
+    <ClCompile Include="SpriteGroup.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CollisionObject.h" />
@@ -135,6 +136,7 @@
     <ClInclude Include="Hiro.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="SpriteData.h" />
+    <ClInclude Include="SpriteGroup.h" />
     <ClInclude Include="Switch.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

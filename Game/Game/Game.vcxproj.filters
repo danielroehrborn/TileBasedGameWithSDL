@@ -36,6 +36,9 @@
     <ClCompile Include="Event.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="SpriteGroup.cpp">
+      <Filter>Quelldateien\Sprites</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Hiro.h">
@@ -72,6 +75,9 @@
       <Filter>Quelldateien</Filter>
     </ClInclude>
     <ClInclude Include="Switch.h">
+      <Filter>Quelldateien\Sprites</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteGroup.h">
       <Filter>Quelldateien\Sprites</Filter>
     </ClInclude>
   </ItemGroup>

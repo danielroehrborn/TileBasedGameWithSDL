@@ -5,6 +5,7 @@
 #include <queue>
 #include "Map.h"
 #include "Sprite.h"
+#include "SpriteGroup.h"
 #include "SpriteData.h"
 #include "Hiro.h"
 #include "Commandos.h"
@@ -289,7 +290,7 @@ int main(int argc, char* args[])
 		printf("Window could not be created! SDL Error: %s\n", SDL_GetError()); return -1;
 	}
 
-	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_TARGETTEXTURE);//new
 	if (renderer == NULL) {
 		printf("Renderer could not be created! SDL Error: %s\n", SDL_GetError()); return -1;
 	}
