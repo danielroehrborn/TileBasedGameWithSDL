@@ -134,6 +134,7 @@
     <ClInclude Include="HyperLightDrifter.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="Hiro.h" />
+    <ClInclude Include="Ship.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="SpriteData.h" />
     <ClInclude Include="SpriteGroup.h" />
