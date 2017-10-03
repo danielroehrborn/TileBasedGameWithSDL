@@ -130,9 +130,11 @@ Sprite::Sprite(const SpriteData* sd, const bool& autoDel) {
 	frameDurCnt = 0;
 	curAnimFrameNum = 0;
 	pushAnim(0);
-	if (textures[sData->globalSpriteID] == NULL)
-		textures[sData->globalSpriteID] = loadTexture(sData->path);
-	spriteTexture = textures[sData->globalSpriteID];
+	if (sData != NULL) {
+		if (textures[sData->globalSpriteID] == NULL)
+			textures[sData->globalSpriteID] = loadTexture(sData->path);
+		spriteTexture = textures[sData->globalSpriteID];
+	}
 }
 
 void Sprite::pushAnim(unsigned char index) {
@@ -142,14 +144,15 @@ void Sprite::pushAnim(unsigned char index) {
 		curAnimFrameNum = 0;
 	}
 	animList.push(index);
-	mapPos.h = sData->animData[animList.front()]->frames[curAnimFrameNum].imgPos.h;
-	mapPos.w = sData->animData[animList.front()]->frames[curAnimFrameNum].imgPos.w;
+	if (sData != NULL) {
+		mapPos.h = sData->animData[animList.front()]->frames[curAnimFrameNum].imgPos.h;
+		mapPos.w = sData->animData[animList.front()]->frames[curAnimFrameNum].imgPos.w;
+	}
 }
 
 void Sprite::pushAnim(const unsigned char& num, std::vector<unsigned char>* data) {
-	for (int i = 0; i < num; i++) {
+	for (int i = 0; i < num; i++)
 		animList.push((*data)[i]);
-	}
 }
 
 void Sprite::setPos(const int& x, const int&y) {
