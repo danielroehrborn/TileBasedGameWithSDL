@@ -83,5 +83,8 @@
     <ClInclude Include="Ship.h">
       <Filter>Quelldateien\Sprites</Filter>
     </ClInclude>
+    <ClInclude Include="GenericSprite.h">
+      <Filter>Quelldateien\Sprites</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

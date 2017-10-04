@@ -121,7 +121,7 @@ SDL_Texture* Sprite::loadTexture(const char* path) {
 	return tmpTexture;
 }
 
-SDL_Texture* Sprite::textures[10];
+SDL_Texture* Sprite::textures[50];
 //SDL_Rect tmpZero = { 0,0,0,0 };
 Sprite::Sprite(const SpriteData* sd, const bool& autoDel) {
 	sData = sd;
@@ -130,11 +130,15 @@ Sprite::Sprite(const SpriteData* sd, const bool& autoDel) {
 	frameDurCnt = 0;
 	curAnimFrameNum = 0;
 	pushAnim(0);
-	if (sData != NULL) {
-		if (textures[sData->globalSpriteID] == NULL)
-			textures[sData->globalSpriteID] = loadTexture(sData->path);
-		spriteTexture = textures[sData->globalSpriteID];
-	}
+	if (sData != NULL)
+		changeSData(sData);
+}
+
+void Sprite::changeSData(const SpriteData* sd) {
+	sData = sd;
+	if (textures[sData->globalSpriteID] == NULL)
+		textures[sData->globalSpriteID] = loadTexture(sData->path);
+	spriteTexture = textures[sData->globalSpriteID];
 }
 
 void Sprite::pushAnim(unsigned char index) {

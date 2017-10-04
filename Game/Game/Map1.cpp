@@ -183,7 +183,7 @@ const MapData map1Data = {
 	  { 2,0,18 }, //west
 	  { 2,0,3 } }, //ost
 	map1border, 2,                                     //x,y,w,h
-	{ { &Hiro,{ 2, 2, 0, 0 }, 0 },{ &HyperLightDrifter,{ 3,4,0,0 } ,0 } } //sprites laden zukünftig in state machine
+	{ { &Hiro,{ 2, 2, 0, 0 }, 0 },{ &HyperLightDrifter,{ 3,4,0,0 }, 0 } }//sprites laden zukünftig in state machine
 };
 
 

@@ -15,6 +15,7 @@
 #include "Switch.h"
 #include "Ent.h"
 #include "Ship.h"
+#include "GenericSprite.h"
 #include "Event.h"
 
 const MapData* const mapIDs[] = {
@@ -538,6 +539,25 @@ int main(int argc, char* args[])
 				g1->pushAnim(0);
 				vSprites.push_back(g1);
 			}
+		}
+		else if (keystates[SDL_SCANCODE_Z]) {
+			static Sprite* genSprite = NULL;
+			static unsigned char genSpriteCreated = 0;
+			if (!animSet) {
+				animSet = true;
+				if (genSprite == NULL) {
+					genSprite = new Sprite(GenericSpritesList[0], false);
+					genSprite->setPos((4 + 8) * 16, (2 + 8) * 16);
+					genSprite->pushAnim(0);
+					vSprites.push_back(genSprite);
+				}
+				else {
+					++genSpriteCreated;
+					if (GenericSpritesList[genSpriteCreated] == NULL)genSpriteCreated = 0;
+					genSprite->changeSData(GenericSpritesList[genSpriteCreated]);
+				}
+			}
+
 		}
 		else if (keystates[SDL_SCANCODE_KP_5]) {
 			if (curSprite->pData == NULL) {

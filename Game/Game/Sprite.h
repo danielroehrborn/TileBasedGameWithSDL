@@ -22,6 +22,7 @@ public:
 	void setPos(const int& x, const int&y);
 	virtual const SDL_Rect& getFrameCoord();
 	const SDL_Rect& getSpriteMapCoord();
+	void changeSData(const SpriteData* sd);
 	~Sprite() {};
 	SDL_Rect mapPos;
 	SDL_Rect gridPos;
@@ -30,5 +31,5 @@ public:
 	char frameDurCnt;
 	bool autoDelete;
 	std::queue<unsigned char> animList;
-	static SDL_Texture* textures[10];
+	static SDL_Texture* textures[];
 };

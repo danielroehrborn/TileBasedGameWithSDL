@@ -125,6 +125,7 @@
     <ClCompile Include="SpriteGroup.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GenericSprite.h" />
     <ClInclude Include="CollisionObject.h" />
     <ClInclude Include="Commandos.h" />
     <ClInclude Include="Diablo.h" />
