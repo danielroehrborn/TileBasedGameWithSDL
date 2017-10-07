@@ -1,24 +1,12 @@
 #pragma once
-const SpriteData::AnimAndTimingList GenericLookDown = { 1,{ { { 5,4,23,42 },{ 0,0 },100 } } };
-const SpriteData::AnimAndTimingList GenericWalkDown = { 4,{ { { 37,4,23,42 },{ 0,1 },8 },{ { 69,4,23,42 },{ 0,1 },7 },{ { 101,4,23,42 },{ 0,1 },8 },{ { 5,4,23,42 },{ 0,1 },7 } } };
-const SpriteData::AnimAndTimingList GenericLookUp = { 1,{ { { 5,148,23,42 },{ 0,0 },100 } } };
-const SpriteData::AnimAndTimingList GenericWalkUp = { 4,{ { { 37,148,23,42 },{ 0,-1 },8 },{ { 69,148,23,42 },{ 0,-1 },7 },{ { 101,148,23,42 },{ 0,-1 },8 },{ { 5,148,23,42 },{ 0,-1 },7 } } };
-const SpriteData::AnimAndTimingList GenericLookLeft = { 1,{ { { 7,52,23,42 },{ 0,0 },100 } } };
-const SpriteData::AnimAndTimingList GenericWalkLeft = { 4,{ { { 39,52,23,42 },{ -1,0 },8 },{ { 71,52,23,42 },{ -1,0 },7 },{ { 103,52,23,42 },{ -1,0 },8 },{ { 7,52,23,42 },{ -1,0 },7 } } };
-const SpriteData::AnimAndTimingList GenericLookRight = { 1,{ { { 2,100,23,42 },{ 0,0 },100 } } };
-const SpriteData::AnimAndTimingList GenericWalkRight = { 4,{ { { 34,100,23,42 },{ 1,0 },8 },{ { 66,100,23,42 },{ 1,0 },7 },{ { 98,100,23,42 },{ 1,0 },8 },{ { 2,100,23,42 },{ 1,0 },7 } } };
-const SpriteData bloodelf_female1 = {//1
-	8,"bloodelf_female1.png",8,{ &GenericLookDown, &GenericWalkDown, &GenericLookUp, &GenericWalkUp, &GenericLookLeft,
-	&GenericWalkLeft, &GenericLookRight, &GenericWalkRight }
-};
-const SpriteData bloodelf_female2 = {//2
-	9,"bloodelf_female2.png",8,{ &GenericLookDown, &GenericWalkDown, &GenericLookUp, &GenericWalkUp, &GenericLookLeft,
-	&GenericWalkLeft, &GenericLookRight, &GenericWalkRight }
-};
-const SpriteData bloodelf_female3 = {//3
-	10,"bloodelf_female3.png",8,{ &GenericLookDown, &GenericWalkDown, &GenericLookUp, &GenericWalkUp, &GenericLookLeft,
-	&GenericWalkLeft, &GenericLookRight, &GenericWalkRight }
-};
+const SpriteData::AnimAndTimingList GenericLookDown = { 1,{ { { 0,0,32,48 },{ 0,0 },100 } } };
+const SpriteData::AnimAndTimingList GenericWalkDown = { 4,{ { { 32,0,32,48 },{ 0,1 },8 },{ { 64,0,32,48 },{ 0,1 },7 },{ { 96,0,32,48 },{ 0,1 },8 },{ { 0,0,32,48 },{ 0,1 },7 } } };
+const SpriteData::AnimAndTimingList GenericLookUp = { 1,{ { { 0,144,32,48 },{ 0,0 },100 } } };
+const SpriteData::AnimAndTimingList GenericWalkUp = { 4,{ { { 32,144,32,48 },{ 0,-1 },8 },{ { 64,144,32,48 },{ 0,-1 },7 },{ { 96,144,32,48 },{ 0,-1 },8 },{ { 0,144,32,48 },{ 0,-1 },7 } } };
+const SpriteData::AnimAndTimingList GenericLookLeft = { 1,{ { { 0,48,32,48 },{ 0,0 },100 } } };
+const SpriteData::AnimAndTimingList GenericWalkLeft = { 4,{ { { 32,48,32,48 },{ -1,0 },8 },{ { 64,48,32,48 },{ -1,0 },7 },{ { 96,48,32,48 },{ -1,0 },8 },{ { 0,48,32,48 },{ -1,0 },7 } } };
+const SpriteData::AnimAndTimingList GenericLookRight = { 1,{ { { 0,96,32,48 },{ 0,0 },100 } } };
+const SpriteData::AnimAndTimingList GenericWalkRight = { 4,{ { { 32,96,32,48 },{ 1,0 },8 },{ { 64,96,32,48 },{ 1,0 },7 },{ { 96,96,32,48 },{ 1,0 },8 },{ { 0,96,32,48 },{ 1,0 },7 } } };
 const SpriteData bloodelf_male1 = {//4
 	11,"nightelf_male1.png",8,{ &GenericLookDown, &GenericWalkDown, &GenericLookUp, &GenericWalkUp, &GenericLookLeft,
 	&GenericWalkLeft, &GenericLookRight, &GenericWalkRight }
@@ -97,6 +85,18 @@ const SpriteData steampunk_m10 = {//22
 };
 const SpriteData harajuku4 = {//23
 	29,"harajuku4.png",8,{ &GenericLookDown, &GenericWalkDown, &GenericLookUp, &GenericWalkUp, &GenericLookLeft,
+	&GenericWalkLeft, &GenericLookRight, &GenericWalkRight }
+};
+const SpriteData bloodelf_female1 = {//1
+	30,"bloodelf_female1.png",8,{ &GenericLookDown, &GenericWalkDown, &GenericLookUp, &GenericWalkUp, &GenericLookLeft,
+	&GenericWalkLeft, &GenericLookRight, &GenericWalkRight }
+};
+const SpriteData bloodelf_female2 = {//2
+	31,"bloodelf_female2.png",8,{ &GenericLookDown, &GenericWalkDown, &GenericLookUp, &GenericWalkUp, &GenericLookLeft,
+	&GenericWalkLeft, &GenericLookRight, &GenericWalkRight }
+};
+const SpriteData bloodelf_female3 = {//3
+	32,"bloodelf_female3.png",8,{ &GenericLookDown, &GenericWalkDown, &GenericLookUp, &GenericWalkUp, &GenericLookLeft,
 	&GenericWalkLeft, &GenericLookRight, &GenericWalkRight }
 };
 const SpriteData* GenericSpritesList[] = {
