@@ -147,6 +147,7 @@
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="SpriteData.h" />
     <ClInclude Include="SpriteGroup.h" />
+    <ClInclude Include="SpriteGroupData.h" />
     <ClInclude Include="Switch.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

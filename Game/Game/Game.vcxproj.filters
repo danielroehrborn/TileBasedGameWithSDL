@@ -86,5 +86,8 @@
     <ClInclude Include="GenericSprite.h">
       <Filter>Quelldateien\Sprites</Filter>
     </ClInclude>
+    <ClInclude Include="SpriteGroupData.h">
+      <Filter>Quelldateien\Sprites</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

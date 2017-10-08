@@ -169,3 +169,7 @@ void Sprite::setPos(const int& x, const int&y) {
 const SDL_Rect& Sprite::getSpriteMapCoord() {
 	return mapPos;
 }
+
+const unsigned char Sprite::getNumAnims() {
+	return this->sData->numAnimations;
+}

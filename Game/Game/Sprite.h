@@ -22,6 +22,7 @@ public:
 	void setPos(const int& x, const int&y);
 	virtual const SDL_Rect& getFrameCoord();
 	const SDL_Rect& getSpriteMapCoord();
+	virtual const unsigned char getNumAnims();
 	void changeSData(const SpriteData* sd);
 	~Sprite() {};
 	SDL_Rect mapPos;

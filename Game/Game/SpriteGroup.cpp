@@ -3,26 +3,30 @@
 
 extern SDL_Renderer* renderer;
 
-SpriteGroup::SpriteGroup(int groupTexH, int groupTexW) :Sprite(NULL, false) {
-	spriteTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET, groupTexW, groupTexH);
+SpriteGroup::SpriteGroup(const SpriteGroupData* sgd) :Sprite(NULL, false) {
+	sgData = sgd;
+	for (int i = 0; i < sgd->numGroupSprites; ++i) {
+		vGroupSprites.push_back(new Sprite(sgd->groupSprites[i], false));
+	}
+	spriteTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET, sgd->mapPos.w, sgd->mapPos.h);
 	SDL_SetTextureBlendMode(spriteTexture, SDL_BLENDMODE_BLEND);
-	mapPos.w = groupTexW;
-	mapPos.h = groupTexH;
+	mapPos = sgd->mapPos;
 }
 
 const SDL_Rect& SpriteGroup::getFrameCoord() {
-	GroupAnim* curGroupSpriteAnim = &vGroupAnimList[animList.front()];
-	++frameDurCnt %= curGroupSpriteAnim->duration;
+	//GroupAnim* curGroupSpriteAnim = &vGroupAnimList[animList.front()];
+	const SpriteGroupData::GroupAnim* curGroupAnim = sgData->groupAnims[animList.front()];
+	++frameDurCnt %= curGroupAnim->duration; //curGroupSpriteAnim->duration;
 	if (frameDurCnt == 0 && animList.size() > 1) {
 		animList.pop();
 		for (int i = 0; i < vGroupSprites.size(); ++i) {
-			SDL_Rect tmpPos = curGroupSpriteAnim->memberSpriteAnims[i].AnimStartPos;
+			SDL_Rect tmpPos = curGroupAnim->spriteAnims[i].startPos;//curGroupSpriteAnim->memberSpriteAnims[i].AnimStartPos;
 			if (tmpPos.x != 0) vGroupSprites[i]->mapPos = tmpPos;
-			vGroupSprites[i]->pushAnim(curGroupSpriteAnim->memberSpriteAnims[i].AnimNum);
+			vGroupSprites[i]->pushAnim(curGroupAnim->spriteAnims[i].animNum);//curGroupSpriteAnim->memberSpriteAnims[i].AnimNum);
 		}
 	}
-	mapPos.x += curGroupSpriteAnim->move.x;
-	mapPos.y += curGroupSpriteAnim->move.y;
+	mapPos.x += curGroupAnim->move.x;//curGroupSpriteAnim->move.x;
+	mapPos.y += curGroupAnim->move.y;//curGroupSpriteAnim->move.y;
 	for (std::vector<Sprite*>::iterator it = vGroupSprites.begin(); it != vGroupSprites.end(); ++it) {
 		Sprite* s = *it;
 		if (s->animList.empty()) printf("AnimList empty\n");
@@ -65,15 +69,20 @@ void SpriteGroup::addAnimToMemberSprite(unsigned char spriteID, SDL_Rect startPo
 void SpriteGroup::pushAnim(unsigned char index) {
 	Sprite::pushAnim(index);
 
-	GroupAnim* curGroupSpriteAnim = &vGroupAnimList[animList.front()];
+	//GroupAnim* curGroupSpriteAnim = &vGroupAnimList[animList.front()];
+	const SpriteGroupData::GroupAnim* curGroupAnim = sgData->groupAnims[animList.front()];
 	for (int i = 0; i < vGroupSprites.size(); ++i) {
-		SDL_Rect tmpPos = curGroupSpriteAnim->memberSpriteAnims[i].AnimStartPos;
+		SDL_Rect tmpPos = curGroupAnim->spriteAnims[i].startPos;//curGroupSpriteAnim->memberSpriteAnims[i].AnimStartPos;
 		if (tmpPos.x != 0)
 			vGroupSprites[i]->mapPos = tmpPos;
-		vGroupSprites[i]->pushAnim(curGroupSpriteAnim->memberSpriteAnims[i].AnimNum);
+		vGroupSprites[i]->pushAnim(curGroupAnim->spriteAnims[i].animNum);//curGroupSpriteAnim->memberSpriteAnims[i].AnimNum);
 	}
 }
 
 SpriteGroup::~SpriteGroup() {
 	SDL_DestroyTexture(spriteTexture);
+}
+
+const unsigned char SpriteGroup::getNumAnims() {
+	return sgData->numGroupAnims;
 }

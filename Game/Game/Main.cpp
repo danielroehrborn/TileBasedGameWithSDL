@@ -7,6 +7,7 @@
 #include "Sprite.h"
 #include "SpriteGroup.h"
 #include "SpriteData.h"
+#include "SpriteGroupData.h"
 #include "Hiro.h"
 #include "Commandos.h"
 #include "Diablo.h"
@@ -411,7 +412,7 @@ int main(int argc, char* args[])
 			if (!created) {
 				created = true;
 				//MemberSprites
-				Sprite* h1 = new Sprite(&Hiro, false);
+				/*Sprite* h1 = new Sprite(&Hiro, false);
 				h1->setPos(10, 10);
 				Sprite* h2 = new Sprite(&Hiro, false);
 				h2->setPos(20, 20);
@@ -470,14 +471,17 @@ int main(int argc, char* args[])
 				g1->vGroupAnimList.push_back(gaLookRight);
 				g1->vGroupAnimList.push_back(gaWalkRight);
 				g1->pushAnim(0);
-				vSprites.push_back(g1);
+				vSprites.push_back(g1);*/
 			}
 		}
 		else if (keystates[SDL_SCANCODE_C]) {
 			static bool created = false;
 			if (!created) {
 				created = true;
-				//MemberSprites
+				Sprite* shipSpriteGroup = new SpriteGroup(&shipGroupData);
+				shipSpriteGroup->pushAnim(0);
+				vSprites.push_back(shipSpriteGroup);
+				/*//MemberSprites
 				Sprite* sShip = new Sprite(&Ship, false);
 				//sShip->setPos(25, 10);
 				Sprite* sLeftwing = new Sprite(&LeftWing, false);
@@ -548,7 +552,7 @@ int main(int argc, char* args[])
 				g1->vGroupAnimList.push_back(gaLookRight);
 				g1->vGroupAnimList.push_back(gaWalkRight);
 				g1->pushAnim(0);
-				vSprites.push_back(g1);
+				vSprites.push_back(g1);*/
 			}
 		}
 		else if (keystates[SDL_SCANCODE_Z]) {

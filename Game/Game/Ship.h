@@ -17,19 +17,19 @@ const SpriteData::AnimAndTimingList ShipLookUp = { 4,{
 	{ { 97,78,46,74 },{ 0,0 },50 },
 	{ { 145,78,46,74 },{ 0,0 },100 }
 } };
-const SpriteData::AnimAndTimingList ShipWalkUp = { 4,{ 
+const SpriteData::AnimAndTimingList ShipWalkUp = { 4,{
 	{ { 193,78,46,74 },{ 0,0 },5 },
 	{ { 241,78,46,74 },{ 0,0 },5 },
 	{ { 289,78,46,74 },{ 0,0 },5 },
 	{ { 289,78,46,74 },{ 0,0 },5 }
 } };
-const SpriteData::AnimAndTimingList ShipLookLeft = { 4,{ 
+const SpriteData::AnimAndTimingList ShipLookLeft = { 4,{
 	{ { 1,155,74,46 },{ 0,0 },50 },
 	{ { 77,155,74,46 },{ 0,0 },100 },
 	{ { 153,155,74,46 },{ 0,0 },50 },
 	{ { 229,155,74,46 },{ 0,0 },100 }
 } };
-const SpriteData::AnimAndTimingList ShipWalkLeft = { 4,{ 
+const SpriteData::AnimAndTimingList ShipWalkLeft = { 4,{
 	{ { 305,155,74,46 },{ 0,0 },5 },
 	{ { 381,155,74,46 },{ 0,0 },5 },
 	{ { 457,155,74,46 },{ 0,0 },5 },
@@ -41,7 +41,7 @@ const SpriteData::AnimAndTimingList ShipLookRight = { 4,{
 	{ { 153,204,74,46 },{ 0,0 },50 },
 	{ { 229,204,74,46 },{ 0,0 },100 }
 } };
-const SpriteData::AnimAndTimingList ShipWalkRight = { 4,{ 
+const SpriteData::AnimAndTimingList ShipWalkRight = { 4,{
 	{ { 305,204,74,46 },{ 0,0 },5 },
 	{ { 381,204,74,46 },{ 0,0 },5 },
 	{ { 457,204,74,46 },{ 0,0 },5 },
@@ -156,4 +156,37 @@ const SpriteData::AnimAndTimingList RightWingWalkRight = { 4,{
 const SpriteData RightWing = {
 	9,"Ship.png",8,{ &RightWingLookDown, &RightWingWalkDown, &RightWingLookUp, &RightWingWalkUp, &RightWingLookLeft,
 	&RightWingWalkLeft, &RightWingLookRight, &RightWingWalkRight }
+};
+
+const SpriteData* shipGroupSprites[] = {
+	&LeftWing, &RightWing, &Ship
+};
+const SpriteGroupData::GroupAnim shipGroupLookDown = {
+	10,//duration
+	{0,0,0,0},//movement
+	{//groupSpriteAnims for this groupAnim
+		{0,{1,1,0,0}}, {0,{58,0,0,0}}, {0,{30,3,0,0}}
+	}
+};
+const SpriteGroupData::GroupAnim shipGroupWalkDown =
+{ 10, { 0,3,0,0 }, {{ 1,{ 2,1,0,0 } },{ 1,{ 57,0,0,0 } },{ 1,{ 30,3,0,0 } }} };
+const SpriteGroupData::GroupAnim shipGroupLookUp =
+{ 10,{ 0,0,0,0 },{ { 2,{ 58,0,0,0 } },{ 2,{ 1,1,0,0 } },{ 2,{ 30,3,0,0 } } } };
+const SpriteGroupData::GroupAnim shipGroupWalkUp =
+{ 10,{ 0,-3,0,0 },{ { 3,{ 57,0,0,0 } },{ 3,{ 2,1,0,0 } },{ 3,{ 30,3,0,0 } } } };
+const SpriteGroupData::GroupAnim shipGroupLookLeft =
+{ 10,{ 0,0,0,0 },{ { 4,{ 1,1,0,0 } },{ 4,{ 1,65,0,0 } },{ 4,{ 6,33,0,0 } } } };
+const SpriteGroupData::GroupAnim shipGroupWalkLeft =
+{ 10,{ -3,0,0,0 },{ { 5,{ 1,2,0,0 } },{ 5,{ 1,64,0,0 } },{ 5,{ 6,33,0,0 } } } };
+const SpriteGroupData::GroupAnim shipGroupRight =
+{ 10,{ 0,0,0,0 },{ { 6,{ 1,65,0,0 } },{ 6,{ 1,1,0,0 } },{ 6,{ 6,33,0,0 } } } };
+const SpriteGroupData::GroupAnim shipGroupWalkRight =
+{ 10,{ 3,0,0,0 },{ { 7,{ 1,64,0,0 } },{ 7,{ 1,2,0,0 } },{ 7,{ 6,33,0,0 } } } };
+const SpriteGroupData shipGroupData = {
+	{ (12 + 8) * 16, (12 + 8) * 16 ,120 ,120 }, //mapPos + width, height
+	3, //numGroupSprites
+	shipGroupSprites, //sprites in group
+	8, //num groupAnims
+	{//GroupAnims
+		&shipGroupLookDown,&shipGroupWalkDown,&shipGroupLookUp,&shipGroupWalkUp,&shipGroupLookLeft,&shipGroupWalkLeft,&shipGroupRight,&shipGroupWalkRight}
 };
