@@ -18,10 +18,10 @@ const SpriteData::AnimAndTimingList ShipLookUp = { 4,{
 	{ { 145,78,46,74 },{ 0,0 },160 }
 } };
 const SpriteData::AnimAndTimingList ShipWalkUp = { 4,{ 
-	{ { 193,78,46,74 },{ 0,-1 },9 },
-	{ { 241,78,46,74 },{ 0,-1 },9 },
-	{ { 289,78,46,74 },{ 0,-1 },9 },
-	{ { 289,78,46,74 },{ 0,-1 },9 }
+	{ { 193,78,46,74 },{ 0,0 },9 },
+	{ { 241,78,46,74 },{ 0,0 },9 },
+	{ { 289,78,46,74 },{ 0,0 },9 },
+	{ { 289,78,46,74 },{ 0,0 },9 }
 } };
 const SpriteData::AnimAndTimingList ShipLookLeft = { 4,{ 
 	{ { 1,155,74,46 },{ 0,0 },16 },
@@ -30,10 +30,10 @@ const SpriteData::AnimAndTimingList ShipLookLeft = { 4,{
 	{ { 229,155,74,46 },{ 0,0 },16 }
 } };
 const SpriteData::AnimAndTimingList ShipWalkLeft = { 4,{ 
-	{ { 305,155,74,46 },{ -1,0 },9 },
-	{ { 381,155,74,46 },{ -1,0 },9 },
-	{ { 457,155,74,46 },{ -1,0 },9 },
-	{ { 533,155,74,46 },{ -1,0 },9 }
+	{ { 305,155,74,46 },{ 0,0 },9 },
+	{ { 381,155,74,46 },{ 0,0 },9 },
+	{ { 457,155,74,46 },{ 0,0 },9 },
+	{ { 533,155,74,46 },{ 0,0 },9 }
 } };
 const SpriteData::AnimAndTimingList ShipLookRight = { 4,{
 	{ { 1,204,74,46 },{ 0,0 },16 },
@@ -42,10 +42,10 @@ const SpriteData::AnimAndTimingList ShipLookRight = { 4,{
 	{ { 229,204,74,46 },{ 0,0 },16 }
 } };
 const SpriteData::AnimAndTimingList ShipWalkRight = { 4,{ 
-	{ { 305,204,74,46 },{ 1,0 },9 },
-	{ { 381,204,74,46 },{ 1,0 },9 },
-	{ { 457,204,74,46 },{ 1,0 },9 },
-	{ { 533,204,74,46 },{ 1,0 },9 }
+	{ { 305,204,74,46 },{ 0,0 },9 },
+	{ { 381,204,74,46 },{ 0,0 },9 },
+	{ { 457,204,74,46 },{ 0,0 },9 },
+	{ { 533,204,74,46 },{ 0,0 },9 }
 } };
 const SpriteData Ship = {
 	7,"Ship.png",8,{ &ShipLookDown, &ShipWalkDown, &ShipLookUp, &ShipWalkUp, &ShipLookLeft,
@@ -71,10 +71,10 @@ const SpriteData::AnimAndTimingList LeftWingLookUp = { 4,{
 	{ { 157,330,50,74 },{ 0,0 },16 }
 } };
 const SpriteData::AnimAndTimingList LeftWingWalkUp = { 4,{
-	{ { 209,330,50,74 },{ 0,-1 },9 },
-	{ { 261,330,50,74 },{ 0,-1 },9 },
-	{ { 313,330,50,74 },{ 0,-1 },9 },
-	{ { 365,330,50,74 },{ 0,-1 },9 }
+	{ { 209,330,50,74 },{ 0,0 },9 },
+	{ { 261,330,50,74 },{ 0,0 },9 },
+	{ { 313,330,50,74 },{ 0,0 },9 },
+	{ { 365,330,50,74 },{ 0,0 },9 }
 } };
 const SpriteData::AnimAndTimingList LeftWingLookLeft = { 4,{
 	{ { 1,407,74,50 },{ 0,0 },16 },
@@ -83,10 +83,10 @@ const SpriteData::AnimAndTimingList LeftWingLookLeft = { 4,{
 	{ { 229,407,74,50 },{ 0,0 },16 }
 } };
 const SpriteData::AnimAndTimingList LeftWingWalkLeft = { 4,{
-	{ { 305,407,74,50 },{ -1,0 },9 },
-	{ { 381,407,74,50 },{ -1,0 },9 },
-	{ { 457,407,74,50 },{ -1,0 },9 },
-	{ { 533,407,74,50 },{ -1,0 },9 }
+	{ { 305,407,74,50 },{ 0,0 },9 },
+	{ { 381,407,74,50 },{ 0,0 },9 },
+	{ { 457,407,74,50 },{ 0,0 },9 },
+	{ { 533,407,74,50 },{ 0,0 },9 }
 } };
 const SpriteData::AnimAndTimingList LeftWingLookRight = { 4,{
 	{ { 1,460,74,50 },{ 0,0 },16 },
@@ -95,10 +95,10 @@ const SpriteData::AnimAndTimingList LeftWingLookRight = { 4,{
 	{ { 229,460,74,50 },{ 0,0 },16 }
 } };
 const SpriteData::AnimAndTimingList LeftWingWalkRight = { 4,{
-	{ { 305,460,74,50 },{ 1,0 },9 },
-	{ { 381,460,74,50 },{ 1,0 },9 },
-	{ { 457,460,74,50 },{ 1,0 },9 },
-	{ { 533,460,74,50 },{ 1,0 },9 }
+	{ { 305,460,74,50 },{ 0,0 },9 },
+	{ { 381,460,74,50 },{ 0,0 },9 },
+	{ { 457,460,74,50 },{ 0,0 },9 },
+	{ { 533,460,74,50 },{ 0,0 },9 }
 } };
 const SpriteData LeftWing = {
 	8,"Ship.png",8,{ &LeftWingLookDown, &LeftWingWalkDown, &LeftWingLookUp, &LeftWingWalkUp, &LeftWingLookLeft,
@@ -124,10 +124,10 @@ const SpriteData::AnimAndTimingList RightWingLookUp = { 4,{
 	{ { 157,590,50,74 },{ 0,0 },16 }
 } };
 const SpriteData::AnimAndTimingList RightWingWalkUp = { 4,{
-	{ { 209,590,50,74 },{ 0,-1 },9 },
-	{ { 261,590,50,74 },{ 0,-1 },9 },
-	{ { 313,590,50,74 },{ 0,-1 },9 },
-	{ { 365,590,50,74 },{ 0,-1 },9 }
+	{ { 209,590,50,74 },{ 0,0 },9 },
+	{ { 261,590,50,74 },{ 0,0 },9 },
+	{ { 313,590,50,74 },{ 0,0 },9 },
+	{ { 365,590,50,74 },{ 0,0 },9 }
 } };
 const SpriteData::AnimAndTimingList RightWingLookLeft = { 4,{
 	{ { 1,667,74,50 },{ 0,0 },16 },
@@ -136,10 +136,10 @@ const SpriteData::AnimAndTimingList RightWingLookLeft = { 4,{
 	{ { 229,667,74,50 },{ 0,0 },16 }
 } };
 const SpriteData::AnimAndTimingList RightWingWalkLeft = { 4,{
-	{ { 305,667,74,50 },{ -1,0 },9 },
-	{ { 381,667,74,50 },{ -1,0 },9 },
-	{ { 457,667,74,50 },{ -1,0 },9 },
-	{ { 533,667,74,50 },{ -1,0 },9 }
+	{ { 305,667,74,50 },{ 0,0 },9 },
+	{ { 381,667,74,50 },{ 0,0 },9 },
+	{ { 457,667,74,50 },{ 0,0 },9 },
+	{ { 533,667,74,50 },{ 0,0 },9 }
 } };
 const SpriteData::AnimAndTimingList RightWingLookRight = { 4,{
 	{ { 1,720,74,50 },{ 0,0 },16 },
@@ -148,10 +148,10 @@ const SpriteData::AnimAndTimingList RightWingLookRight = { 4,{
 	{ { 229,720,74,50 },{ 0,0 },16 }
 } };
 const SpriteData::AnimAndTimingList RightWingWalkRight = { 4,{
-	{ { 305,720,74,50 },{ 1,0 },9 },
-	{ { 381,720,74,50 },{ 1,0 },9 },
-	{ { 457,720,74,50 },{ 1,0 },9 },
-	{ { 533,720,74,50 },{ 1,0 },9 }
+	{ { 305,720,74,50 },{ 0,0 },9 },
+	{ { 381,720,74,50 },{ 0,0 },9 },
+	{ { 457,720,74,50 },{ 0,0 },9 },
+	{ { 533,720,74,50 },{ 0,0 },9 }
 } };
 const SpriteData RightWing = {
 	9,"Ship.png",8,{ &RightWingLookDown, &RightWingWalkDown, &RightWingLookUp, &RightWingWalkUp, &RightWingLookLeft,
