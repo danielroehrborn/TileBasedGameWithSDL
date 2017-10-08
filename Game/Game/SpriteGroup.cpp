@@ -26,7 +26,7 @@ const SDL_Rect& SpriteGroup::getFrameCoord() {
 	for (std::vector<Sprite*>::iterator it = vGroupSprites.begin(); it != vGroupSprites.end(); ++it) {
 		Sprite* s = *it;
 		if (s->animList.empty()) printf("AnimList empty\n");
-		++s->frameDurCnt %= s->sData->animData[s->animList.front()]->frames[curAnimFrameNum].displayDuration;
+		++s->frameDurCnt %= s->sData->animData[s->animList.front()]->frames[s->curAnimFrameNum].displayDuration;
 		if (s->frameDurCnt == 0) {
 			++s->curAnimFrameNum %= s->sData->animData[animList.front()]->numFrames;
 			if (s->curAnimFrameNum == 0 && s->animList.size() > 1) {

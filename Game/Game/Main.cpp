@@ -486,8 +486,8 @@ int main(int argc, char* args[])
 				//sLeftwing->setPos(25, 5);
 				SpriteGroup::GroupAnim gaLookDown;
 				gaLookDown.memberSpriteAnims.push_back({ 0,{ 1,1,10,10 } });//member sprite 0
-				gaLookDown.memberSpriteAnims.push_back({ 0,{ 58,0,20,20 } });//memper sprite 1
-				gaLookDown.memberSpriteAnims.push_back({ 0,{ 30,3,20,20 } });//memper sprite 2
+				gaLookDown.memberSpriteAnims.push_back({ 0,{ 58,0,20,20 } });//member sprite 1
+				gaLookDown.memberSpriteAnims.push_back({ 0,{ 30,3,20,20 } });//member sprite 2
 				gaLookDown.duration = 10;
 				gaLookDown.move = { 0,0,0,0 };
 				SpriteGroup::GroupAnim gaWalkDown;
@@ -495,7 +495,7 @@ int main(int argc, char* args[])
 				gaWalkDown.memberSpriteAnims.push_back({ 1,{ 57,0,20,20 } });
 				gaWalkDown.memberSpriteAnims.push_back({ 1,{ 30,3,20,20 } });
 				gaWalkDown.duration = 10;
-				gaWalkDown.move = { 0,1,0,0 };
+				gaWalkDown.move = { 0,3,0,0 };
 				SpriteGroup::GroupAnim gaLookUp;
 				gaLookUp.memberSpriteAnims.push_back({ 2,{ 58,0,10,10 } });
 				gaLookUp.memberSpriteAnims.push_back({ 2,{ 1,1,20,20 } });
@@ -507,7 +507,7 @@ int main(int argc, char* args[])
 				gaWalkUp.memberSpriteAnims.push_back({ 3,{ 2,1,20,20 } });
 				gaWalkUp.memberSpriteAnims.push_back({ 3,{ 30,3,20,20 } });
 				gaWalkUp.duration = 10;
-				gaWalkUp.move = { 0,-1,0,0 };
+				gaWalkUp.move = { 0,-3,0,0 };
 				SpriteGroup::GroupAnim gaLookLeft;
 				gaLookLeft.memberSpriteAnims.push_back({ 4,{ 1,1,10,10 } });
 				gaLookLeft.memberSpriteAnims.push_back({ 4,{ 1,65,20,20 } });
@@ -515,26 +515,26 @@ int main(int argc, char* args[])
 				gaLookLeft.duration = 10;
 				gaLookLeft.move = { 0,0,0,0 };
 				SpriteGroup::GroupAnim gaWalkLeft;
-				gaWalkLeft.memberSpriteAnims.push_back({ 5,{ 10,10,10,10 } });
-				gaWalkLeft.memberSpriteAnims.push_back({ 5,{ 20,20,20,20 } });
-				gaWalkLeft.memberSpriteAnims.push_back({ 5,{ 20,20,20,20 } });
+				gaWalkLeft.memberSpriteAnims.push_back({ 5,{ 1,2,10,10 } });
+				gaWalkLeft.memberSpriteAnims.push_back({ 5,{ 1,64,20,20 } });
+				gaWalkLeft.memberSpriteAnims.push_back({ 5,{ 6,33,20,20 } });
 				gaWalkLeft.duration = 10;
-				gaWalkLeft.move = { -1,0,0,0 };
+				gaWalkLeft.move = { -3,0,0,0 };
 				SpriteGroup::GroupAnim gaLookRight;
-				gaLookRight.memberSpriteAnims.push_back({ 6,{ 10,10,10,10 } });
-				gaLookRight.memberSpriteAnims.push_back({ 6,{ 20,20,20,20 } });
-				gaLookRight.memberSpriteAnims.push_back({ 6,{ 20,20,20,20 } });
+				gaLookRight.memberSpriteAnims.push_back({ 6,{ 1,65,10,10 } });
+				gaLookRight.memberSpriteAnims.push_back({ 6,{ 1,1,20,20 } });
+				gaLookRight.memberSpriteAnims.push_back({ 6,{ 6,33,20,20 } });
 				gaLookRight.duration = 10;
 				gaLookRight.move = { 0,0,0,0 };
 				SpriteGroup::GroupAnim gaWalkRight;
-				gaWalkRight.memberSpriteAnims.push_back({ 7,{ 10,10,10,10 } });
-				gaWalkRight.memberSpriteAnims.push_back({ 7,{ 20,20,20,20 } });
-				gaWalkRight.memberSpriteAnims.push_back({ 7,{ 20,20,20,20 } });
+				gaWalkRight.memberSpriteAnims.push_back({ 7,{ 1,64,10,10 } });
+				gaWalkRight.memberSpriteAnims.push_back({ 7,{ 1,2,20,20 } });
+				gaWalkRight.memberSpriteAnims.push_back({ 7,{ 6,33,20,20 } });
 				gaWalkRight.duration = 10;
-				gaWalkRight.move = { 1,0,0,0 };
+				gaWalkRight.move = { 3,0,0,0 };
 
 				//Sprite group
-				SpriteGroup* g1 = new SpriteGroup(110, 90);
+				SpriteGroup* g1 = new SpriteGroup(120, 120);
 				g1->setPos((12 + 8) * 16, (12 + 8) * 16);
 				g1->vGroupSprites.push_back(sLeftwing);
 				g1->vGroupSprites.push_back(sRightwing);
