@@ -178,15 +178,35 @@ const SpriteGroupData::GroupAnim shipGroupLookLeft =
 { 10,{ 0,0,0,0 },{ { 4,{ 1,1,0,0 } },{ 4,{ 1,65,0,0 } },{ 4,{ 6,33,0,0 } } } };
 const SpriteGroupData::GroupAnim shipGroupWalkLeft =
 { 10,{ -3,0,0,0 },{ { 5,{ 1,2,0,0 } },{ 5,{ 1,64,0,0 } },{ 5,{ 6,33,0,0 } } } };
-const SpriteGroupData::GroupAnim shipGroupRight =
+const SpriteGroupData::GroupAnim shipGroupLookRight =
 { 10,{ 0,0,0,0 },{ { 6,{ 1,65,0,0 } },{ 6,{ 1,1,0,0 } },{ 6,{ 6,33,0,0 } } } };
 const SpriteGroupData::GroupAnim shipGroupWalkRight =
 { 10,{ 3,0,0,0 },{ { 7,{ 1,64,0,0 } },{ 7,{ 1,2,0,0 } },{ 7,{ 6,33,0,0 } } } };
+const SpriteGroupData::GroupAnim shipGroupChargeJumpDown =
+{ 15,{ 0,-3,0,0 },{ { 1,{ 9,1,0,0 } },{ 1,{ 50,1,0,0 } },{ 0,{ 30,3,0,0 } } } };
+const SpriteGroupData::GroupAnim shipGroupJumpDown =
+{ 15,{ 0,30,0,0 },{ { 1,{ 1,1,0,0 } },{ 1,{ 58,0,0,0 } },{ 1,{ 30,3,0,0 } } } };
+const SpriteGroupData::GroupAnim shipGroupChargeJumpUp =
+{ 15,{ 0,3,0,0 },{ { 3,{ 50,1,0,0 } },{ 3,{ 9,1,0,0 } },{ 2,{ 30,3,0,0 } } } };
+const SpriteGroupData::GroupAnim shipGroupJumpUp =
+{ 15,{ 0,-30,0,0 },{ { 3,{ 58,1,0,0 } },{ 3,{ 1,0,0,0 } },{ 3,{ 30,3,0,0 } } } };
+const SpriteGroupData::GroupAnim shipGroupChargeJumpLeft =
+{ 15,{ 3,0,0,0 },{ { 5,{ 1,9,0,0 } },{ 5,{ 1,55,0,0 } },{ 4,{ 10,33,0,0 } } } };
+const SpriteGroupData::GroupAnim shipGroupJumpLeft =
+{ 15,{ -30,0,0,0 },{ { 5,{ 1,1,0,0 } },{ 5,{ 1,65,0,0 } },{ 5,{ 6,33,0,0 } } } };
+const SpriteGroupData::GroupAnim shipGroupChargeJumpRight =
+{ 15,{ -3,0,0,0 },{ { 7,{ 1,55,0,0 } },{ 7,{ 1,11,0,0 } },{ 6,{ 4,33,0,0 } } } };
+const SpriteGroupData::GroupAnim shipGroupJumpRight =
+{ 15,{ 30,0,0,0 },{ { 7,{ 1,65,0,0 } },{ 7,{ 1,1,0,0 } },{ 7,{ 6,33,0,0 } } } };
+
 const SpriteGroupData shipGroupData = {
 	{ (12 + 8) * 16, (12 + 8) * 16 ,120 ,120 }, //mapPos + width, height
 	3, //numGroupSprites
 	shipGroupSprites, //sprites in group
-	8, //num groupAnims
+	16, //num groupAnims
 	{//GroupAnims
-		&shipGroupLookDown,&shipGroupWalkDown,&shipGroupLookUp,&shipGroupWalkUp,&shipGroupLookLeft,&shipGroupWalkLeft,&shipGroupRight,&shipGroupWalkRight}
+		&shipGroupLookDown,&shipGroupWalkDown,&shipGroupLookUp,&shipGroupWalkUp,&shipGroupLookLeft,&shipGroupWalkLeft,
+		&shipGroupLookRight,&shipGroupWalkRight,&shipGroupChargeJumpDown,&shipGroupJumpDown,&shipGroupChargeJumpUp,
+		&shipGroupJumpUp,&shipGroupChargeJumpLeft,&shipGroupJumpLeft,&shipGroupChargeJumpRight,&shipGroupJumpRight
+	}
 };

@@ -19,6 +19,7 @@ const SDL_Rect& SpriteGroup::getFrameCoord() {
 	++frameDurCnt %= curGroupAnim->duration; //curGroupSpriteAnim->duration;
 	if (frameDurCnt == 0 && animList.size() > 1) {
 		animList.pop();
+		curGroupAnim = sgData->groupAnims[animList.front()];
 		for (int i = 0; i < vGroupSprites.size(); ++i) {
 			SDL_Rect tmpPos = curGroupAnim->spriteAnims[i].startPos;//curGroupSpriteAnim->memberSpriteAnims[i].AnimStartPos;
 			if (tmpPos.x != 0) vGroupSprites[i]->mapPos = tmpPos;
@@ -29,14 +30,13 @@ const SDL_Rect& SpriteGroup::getFrameCoord() {
 	mapPos.y += curGroupAnim->move.y;//curGroupSpriteAnim->move.y;
 	for (std::vector<Sprite*>::iterator it = vGroupSprites.begin(); it != vGroupSprites.end(); ++it) {
 		Sprite* s = *it;
-		if (s->animList.empty()) printf("AnimList empty\n");
 		++s->frameDurCnt %= s->sData->animData[s->animList.front()]->frames[s->curAnimFrameNum].displayDuration;
 		if (s->frameDurCnt == 0) {
-			++s->curAnimFrameNum %= s->sData->animData[animList.front()]->numFrames;
+			++s->curAnimFrameNum %= s->sData->animData[s->animList.front()]->numFrames;
 			if (s->curAnimFrameNum == 0 && s->animList.size() > 1) {
 				s->animList.pop();
-				s->mapPos.h = s->sData->animData[animList.front()]->frames[curAnimFrameNum].imgPos.h;
-				s->mapPos.w = s->sData->animData[animList.front()]->frames[curAnimFrameNum].imgPos.w;
+				s->mapPos.h = s->sData->animData[animList.front()]->frames[s->curAnimFrameNum].imgPos.h;
+				s->mapPos.w = s->sData->animData[animList.front()]->frames[s->curAnimFrameNum].imgPos.w;
 			}
 			else if (s->autoDelete && s->curAnimFrameNum == 0 && s->animList.size() == 1) s->objectInUse = false;
 		}
