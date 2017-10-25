@@ -38,6 +38,7 @@ public:
 		unsigned const char curAnim;
 	};
 	const char* pathTileset;
+	const unsigned char numColumnsTileset;
 	unsigned const char height, width;
 	unsigned char* const tileData, *const walkData;
 	const StateMachineTriggerEvent::MapScriptState* initState;
@@ -50,3 +51,4 @@ public:
 extern const MapData map1Data;
 extern const MapData map2Data;
 extern const MapData map3Data;
+extern const MapData mapDungeonData;

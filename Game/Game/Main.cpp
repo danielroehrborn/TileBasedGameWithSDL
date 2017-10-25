@@ -22,13 +22,15 @@
 const MapData* const mapIDs[] = {
 	&map1Data,	//ID: 0
 	&map2Data,  //ID: 1
-	&map3Data	//ID: 2
+	&map3Data,	//ID: 2
+	&mapDungeonData //ID: 3
 };
 const MapData* curMap = &map1Data;
 
 SDL_Window* window = NULL;
 SDL_Renderer* renderer = NULL;
 SDL_Texture *tilemapTexture;
+unsigned char tilemapNumColumns;
 Sprite *curSprite = NULL;
 SDL_Rect curCamera;
 bool detachedCamera = false;
@@ -133,6 +135,7 @@ void loadMap(unsigned const char& newMapID) {
 	}
 	tilemapTexture = SDL_CreateTextureFromSurface(renderer, surface);
 	SDL_FreeSurface(surface);
+	tilemapNumColumns = curMap->numColumnsTileset;
 	//delete all sprites
 	SpritePersistanceData* pData, *curSpritePData = curSprite != NULL ? curSprite->pData : NULL;
 	if (vSprites.size() > 0)
@@ -540,7 +543,7 @@ int main(int argc, char* args[])
 			for (j = 0; j < 32; j++) {
 				++mapTopLeftX;
 
-				unsigned int mapTopTile = mapTopLeftY*bgbreite + mapTopLeftX;
+				unsigned int mapTopTile = mapTopLeftY * bgbreite + mapTopLeftX;
 
 				if (mapTopLeftX >= bgbreite || mapTopLeftX < 0 || mapTopLeftY >= bghoehe || mapTopLeftY < 0) {
 					tileNum = 13;
@@ -551,8 +554,8 @@ int main(int argc, char* args[])
 					walkData = bgWalk[mapTopTile];
 					tileBlockNum = (walkData >> 3) & 0x3;
 				}
-				srcRect.y = tileBlockNum * 512 + 16 * (tileNum / 8);
-				srcRect.x = 16 * (tileNum % 8);
+				srcRect.y = tileBlockNum * 512 + 16 * (tileNum / tilemapNumColumns /*8*/);
+				srcRect.x = 16 * (tileNum % tilemapNumColumns /*8*/);
 
 				if (tileBlockNum > 2) {//format: bit 7 6 5 (walk data), 4 3 (tile block num) 2 1 0 (pause count) )
 					if (((walkData + 1) & 0x7) == 0) {

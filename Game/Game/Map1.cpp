@@ -100,7 +100,7 @@ public:
 	}
 };
 class Map1SwitchSpriteScript :public StateMachineTriggerEvent::MapScriptState {
-	Sprite* switchSprite;
+	Sprite* switchSprite, *warpSwitchSprite;
 	Event* spriteTriggerBit30;
 	Event* spriteAngelHochGehenAnimUndAutoDel;
 	bool darkerLight = false;
@@ -129,6 +129,17 @@ public:
 		switchSprite->setPos((26 + 8) * 16 + 8, (8 + 8) * 16 + 8);
 		switchSprite->pushAnim(0);
 		vSprites.push_back(switchSprite);
+
+		warpSwitchSprite = new Sprite(&Switch, false);
+		warpSwitchSprite->setPos((10 + 8) * 16 + 8, (8 + 8) * 16 + 8);
+		warpSwitchSprite->pushAnim(0);
+		vSprites.push_back(warpSwitchSprite);
+		std::vector<unsigned char>* vSwitchDisappear = new std::vector<unsigned char>;
+		vSwitchDisappear->push_back(2);//gleich weg
+		vSwitchDisappear->push_back(0);
+		EventManagement::addEvent(new ChangeAnimEvent(warpSwitchSprite, vSwitchDisappear->size(), vSwitchDisappear, warpSwitchSprite, false), false);
+		EventManagement::addEvent(new WarpEvent(warpSwitchSprite, 3, 5, 5, 0, 0), false);
+		
 
 		std::vector<unsigned char>* vAnim_Angel_WalkUp = new std::vector<unsigned char>;
 		vAnim_Angel_WalkUp->push_back(1);//angel
@@ -177,7 +188,7 @@ public:
 	}
 };
 const MapData map1Data = {
-	"tilesAnim.bmp", map1hoehe, map1breite, map1tiledata, map1walkdata, new Map1SwitchSpriteScript(),
+	"tilesAnim.bmp", 8, map1hoehe, map1breite, map1tiledata, map1walkdata, new Map1SwitchSpriteScript(),
 	{ { -1,0,0 }, //nord //mapID, xOffset, yOffset
 	  { 1,-2,0 }, //süd
 	  { 2,0,18 }, //west
@@ -249,7 +260,7 @@ public:
 	}
 };
 const MapData map2Data = {
-	"fireredtiles.bmp", map2hoehe, map2breite, map2tiledata, map2walkdata, new Map2Script1(),
+	"fireredtiles.bmp", 8, map2hoehe, map2breite, map2tiledata, map2walkdata, new Map2Script1(),
 	{ { 0,18,0 },{ -1,0,0 },{ -1,0,0 },{ -1,0,0 } }, map2border, 4,
 	{ { &Commandos,{ 9, 7, 0, 0 }, 0 },{ &Commandos,{ 9,5,0,0 } ,2 },{ &Commandos,{ 7,6,0,0 } ,4 },{ &Commandos,{ 11,6,0,0 } ,6 } }
 };
@@ -295,7 +306,57 @@ public:
 	}
 };
 const MapData map3Data = {
-	"fireredtiles.bmp", map3hoehe, map3breite, map3tiledata, map3walkdata, new Map3Script1(),
+	"fireredtiles.bmp", 8, map3hoehe, map3breite, map3tiledata, map3walkdata, new Map3Script1(),
 	{ { -1,0,0 },{ -1,0,0 },{ 0,0,13 },{ 0,0,-2 } }, map3border, 1,
 	{ { &Diablo,{ 5, 3, 0, 0 }, 0 } }
+};
+
+
+const char mapDungeonbreite = 14, mapDungeonhoehe = 13, mapDungeonborder = 25;
+unsigned char mapDungeontiledata[mapDungeonbreite*mapDungeonhoehe] = {
+	25,25,25,25,25,25,25,25,25,25,25,25,25,25,
+	25,5,6,105,192,193,194,104,7,25,5,6,7,25,
+	25,29,30,129,216,217,218,128,31,25,29,148,31,25,
+	25,53,54,54,54,54,54,54,56,6,57,54,55,25,
+	25,102,54,54,54,54,54,54,80,172,81,54,55,25,
+	25,76,54,54,54,54,54,54,183,54,184,54,75,25,
+	25,100,54,54,54,54,54,54,54,54,54,54,99,25,
+	25,53,54,54,54,54,54,54,54,54,54,54,55,25,
+	25,53,54,8,78,9,54,54,54,54,54,54,75,25,
+	25,103,54,99,25,33,54,54,54,54,54,54,99,25,
+	25,77,78,79,25,77,9,54,54,54,54,54,55,25,
+	25,25,25,25,25,25,77,78,78,127,78,78,79,25,
+	25,25,25,25,25,25,25,25,25,25,25,25,25,25
+};
+unsigned char mapDungeonwalkdata[mapDungeonbreite*mapDungeonhoehe] = {
+	224,224,224,224,224,224,224,224,224,224,224,224,224,224,
+	224,0,0,0,0,0,0,0,0,0,0,0,0,224,
+	224,0,0,0,0,0,0,0,0,0,0,0,0,224,
+	224,0,0,0,0,0,0,0,0,0,0,0,0,224,
+	224,0,0,0,0,0,0,0,0,0,0,0,0,224,
+	224,0,0,0,0,0,0,0,0,0,0,0,0,224,
+	224,0,0,0,0,0,0,0,0,0,0,0,0,224,
+	224,0,0,0,0,0,0,0,0,0,0,0,0,224,
+	224,0,0,0,0,0,0,0,0,0,0,0,0,224,
+	224,224,224,224,224,224,224,224,224,224,224,224,224,224
+};
+class MapDungeonScript1 :public StateMachineTriggerEvent::MapScriptState {
+	Event* doNothingEvent;
+public:
+	void init() {
+		printf("mapDungeon script 1 init\n");
+		//printf("mapDungeon script 1 init, create 1 doNothingEvent (3,3)\n");
+		//Event* doNothingEvent = EventManagement::addEvent(new StateMachineTriggerEvent(3, 3, 2, 5), false);
+	}
+	void exit() {
+		printf("mapDungeon script 1 exit\n");
+	}
+	void handleEvents() {
+		printf("mapDungeon script 1 handleEvents\n");
+	}
+};
+const MapData mapDungeonData = {
+	"tilesetDungeon.bmp", 24, mapDungeonhoehe, mapDungeonbreite, mapDungeontiledata, mapDungeonwalkdata, new MapDungeonScript1(),
+	{ { -1,0,0 },{ -1,0,0 },{ -1,0,0 },{ -1,0,0 } }, mapDungeonborder, 0,
+	{ }
 };
