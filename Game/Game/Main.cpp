@@ -398,16 +398,20 @@ int main(int argc, char* args[])
 			detachedCamera = false;
 		}
 		else if (keystates[SDL_SCANCODE_W]) {
-			if (detachedCamera) curCamera.y -= 4;
+			//if (detachedCamera) 
+			curCamera.y -= 4;
 		}
 		else if (keystates[SDL_SCANCODE_S]) {
-			if (detachedCamera) curCamera.y += 4;
+			//if (detachedCamera) 
+			curCamera.y += 4;
 		}
 		else if (keystates[SDL_SCANCODE_A]) {
-			if (detachedCamera) curCamera.x -= 4;
+			//if (detachedCamera) 
+			curCamera.x -= 4;
 		}
 		else if (keystates[SDL_SCANCODE_D]) {
-			if (detachedCamera) curCamera.x += 4;
+			//if (detachedCamera) 
+			curCamera.x += 4;
 		}
 		else if (keystates[SDL_SCANCODE_I]) {
 			if (shipSpriteGroup != NULL && !buttonPressed) {
@@ -463,7 +467,6 @@ int main(int argc, char* args[])
 					genSprite->changeSData(GenericSpritesList[genSpriteCreated]);
 				}
 			}
-
 		}
 		else if (keystates[SDL_SCANCODE_KP_5]) {
 			if (curSprite->pData == NULL) {
@@ -511,12 +514,6 @@ int main(int argc, char* args[])
 			const char diablomove[] = {
 				1,1,0,7,7,3,3,7,10,8,11,9
 			};
-			/*pDiablo1->pushAnim(12, diablomove);
-			const char hiromove[] = {
-				11,11,12,9,9,10,10,10,8,8,12,2,12,0
-			};
-			pHiro1->pushAnim(14, hiromove);
-			SDL_Delay(200);*/
 		}
 		else {
 			if (animSet) {
@@ -528,60 +525,51 @@ int main(int argc, char* args[])
 		}
 
 		if (!detachedCamera) {
-			if (curCamera.x != curSprite->mapPos.x && curCamera.x < curSprite->mapPos.x) curCamera.x += (curSprite->mapPos.x - curCamera.x) / 10;
-			else if (curCamera.x != curSprite->mapPos.x && curCamera.x > curSprite->mapPos.x) curCamera.x -= (curCamera.x - curSprite->mapPos.x) / 10;
-			if (curCamera.y != curSprite->mapPos.y && curCamera.y < curSprite->mapPos.y) curCamera.y += (curSprite->mapPos.y - curCamera.y) / 10;
-			else if (curCamera.y != curSprite->mapPos.y && curCamera.y > curSprite->mapPos.y) curCamera.y -= (curCamera.y - curSprite->mapPos.y) / 10;
+			if (curCamera.x < curSprite->mapPos.x) curCamera.x += (curSprite->mapPos.x - curCamera.x) / 10 + 1;
+			else if (curCamera.x > curSprite->mapPos.x) curCamera.x -= (curCamera.x - curSprite->mapPos.x) / 10 + 1;
+			if (curCamera.y < curSprite->mapPos.y) curCamera.y += (curSprite->mapPos.y - curCamera.y) / 10 + 1;
+			else if (curCamera.y > curSprite->mapPos.y) curCamera.y -= (curCamera.y - curSprite->mapPos.y) / 10 + 1;
 		}
 
-		destRect.x = (resolutionX / 2) - (512 / 2) - curCamera.x % 16;//curSprite->mapPos.x % 16;
-		destRect.y = (resolutionY / 2) - (512 / 2) - curCamera.y % 16;//curSprite->mapPos.y % 16;
+		destRect.x = (resolutionX / 2) - (512 / 2) - curCamera.x % 16;
+		destRect.y = (resolutionY / 2) - (512 / 2) - curCamera.y % 16;
 		SDL_RenderClear(renderer);
 		for (i = 0; i < 32; i++) {
-			mapTopLeftY = (curCamera.y / 16) - 16 + i;//(curSprite->mapPos.y / 16) - 16 + i;
-			mapTopLeftX = (curCamera.x / 16) - 17;//(curSprite->mapPos.x / 16) - 17;
+			mapTopLeftY = (curCamera.y / 16) - 16 + i;
+			mapTopLeftX = (curCamera.x / 16) - 17;
 			for (j = 0; j < 32; j++) {
 				++mapTopLeftX;
 
-				//unsigned int mapTopTile = mapTopLeftY*map1breite + mapTopLeftX;
 				unsigned int mapTopTile = mapTopLeftY*bgbreite + mapTopLeftX;
 
-				//if (mapTopLeftX >= map1breite || mapTopLeftX < 0 || mapTopLeftY >= map1hoehe || mapTopLeftY < 0) {
 				if (mapTopLeftX >= bgbreite || mapTopLeftX < 0 || mapTopLeftY >= bghoehe || mapTopLeftY < 0) {
-					tileNum = 13;// curMap->borderTile;//tileNum = map1border;
+					tileNum = 13;
 					tileBlockNum = 0;
 				}
 				else {
-					tileNum = bgTiles[mapTopTile];//tileNum = map1tiledata[mapTopTile];
-					walkData = bgWalk[mapTopTile];//walkData = map1walkdata[mapTopTile];
+					tileNum = bgTiles[mapTopTile];
+					walkData = bgWalk[mapTopTile];
 					tileBlockNum = (walkData >> 3) & 0x3;
 				}
-
 				srcRect.y = tileBlockNum * 512 + 16 * (tileNum / 8);
 				srcRect.x = 16 * (tileNum % 8);
 
 				if (tileBlockNum > 2) {//format: bit 7 6 5 (walk data), 4 3 (tile block num) 2 1 0 (pause count) )
 					if (((walkData + 1) & 0x7) == 0) {
 						if ((++tileNum % 8) == 0)
-							bgTiles[mapTopTile] -= 7;//map1tiledata[mapTopTile] -= 7;
+							bgTiles[mapTopTile] -= 7;
 						else
-							bgTiles[mapTopTile] = tileNum;//map1tiledata[mapTopTile] = tileNum;
-						bgWalk[mapTopTile] &= 0xf8;//map1walkdata[mapTopTile] &= 0xf8;
+							bgTiles[mapTopTile] = tileNum;
+						bgWalk[mapTopTile] &= 0xf8;
 					}
 					else {
-						bgWalk[mapTopTile] = (walkData & 0xf8) | ((walkData + 1) & 0x7);//map1walkdata[mapTopTile] = (walkData & 0xf8) | ((walkData + 1) & 0x7);
+						bgWalk[mapTopTile] = (walkData & 0xf8) | ((walkData + 1) & 0x7);
 					}
 				}
-
-				/*if (destRect.x > 150) {
-					SDL_SetTextureColorMod(tilemapTexture, 255, 255, 255);
-				}else SDL_SetTextureColorMod(tilemapTexture, 255, 197, 157);*/
-
 				SDL_RenderCopy(renderer, tilemapTexture, &srcRect, &destRect);
-
 				destRect.x += 16;
 			}
-			destRect.x = (resolutionX / 2) - (512 / 2) - curCamera.x % 16;//curSprite->mapPos.x % 16;
+			destRect.x = (resolutionX / 2) - (512 / 2) - curCamera.x % 16;
 			destRect.y += 16;
 		}
 		//sprite drawing order
