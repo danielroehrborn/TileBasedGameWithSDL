@@ -84,6 +84,11 @@ public:
 		for (std::list<Event*>::iterator it = lEvents.begin(); it != lEvents.end(); ++it)
 			delete *it;
 		lEvents.clear();
+		for (unsigned char i = 0; i < 4; ++i)
+			while (!lEventActivationQueues[i].empty()) {
+				delete lEventActivationQueues[i].front();
+				lEventActivationQueues[i].pop();
+			}
 	}
 	static std::list<Event*> lEvents;
 	static std::queue<ActivatedEvent*> lEventActivationQueues[4];
@@ -105,32 +110,6 @@ public:
 private:
 	EventManagement() {};
 };
-/*class ActiveEvent {
-public:
-	ActiveEvent(Event* ev, Sprite* s, unsigned char wBefore, unsigned char wAft) {
-		e = ev;
-		param = s;
-		waitBefore = wBefore;
-		waitAfter = wAft;
-		vEventActivationQueue.push(*this);
-	}
-	Event* e;
-	char waitBefore, waitAfter;
-	Sprite* param;
-
-	static std::queue<ActiveEvent> vEventActivationQueue;
-	static void RunNextEvent() {
-		if (vEventActivationQueue.size() == 0) return;
-		ActiveEvent* curActEv = &vEventActivationQueue.front();
-		if (curActEv->waitBefore) --curActEv->waitBefore;
-		else if (curActEv->e != NULL) {
-			curActEv->e->handleCollision(curActEv->param);
-			curActEv->e = NULL;
-		}
-		else if (curActEv->waitAfter) --curActEv->waitAfter;
-		else vEventActivationQueue.pop();
-	}
-};*/
 
 extern void WarpSprite(Sprite* s, unsigned char destMapID, char destX, char destY);
 class WarpEvent :public Event {
@@ -148,7 +127,7 @@ public:
 		if (s == NULL) {
 			printf("Warpevent ohne Sprite gestartet\n"); return;
 		}
-		printf("WarpEvent collision: Map%d, x%d, y%d\n", destMapID, destPos.x, destPos.y);
+		printf("WarpEvent: destination = Map%d, x%d, y%d\n", destMapID, destPos.x, destPos.y);
 		WarpSprite(s, destMapID, destPos.x, destPos.y);
 	}
 	WarpEvent* clone() const {

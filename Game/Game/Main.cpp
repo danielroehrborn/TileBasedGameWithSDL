@@ -247,6 +247,10 @@ void checkAndDoMapTransition(Sprite* s) {
 	}
 }
 void WarpSprite(Sprite* s, unsigned char destMapID, char destX, char destY) {
+	if (std::find(vSprites.begin(), vSprites.end(), s) == vSprites.end()) {
+		printf("Warpevent failed, Sprite schon gelöscht\n"); return;
+	}
+
 	if (mapIDs[destMapID] == curMap) {
 		s->mapPos.y = (8 + destY) * 16 + s->mapPos.y % 16;
 		s->mapPos.x = (8 + destX) * 16 + s->mapPos.x % 16;

@@ -84,7 +84,7 @@
     <Link>
       <AdditionalLibraryDirectories>C:\Users\xxx\Documents\TileBasedGameWithSDL\Game\SDL\SDL2-2.0.6\lib\x86;C:\Users\xxx\Documents\TileBasedGameWithSDL\Game\SDL\SDL2_image-2.0.1\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

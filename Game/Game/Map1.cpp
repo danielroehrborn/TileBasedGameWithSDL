@@ -135,11 +135,15 @@ public:
 		warpSwitchSprite->pushAnim(0);
 		vSprites.push_back(warpSwitchSprite);
 		std::vector<unsigned char>* vSwitchDisappear = new std::vector<unsigned char>;
-		vSwitchDisappear->push_back(2);//gleich weg
-		vSwitchDisappear->push_back(0);
+		vSwitchDisappear->push_back(1);//switch weg
+		vSwitchDisappear->push_back(0);//switch normal
+		std::vector<unsigned char>* vStandStill = new std::vector<unsigned char>;
+		vStandStill->push_back(0); vStandStill->push_back(0); vStandStill->push_back(0); vStandStill->push_back(0);
+		vStandStill->push_back(0); vStandStill->push_back(0); vStandStill->push_back(0); vStandStill->push_back(0);
+		EventManagement::addEvent(new ChangeAnimEvent(warpSwitchSprite, vStandStill->size(), vStandStill), false);
 		EventManagement::addEvent(new ChangeAnimEvent(warpSwitchSprite, vSwitchDisappear->size(), vSwitchDisappear, warpSwitchSprite, false), false);
-		EventManagement::addEvent(new WarpEvent(warpSwitchSprite, 3, 5, 5, 0, 0), false);
-		
+		EventManagement::addEvent(new WarpEvent(warpSwitchSprite, 3, 5, 5, 145), false);
+
 
 		std::vector<unsigned char>* vAnim_Angel_WalkUp = new std::vector<unsigned char>;
 		vAnim_Angel_WalkUp->push_back(1);//angel
@@ -329,16 +333,19 @@ unsigned char mapDungeontiledata[mapDungeonbreite*mapDungeonhoehe] = {
 	25,25,25,25,25,25,25,25,25,25,25,25,25,25
 };
 unsigned char mapDungeonwalkdata[mapDungeonbreite*mapDungeonhoehe] = {
-	224,224,224,224,224,224,224,224,224,224,224,224,224,224,
-	224,0,0,0,0,0,0,0,0,0,0,0,0,224,
-	224,0,0,0,0,0,0,0,0,0,0,0,0,224,
-	224,0,0,0,0,0,0,0,0,0,0,0,0,224,
-	224,0,0,0,0,0,0,0,0,0,0,0,0,224,
-	224,0,0,0,0,0,0,0,0,0,0,0,0,224,
-	224,0,0,0,0,0,0,0,0,0,0,0,0,224,
-	224,0,0,0,0,0,0,0,0,0,0,0,0,224,
-	224,0,0,0,0,0,0,0,0,0,0,0,0,224,
-	224,224,224,224,224,224,224,224,224,224,224,224,224,224
+	0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+	0,224,0,0,0,0,0,0,0,0,0,0,224,0,
+	0,224,224,224,224,224,224,224,224,224,224,224,224,0,
+	0,224,0,0,0,0,0,0,0,0,0,0,224,0,
+	0,224,0,0,0,0,0,0,0,0,0,0,224,0,
+	0,224,0,0,0,0,0,0,0,0,0,0,224,0,
+	0,224,0,0,0,0,0,0,0,0,0,0,224,0,
+	0,224,0,0,0,0,0,0,0,0,0,0,224,0,
+	0,224,0,0,0,0,0,0,0,0,0,0,224,0,
+	0,224,0,0,0,0,0,0,0,0,0,0,224,0,
+	0,224,224,224,224,224,224,0,0,0,0,0,224,0,
+	0,0,0,0,0,0,0,224,224,224,224,224,224,0,
+	0,0,0,0,0,0,0,0,0,0,0,0,0,0
 };
 class MapDungeonScript1 :public StateMachineTriggerEvent::MapScriptState {
 	Event* doNothingEvent;
