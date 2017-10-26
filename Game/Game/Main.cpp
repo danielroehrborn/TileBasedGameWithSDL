@@ -37,7 +37,7 @@ bool detachedCamera = false;
 std::vector<Sprite*> vSprites;
 std::vector<SpritePersistanceData*> vPersistantSprites;
 unsigned char vSprites_curSpriteNum = 0;
-unsigned int resolutionX = 640;
+unsigned int resolutionX = 640, newResolutionX = 0;
 unsigned int resolutionY = (resolutionX / 4) * 3;
 unsigned const char bghoehe = 100, bgbreite = 100;
 unsigned char bgTiles[bghoehe*bgbreite] = {};
@@ -532,10 +532,31 @@ int main(int argc, char* args[])
 		}
 
 		if (!detachedCamera) {
-			if (curCamera.x < curSprite->mapPos.x) curCamera.x += (curSprite->mapPos.x - curCamera.x) / 10 + 1;
-			else if (curCamera.x > curSprite->mapPos.x) curCamera.x -= (curCamera.x - curSprite->mapPos.x) / 10 + 1;
-			if (curCamera.y < curSprite->mapPos.y) curCamera.y += (curSprite->mapPos.y - curCamera.y) / 10 + 1;
-			else if (curCamera.y > curSprite->mapPos.y) curCamera.y -= (curCamera.y - curSprite->mapPos.y) / 10 + 1;
+			if (curCamera.x < curSprite->mapPos.x) {
+				newResolutionX = (curSprite->mapPos.x - curCamera.x + 10);
+				curCamera.x += newResolutionX / 10;
+			}
+			else if (curCamera.x > curSprite->mapPos.x) {
+				newResolutionX = (curCamera.x - curSprite->mapPos.x + 10);
+				curCamera.x -= newResolutionX / 10;
+			}
+			if (curCamera.y < curSprite->mapPos.y) {
+				newResolutionX = (curSprite->mapPos.y - curCamera.y + 10);
+				curCamera.y += newResolutionX / 10;
+			}
+			else if (curCamera.y > curSprite->mapPos.y) {
+				newResolutionX = (curCamera.y - curSprite->mapPos.y + 10);
+				curCamera.y -= newResolutionX / 10;
+			}
+
+			if (newResolutionX > 20) {
+				resolutionX = 320 + newResolutionX;
+				if (resolutionX > 460) resolutionX = 460;
+				resolutionY = (resolutionX / 4) * 3;
+				SDL_RenderSetLogicalSize(renderer, resolutionX, resolutionY);
+				newResolutionX = 0;
+			}
+
 		}
 
 		destRect.x = (resolutionX / 2) - (512 / 2) - curCamera.x % 16;
