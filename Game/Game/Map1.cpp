@@ -6,6 +6,7 @@
 #include "Diablo.h"
 #include "Explosive.h"
 #include "Switch.h"
+#include "DungeonSprites.h"
 
 extern std::vector<Sprite*> vSprites;
 
@@ -78,7 +79,7 @@ public:
 	void init() {
 		switchSprite = new Sprite(&Hiro, false);
 		switchSprite->setPos((20 + 8) * 16, (10 + 8) * 16);
-		switchSprite->pushAnim(0);
+		switchSprite->pushAnim((unsigned char)0);
 		vSprites.push_back(switchSprite);
 		triggerSwitchSprite = EventManagement::addEvent(new StateMachineTriggerEvent(switchSprite, 0, 30), false);
 
@@ -127,20 +128,16 @@ public:
 		printf("scrip init, create switch-sprite, add trigger-event(bit30)\n");
 		switchSprite = new Sprite(&Switch, false);
 		switchSprite->setPos((26 + 8) * 16 + 8, (8 + 8) * 16 + 8);
-		switchSprite->pushAnim(0);
+		switchSprite->pushAnim((unsigned char)0);
 		vSprites.push_back(switchSprite);
 
 		warpSwitchSprite = new Sprite(&Switch, false);
 		warpSwitchSprite->setPos((10 + 8) * 16 + 8, (8 + 8) * 16 + 8);
-		warpSwitchSprite->pushAnim(0);
+		warpSwitchSprite->pushAnim((unsigned char)0);
 		vSprites.push_back(warpSwitchSprite);
 		std::vector<unsigned char>* vSwitchDisappear = new std::vector<unsigned char>;
 		vSwitchDisappear->push_back(1);//switch weg
 		vSwitchDisappear->push_back(0);//switch normal
-		std::vector<unsigned char>* vStandStill = new std::vector<unsigned char>;
-		vStandStill->push_back(0); vStandStill->push_back(0); vStandStill->push_back(0); vStandStill->push_back(0);
-		vStandStill->push_back(0); vStandStill->push_back(0); vStandStill->push_back(0); vStandStill->push_back(0);
-		EventManagement::addEvent(new ChangeAnimEvent(warpSwitchSprite, vStandStill->size(), vStandStill), false);
 		EventManagement::addEvent(new ChangeAnimEvent(warpSwitchSprite, vSwitchDisappear->size(), vSwitchDisappear, warpSwitchSprite, false), false);
 		EventManagement::addEvent(new WarpEvent(warpSwitchSprite, 3, 5, 5, 145), false);
 
@@ -319,8 +316,8 @@ const MapData map3Data = {
 const char mapDungeonbreite = 14, mapDungeonhoehe = 13, mapDungeonborder = 25;
 unsigned char mapDungeontiledata[mapDungeonbreite*mapDungeonhoehe] = {
 	25,25,25,25,25,25,25,25,25,25,25,25,25,25,
-	25,5,6,105,192,193,194,104,7,25,5,6,7,25,
-	25,29,30,129,216,217,218,128,31,25,29,148,31,25,
+	25,5,6,105,6,25,6,104,7,25,5,6,7,25,
+	25,29,30,129,30,229,30,128,31,25,29,148,31,25,
 	25,53,54,54,54,54,54,54,56,6,57,54,55,25,
 	25,102,54,54,54,54,54,54,80,172,81,54,55,25,
 	25,76,54,54,54,54,54,54,183,54,184,54,75,25,
@@ -333,25 +330,35 @@ unsigned char mapDungeontiledata[mapDungeonbreite*mapDungeonhoehe] = {
 	25,25,25,25,25,25,25,25,25,25,25,25,25,25
 };
 unsigned char mapDungeonwalkdata[mapDungeonbreite*mapDungeonhoehe] = {
-	0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-	0,224,0,0,0,0,0,0,0,0,0,0,224,0,
-	0,224,224,224,224,224,224,224,224,224,224,224,224,0,
-	0,224,0,0,0,0,0,0,0,0,0,0,224,0,
-	0,224,0,0,0,0,0,0,0,0,0,0,224,0,
-	0,224,0,0,0,0,0,0,0,0,0,0,224,0,
-	0,224,0,0,0,0,0,0,0,0,0,0,224,0,
-	0,224,0,0,0,0,0,0,0,0,0,0,224,0,
-	0,224,0,0,0,0,0,0,0,0,0,0,224,0,
-	0,224,0,0,0,0,0,0,0,0,0,0,224,0,
-	0,224,224,224,224,224,224,0,0,0,0,0,224,0,
-	0,0,0,0,0,0,0,224,224,224,224,224,224,0,
-	0,0,0,0,0,0,0,0,0,0,0,0,0,0
+	000,000,000,000,000,000,000,000,000,000,000,000,000,000,
+	000,000,000,000,000,000,000,000,000,000,000,000,000,000,
+	000,000,224,224,224,000,224,224,000,000,000,224,000,000,
+	000,224,000,000,000,000,000,000,224,000,224,000,224,000,
+	000,224,000,000,000,000,000,000,224,224,224,000,224,000,
+	000,224,000,000,000,000,000,000,000,000,000,000,224,000,
+	000,224,000,000,000,000,000,000,000,000,000,000,224,000,
+	000,224,000,000,000,000,000,000,000,000,000,000,224,000,
+	000,224,000,224,224,224,000,000,000,000,000,000,224,000,
+	000,224,000,224,000,224,000,000,000,000,000,000,224,000,
+	000,000,224,000,000,000,224,000,000,000,000,000,224,000,
+	000,000,000,000,000,000,000,224,224,224,224,224,000,000,
+	000,000,000,000,000,000,000,000,000,000,000,000,000,000
 };
 class MapDungeonScript1 :public StateMachineTriggerEvent::MapScriptState {
 	Event* doNothingEvent;
+	Sprite* statue1, *door;
 public:
 	void init() {
 		printf("mapDungeon script 1 init\n");
+		statue1 = new Sprite(&DungeonStatue1, false);
+		statue1->setPos((3 + 8) * 16, (3 + 8) * 16);
+		statue1->pushAnim((unsigned char)0);
+		vSprites.push_back(statue1);
+
+		door = new Sprite(&DungeonDoor, false);
+		door->setPos(216, 164);
+		door->pushAnim((unsigned char)1);
+		vSprites.push_back(door);
 		//printf("mapDungeon script 1 init, create 1 doNothingEvent (3,3)\n");
 		//Event* doNothingEvent = EventManagement::addEvent(new StateMachineTriggerEvent(3, 3, 2, 5), false);
 	}

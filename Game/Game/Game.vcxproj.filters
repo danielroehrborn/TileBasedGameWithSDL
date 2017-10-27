@@ -89,5 +89,8 @@
     <ClInclude Include="SpriteGroupData.h">
       <Filter>Quelldateien\Sprites</Filter>
     </ClInclude>
+    <ClInclude Include="DungeonSprites.h">
+      <Filter>Quelldateien\Sprites</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

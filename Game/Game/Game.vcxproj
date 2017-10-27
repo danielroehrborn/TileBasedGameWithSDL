@@ -133,6 +133,7 @@
     <ClCompile Include="SpriteGroup.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DungeonSprites.h" />
     <ClInclude Include="GenericSprite.h" />
     <ClInclude Include="CollisionObject.h" />
     <ClInclude Include="Commandos.h" />

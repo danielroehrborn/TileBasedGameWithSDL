@@ -158,7 +158,7 @@ public:
 		if (numAnims == 1)
 			s->pushAnim((*anims)[0]);
 		else
-			s->pushAnim(numAnims, anims);
+			s->pushAnim(/*numAnims, */anims);
 		s->autoDelete = setAutoDel;
 	}
 	ChangeAnimEvent* clone() const {

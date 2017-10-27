@@ -129,7 +129,7 @@ Sprite::Sprite(const SpriteData* sd, const bool& autoDel) {
 	autoDelete = autoDel;
 	frameDurCnt = 0;
 	curAnimFrameNum = 0;
-	pushAnim(0);
+	pushAnim((unsigned char)0);
 	if (sData != NULL)
 		changeSData(sData);
 }
@@ -154,8 +154,12 @@ void Sprite::pushAnim(unsigned char index) {
 	}
 }
 
-void Sprite::pushAnim(const unsigned char& num, std::vector<unsigned char>* data) {
+/*void Sprite::pushAnim(const unsigned char& num, std::vector<unsigned char>* data) {
 	for (int i = 0; i < num; i++)
+		animList.push((*data)[i]);
+}*/
+void Sprite::pushAnim(std::vector<unsigned char>* data) {
+	for (int i = 0; i < (*data).size(); i++)
 		animList.push((*data)[i]);
 }
 

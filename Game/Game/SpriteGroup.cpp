@@ -63,7 +63,7 @@ void SpriteGroup::renderGroupTexture() {
 void SpriteGroup::addAnimToMemberSprite(unsigned char spriteID, SDL_Rect startPos, const unsigned char animNum, std::vector<unsigned char>* anims) {
 	if (startPos.x != 0) vGroupSprites[spriteID]->mapPos = startPos;                   //separate member animation
 	if (animNum == 1) vGroupSprites[spriteID]->pushAnim(anims->front());
-	else vGroupSprites[spriteID]->pushAnim(animNum, anims);
+	else vGroupSprites[spriteID]->pushAnim(/*animNum, */anims);
 }
 
 void SpriteGroup::pushAnim(unsigned char index) {

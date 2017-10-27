@@ -18,7 +18,8 @@ public:
 	SDL_Texture* spriteTexture = NULL;
 	static SDL_Texture* loadTexture(const char* path);
 	virtual void pushAnim(unsigned char index);
-	void pushAnim(const unsigned char& num, std::vector<unsigned char>* data);
+	void pushAnim(std::vector<unsigned char>* data);
+	//void pushAnim(const unsigned char& num, std::vector<unsigned char>* data);
 	void setPos(const int& x, const int&y);
 	virtual const SDL_Rect& getFrameCoord();
 	const SDL_Rect& getSpriteMapCoord();

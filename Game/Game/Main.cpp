@@ -15,6 +15,7 @@
 #include "Explosive.h"
 #include "Switch.h"
 #include "Ent.h"
+#include "DungeonSprites.h"
 #include "Ship.h"
 #include "GenericSprite.h"
 #include "Event.h"
@@ -341,28 +342,28 @@ int main(int argc, char* args[])
 		keystates = SDL_GetKeyboardState(NULL);
 		if (keystates[SDL_SCANCODE_UP]) {
 			tmpLastDir = 1;
-			if (!animSet) {
+			if (!animSet && curSprite->animList.size() == 1) {
 				animSet = 1;
 				curSprite->pushAnim(3);
 			}
 		}
 		else if (keystates[SDL_SCANCODE_DOWN]) {
 			tmpLastDir = 0;
-			if (!animSet) {
+			if (!animSet && curSprite->animList.size() == 1) {
 				animSet = 1;
 				curSprite->pushAnim(1);
 			}
 		}
 		else if (keystates[SDL_SCANCODE_LEFT]) {
 			tmpLastDir = 2;
-			if (!animSet) {
+			if (!animSet && curSprite->animList.size() == 1) {
 				animSet = 1;
 				curSprite->pushAnim(5);
 			}
 		}
 		else if (keystates[SDL_SCANCODE_RIGHT]) {
 			tmpLastDir = 3;
-			if (!animSet) {
+			if (!animSet && curSprite->animList.size() == 1) {
 				animSet = 1;
 				curSprite->pushAnim(7);
 			}
@@ -424,28 +425,28 @@ int main(int argc, char* args[])
 			if (shipSpriteGroup != NULL && !buttonPressed) {
 				buttonPressed = true;
 				std::vector<unsigned char> hyperjump = { 10,11,2 };
-				shipSpriteGroup->pushAnim(hyperjump.size(), &hyperjump);
+				shipSpriteGroup->pushAnim(/*hyperjump.size(), */&hyperjump);
 			}
 		}
 		else if (keystates[SDL_SCANCODE_K]) {
 			if (shipSpriteGroup != NULL && !buttonPressed) {
 				buttonPressed = true;
 				std::vector<unsigned char> hyperjump = { 8,9,0 };
-				shipSpriteGroup->pushAnim(hyperjump.size(), &hyperjump);
+				shipSpriteGroup->pushAnim(/*hyperjump.size(), */&hyperjump);
 			}
 		}
 		else if (keystates[SDL_SCANCODE_J]) {
 			if (shipSpriteGroup != NULL && !buttonPressed) {
 				buttonPressed = true;
 				std::vector<unsigned char> hyperjump = { 12,13,4 };
-				shipSpriteGroup->pushAnim(hyperjump.size(), &hyperjump);
+				shipSpriteGroup->pushAnim(/*hyperjump.size(), */&hyperjump);
 			}
 		}
 		else if (keystates[SDL_SCANCODE_L]) {
 			if (shipSpriteGroup != NULL && !buttonPressed) {
 				buttonPressed = true;
 				std::vector<unsigned char> hyperjump = { 14,15,6 };
-				shipSpriteGroup->pushAnim(hyperjump.size(), &hyperjump);
+				shipSpriteGroup->pushAnim(/*hyperjump.size(), */&hyperjump);
 			}
 		}
 		else if (keystates[SDL_SCANCODE_C]) {
@@ -453,7 +454,7 @@ int main(int argc, char* args[])
 			if (!created) {
 				created = true;
 				shipSpriteGroup = new SpriteGroup(&shipGroupData);
-				shipSpriteGroup->pushAnim(0);
+				shipSpriteGroup->pushAnim((unsigned char)0);
 				vSprites.push_back(shipSpriteGroup);
 			}
 		}
@@ -465,7 +466,7 @@ int main(int argc, char* args[])
 				if (genSprite == NULL) {
 					genSprite = new Sprite(GenericSpritesList[0], false);
 					genSprite->setPos((4 + 8) * 16, (2 + 8) * 16);
-					genSprite->pushAnim(0);
+					genSprite->pushAnim((unsigned char)0);
 					vSprites.push_back(genSprite);
 				}
 				else {
@@ -488,7 +489,7 @@ int main(int argc, char* args[])
 			newExplodeBulletRight->setPos(curSprite->mapPos.x, curSprite->mapPos.y);
 			vSprites.push_back(newExplodeBulletRight);
 			std::vector<unsigned char> explosivemove = { 0,0,1 };
-			newExplodeBulletRight->pushAnim(3, &explosivemove);
+			newExplodeBulletRight->pushAnim(/*3, */&explosivemove);
 			//curSprite = newExplodeBulletRight;
 			SDL_Delay(50);
 		}
@@ -505,7 +506,7 @@ int main(int argc, char* args[])
 				vSprites.push_back(newHyperLightDrifter);
 				std::vector<unsigned char> hyperlightdriftermove = { 7, 7, 1, 1, 5, 5, 3, 3, 7, 7, 1, 1, 5, 5, 3, 3 };
 				//const unsigned char hyperlightdriftermove[] = { 7,7,1,1,5,5,3,3,7,7,1,1,5,5,3,3 };
-				newHyperLightDrifter->pushAnim(16, &hyperlightdriftermove);
+				newHyperLightDrifter->pushAnim(/*16, */&hyperlightdriftermove);
 			}
 		}
 		else if (keystates[SDL_SCANCODE_KP_3]) {
@@ -518,9 +519,11 @@ int main(int argc, char* args[])
 			SDL_Delay(200);
 		}
 		else if (keystates[SDL_SCANCODE_KP_7]) {
-			const char diablomove[] = {
-				1,1,0,7,7,3,3,7,10,8,11,9
+			std::vector<unsigned char> moveCircle = {
+				7, 7, 1, 1, 5, 5, 3, 3, 7, 7, 1, 1, 5, 5, 3, 3
 			};
+			curSprite->pushAnim(/*16, */&moveCircle);
+			SDL_Delay(200);
 		}
 		else {
 			if (animSet) {
@@ -556,7 +559,6 @@ int main(int argc, char* args[])
 				SDL_RenderSetLogicalSize(renderer, resolutionX, resolutionY);
 				newResolutionX = 0;
 			}
-
 		}
 
 		destRect.x = (resolutionX / 2) - (512 / 2) - curCamera.x % 16;
