@@ -345,7 +345,7 @@ unsigned char mapDungeonwalkdata[mapDungeonbreite*mapDungeonhoehe] = {
 	000,000,000,000,000,000,000,000,000,000,000,000,000,000
 };
 class MapDungeonScript1 :public StateMachineTriggerEvent::MapScriptState {
-	Event* doNothingEvent;
+	Event* doNothingEvent, *animSwitchOn;
 	Sprite* statue1, *door, *doorswitch, *ironDoor, *woodDoor;
 public:
 	void init() {
@@ -374,6 +374,25 @@ public:
 		doorswitch->setPos((6 + 8) * 16, (6 + 8) * 16);
 		doorswitch->pushAnim((unsigned char)1);
 		vSprites.push_back(doorswitch);
+
+		std::vector<unsigned char>* vSwitchAndStayOn = new std::vector<unsigned char>;
+		vSwitchAndStayOn->push_back(1);
+		vSwitchAndStayOn->push_back(2);
+		vSwitchAndStayOn->push_back(0);
+		EventManagement::addEvent(new ChangeAnimEvent(doorswitch, vSwitchAndStayOn->size(), vSwitchAndStayOn, doorswitch, false), false);
+		std::vector<unsigned char>* vStatueFlashTwice = new std::vector<unsigned char>;
+		vStatueFlashTwice->push_back(0);
+		vStatueFlashTwice->push_back(1);
+		vStatueFlashTwice->push_back(5);
+		vStatueFlashTwice->push_back(10);
+		vStatueFlashTwice->push_back(12);
+		EventManagement::addEvent(new ChangeAnimEvent(doorswitch, vStatueFlashTwice->size(), vStatueFlashTwice, statue1, false,20), false);
+		std::vector<unsigned char>* vDoorOpen = new std::vector<unsigned char>;
+		vDoorOpen->push_back(1);
+		vDoorOpen->push_back(2);
+		vDoorOpen->push_back(0);
+		EventManagement::addEvent(new ChangeAnimEvent(doorswitch, vDoorOpen->size(), vDoorOpen, door, false, 20), false);
+
 		//printf("mapDungeon script 1 init, create 1 doNothingEvent (3,3)\n");
 		//Event* doNothingEvent = EventManagement::addEvent(new StateMachineTriggerEvent(3, 3, 2, 5), false);
 	}
