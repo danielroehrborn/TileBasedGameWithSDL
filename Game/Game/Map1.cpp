@@ -317,9 +317,9 @@ const char mapDungeonbreite = 14, mapDungeonhoehe = 13, mapDungeonborder = 25;
 unsigned char mapDungeontiledata[mapDungeonbreite*mapDungeonhoehe] = {
 	25,25,25,25,25,25,25,25,25,25,25,25,25,25,
 	25,5,6,105,6,25,6,104,7,25,5,6,7,25,
-	25,29,30,129,30,229,30,128,31,25,29,148,31,25,
+	25,29,30,129,30,54,30,128,31,25,29,54,31,25,
 	25,53,54,54,54,54,54,54,56,6,57,54,55,25,
-	25,102,54,54,54,54,54,54,80,172,81,54,55,25,
+	25,102,54,54,54,54,54,54,80,54,81,54,55,25,
 	25,76,54,54,54,54,54,54,183,54,184,54,75,25,
 	25,100,54,54,54,54,54,54,54,54,54,54,99,25,
 	25,53,54,54,54,54,54,54,54,54,54,54,55,25,
@@ -332,9 +332,9 @@ unsigned char mapDungeontiledata[mapDungeonbreite*mapDungeonhoehe] = {
 unsigned char mapDungeonwalkdata[mapDungeonbreite*mapDungeonhoehe] = {
 	000,000,000,000,000,000,000,000,000,000,000,000,000,000,
 	000,000,000,000,000,000,000,000,000,000,000,000,000,000,
-	000,000,224,224,224,000,224,224,000,000,000,224,000,000,
+	000,000,224,224,224,000,224,224,224,000,224,000,224,000,
 	000,224,000,000,000,000,000,000,224,000,224,000,224,000,
-	000,224,000,000,000,000,000,000,224,224,224,000,224,000,
+	000,224,000,000,000,000,000,000,224,000,224,000,224,000,
 	000,224,000,000,000,000,000,000,000,000,000,000,224,000,
 	000,224,000,000,000,000,000,000,000,000,000,000,224,000,
 	000,224,000,000,000,000,000,000,000,000,000,000,224,000,
@@ -346,7 +346,7 @@ unsigned char mapDungeonwalkdata[mapDungeonbreite*mapDungeonhoehe] = {
 };
 class MapDungeonScript1 :public StateMachineTriggerEvent::MapScriptState {
 	Event* doNothingEvent;
-	Sprite* statue1, *door;
+	Sprite* statue1, *door, *doorswitch, *ironDoor, *woodDoor;
 public:
 	void init() {
 		printf("mapDungeon script 1 init\n");
@@ -359,6 +359,21 @@ public:
 		door->setPos(216, 164);
 		door->pushAnim((unsigned char)1);
 		vSprites.push_back(door);
+
+		ironDoor = new Sprite(&DungeonIronDoor, false);
+		ironDoor->setPos(312,168);
+		ironDoor->pushAnim((unsigned char)1);
+		vSprites.push_back(ironDoor);
+
+		woodDoor = new Sprite(&DungeonWoodDoor, false);
+		woodDoor->setPos(280,200);
+		woodDoor->pushAnim((unsigned char)1);
+		vSprites.push_back(woodDoor);
+
+		doorswitch = new Sprite(&DungeonSwitch, false);
+		doorswitch->setPos((6 + 8) * 16, (6 + 8) * 16);
+		doorswitch->pushAnim((unsigned char)1);
+		vSprites.push_back(doorswitch);
 		//printf("mapDungeon script 1 init, create 1 doNothingEvent (3,3)\n");
 		//Event* doNothingEvent = EventManagement::addEvent(new StateMachineTriggerEvent(3, 3, 2, 5), false);
 	}
