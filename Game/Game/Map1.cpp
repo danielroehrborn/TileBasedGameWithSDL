@@ -344,90 +344,133 @@ unsigned char mapDungeonwalkdata[mapDungeonbreite*mapDungeonhoehe] = {
 	000,000,000,000,000,000,000,000,000,000,000,000,000,000
 };
 class MapDungeonScript1 :public StateMachineTriggerEvent::MapScriptState {
-	Event* animStatueGlowEvent, *animSwitchOnEvent, *animDoorOpenEvent, *animIronDoorOpenCloseEvent, *animStepBackFromDoorEvent;
+public://protected:
+	Event* animStatueGlowEvent, *animSwitchOnEvent, *animDoorOpenEvent, *animIronDoorOpenCloseEvent, *animStepBackFromDoorEvent,
+		*Bit1SwitchStateDoorOpenEvent;
 	Sprite* statue1, *door, *doorswitch, *ironDoor, *woodDoor;
 public:
-	void init() {
-		printf("mapDungeon script 1 init\n");
-		statue1 = new Sprite(&DungeonStatue1, false);
-		statue1->setPos((3 + 8) * 16, (3 + 8) * 16);
-		statue1->pushAnim((unsigned char)0);
-		vSprites.push_back(statue1);
-
-		door = new Sprite(&DungeonDoor, false);
-		door->setPos(216, 164);
-		door->pushAnim((unsigned char)1);
-		vSprites.push_back(door);
-
-		ironDoor = new Sprite(&DungeonIronDoor, false);
-		ironDoor->setPos(312, 168);
-		ironDoor->pushAnim((unsigned char)1);
-		vSprites.push_back(ironDoor);
-
-		woodDoor = new Sprite(&DungeonWoodDoor, false);
-		woodDoor->setPos(280, 200);
-		woodDoor->pushAnim((unsigned char)1);
-		vSprites.push_back(woodDoor);
-
-		doorswitch = new Sprite(&DungeonSwitch, false);
-		doorswitch->setPos((6 + 8) * 16, (6 + 8) * 16);
-		doorswitch->pushAnim((unsigned char)0);
-		vSprites.push_back(doorswitch);
-
-		EventManagement::delEvent(EventManagement::addEvent(new ChangeBGTileEvent(0, 0, 5, 2, 30, 224)));
-		std::vector<unsigned char>* vSwitchOffAtBeginning = new std::vector<unsigned char>;
-		vSwitchOffAtBeginning->push_back(0);
-		vSwitchOffAtBeginning->push_back(3);
-		vSwitchOffAtBeginning->push_back(1);
-		EventManagement::delEvent(EventManagement::addEvent(new ChangeAnimEvent(0, 0, vSwitchOffAtBeginning->size(), vSwitchOffAtBeginning, doorswitch, 0, false, 50)));
-		std::vector<unsigned char>* vStatueRedAtBeginning = new std::vector<unsigned char>;
-		vStatueRedAtBeginning->push_back(5);
-		vStatueRedAtBeginning->push_back(5);
-		vStatueRedAtBeginning->push_back(0);
-		EventManagement::delEvent(EventManagement::addEvent(new ChangeAnimEvent(0, 0, vStatueRedAtBeginning->size(), vStatueRedAtBeginning, statue1, false, 20)));
-
-		//step back from iron door
-		EventManagement::delEvent(EventManagement::addEvent(new ChangeBGTileEvent(0, 0, 11, 2, 30, 224)));
-		std::vector<unsigned char>* vIronDoorOpenClose = new std::vector<unsigned char>;
-		vIronDoorOpenClose->push_back(4);
-		vIronDoorOpenClose->push_back(1);
-		animIronDoorOpenCloseEvent = EventManagement::addEvent(new ChangeAnimEvent(11, 3, vIronDoorOpenClose->size(), vIronDoorOpenClose, ironDoor), false);
-		std::vector<unsigned char>* vStepBack = new std::vector<unsigned char>;
-		vStepBack->push_back(1);
-		vStepBack->push_back(2);
-		vStepBack->push_back(1);
-		vStepBack->push_back(2);
-		vStepBack->push_back(0);
-		animStepBackFromDoorEvent = EventManagement::addEvent(new ChangeAnimEvent(11, 3, vStepBack->size(), vStepBack), false);
-
-		//für script state2
-		std::vector<unsigned char>* vSwitchAndStayOn = new std::vector<unsigned char>;
-		vSwitchAndStayOn->push_back(1);
-		vSwitchAndStayOn->push_back(2);
-		vSwitchAndStayOn->push_back(0);
-		animSwitchOnEvent = EventManagement::addEvent(new ChangeAnimEvent(doorswitch, vSwitchAndStayOn->size(), vSwitchAndStayOn, doorswitch, false), false);
-		std::vector<unsigned char>* vStatueFlashTwice = new std::vector<unsigned char>;
-		vStatueFlashTwice->push_back(0);
-		vStatueFlashTwice->push_back(1);
-		vStatueFlashTwice->push_back(5);
-		vStatueFlashTwice->push_back(10);
-		vStatueFlashTwice->push_back(11);
-		vStatueFlashTwice->push_back(0);
-		animStatueGlowEvent = EventManagement::addEvent(new ChangeAnimEvent(doorswitch, vStatueFlashTwice->size(), vStatueFlashTwice, statue1, false, 20), false);
-		std::vector<unsigned char>* vDoorOpen = new std::vector<unsigned char>;
-		vDoorOpen->push_back(1);
-		vDoorOpen->push_back(2);
-		vDoorOpen->push_back(0);
-		animDoorOpenEvent = EventManagement::addEvent(new ChangeAnimEvent(doorswitch, vDoorOpen->size(), vDoorOpen, door, false, 20), false);
-
-	}
-	void exit() {
-		printf("mapDungeon script 1 exit\n");
-	}
-	void handleEvents() {
-		printf("mapDungeon script 1 handleEvents\n");
-	}
+	void init();
+	void exit();
+	void handleEvents();
 };
+class MapDungeonScript2 :public MapDungeonScript1 {
+public:
+	MapDungeonScript2(MapDungeonScript1* parent);
+	void init();
+	void exit();
+	void handleEvents();
+};
+void MapDungeonScript1::init() {
+	printf("mapDungeon script 1 init\n");
+	statue1 = new Sprite(&DungeonStatue1, false);
+	statue1->setPos((3 + 8) * 16, (3 + 8) * 16);
+	statue1->pushAnim((unsigned char)0);
+	vSprites.push_back(statue1);
+
+	door = new Sprite(&DungeonDoor, false);
+	door->setPos(216, 164);
+	door->pushAnim((unsigned char)1);
+	vSprites.push_back(door);
+
+	ironDoor = new Sprite(&DungeonIronDoor, false);
+	ironDoor->setPos(312, 168);
+	ironDoor->pushAnim((unsigned char)1);
+	vSprites.push_back(ironDoor);
+
+	woodDoor = new Sprite(&DungeonWoodDoor, false);
+	woodDoor->setPos(280, 200);
+	woodDoor->pushAnim((unsigned char)1);
+	vSprites.push_back(woodDoor);
+
+	doorswitch = new Sprite(&DungeonSwitch, false);
+	doorswitch->setPos((6 + 8) * 16, (6 + 8) * 16);
+	doorswitch->pushAnim((unsigned char)0);
+	vSprites.push_back(doorswitch);
+
+	/*EventManagement::delEvent(EventManagement::addEvent(new ChangeBGTileEvent(0, 0, 5, 2, 30, 224)));
+	std::vector<unsigned char>* vSwitchOffAtBeginning = new std::vector<unsigned char>;
+	vSwitchOffAtBeginning->push_back(0);
+	vSwitchOffAtBeginning->push_back(3);
+	vSwitchOffAtBeginning->push_back(1);
+	EventManagement::delEvent(EventManagement::addEvent(new ChangeAnimEvent(0, 0, vSwitchOffAtBeginning->size(), vSwitchOffAtBeginning, doorswitch, 0, false, 50)));
+	std::vector<unsigned char>* vStatueRedAtBeginning = new std::vector<unsigned char>;
+	vStatueRedAtBeginning->push_back(5);
+	vStatueRedAtBeginning->push_back(5);
+	vStatueRedAtBeginning->push_back(0);
+	EventManagement::delEvent(EventManagement::addEvent(new ChangeAnimEvent(0, 0, vStatueRedAtBeginning->size(), vStatueRedAtBeginning, statue1, false, 20)));
+	*/
+	//step back from iron door
+	EventManagement::delEvent(EventManagement::addEvent(new ChangeBGTileEvent(0, 0, 11, 2, 30, 224)));
+	std::vector<unsigned char>* vIronDoorOpenClose = new std::vector<unsigned char>;
+	vIronDoorOpenClose->push_back(4);
+	vIronDoorOpenClose->push_back(1);
+	animIronDoorOpenCloseEvent = EventManagement::addEvent(new ChangeAnimEvent(11, 3, vIronDoorOpenClose->size(), vIronDoorOpenClose, ironDoor), false);
+	std::vector<unsigned char>* vStepBack = new std::vector<unsigned char>;
+	vStepBack->push_back(1);
+	vStepBack->push_back(2);
+	vStepBack->push_back(1);
+	vStepBack->push_back(2);
+	vStepBack->push_back(0);
+	animStepBackFromDoorEvent = EventManagement::addEvent(new ChangeAnimEvent(11, 3, vStepBack->size(), vStepBack), false);
+
+	Bit1SwitchStateDoorOpenEvent = EventManagement::addEvent(new StateMachineTriggerEvent(6, 6, 3, 1), false);
+}
+void MapDungeonScript1::exit() {
+	printf("mapDungeon script 1 exit\n");
+}
+void MapDungeonScript1::handleEvents() {
+	printf("mapDungeon script 1 handleEvents\n");
+	if (StateMachineTriggerEvent::mapEventFlagBitmap[3] & 1 << 1) {
+		if (Bit1SwitchStateDoorOpenEvent != NULL) {//mehrfachaufruf, nicht nötig bei state change
+			EventManagement::delEvent(Bit1SwitchStateDoorOpenEvent);
+			Bit1SwitchStateDoorOpenEvent = NULL;
+		}
+		StateMachineTriggerEvent::MapScriptState::changeState(3, new MapDungeonScript2(this));
+	}
+}
+MapDungeonScript2::MapDungeonScript2(MapDungeonScript1* parent) {
+	animStatueGlowEvent = parent->animStatueGlowEvent;
+	animSwitchOnEvent = parent->animSwitchOnEvent;
+	animDoorOpenEvent = parent->animDoorOpenEvent;
+	animIronDoorOpenCloseEvent = parent->animIronDoorOpenCloseEvent;
+	animStepBackFromDoorEvent = parent->animStepBackFromDoorEvent;
+	Bit1SwitchStateDoorOpenEvent = parent->Bit1SwitchStateDoorOpenEvent;
+	statue1 = parent->statue1;
+	door = parent->door;
+	doorswitch = parent->doorswitch;
+	ironDoor = parent->ironDoor;
+	woodDoor = parent->woodDoor;
+}
+void MapDungeonScript2::init() {
+	printf("mapDungeon script 2 init\n");
+
+	std::vector<unsigned char>* vSwitchAndStayOn = new std::vector<unsigned char>;
+	vSwitchAndStayOn->push_back(1);
+	vSwitchAndStayOn->push_back(2);
+	vSwitchAndStayOn->push_back(0);
+	EventManagement::delEvent(EventManagement::addEvent(new ChangeAnimEvent(0, 0, vSwitchAndStayOn->size(), vSwitchAndStayOn, doorswitch)));
+	std::vector<unsigned char>* vStatueFlashTwice = new std::vector<unsigned char>;
+	vStatueFlashTwice->push_back(0);
+	vStatueFlashTwice->push_back(1);
+	vStatueFlashTwice->push_back(5);
+	vStatueFlashTwice->push_back(10);
+	vStatueFlashTwice->push_back(11);
+	vStatueFlashTwice->push_back(0);
+	EventManagement::delEvent(EventManagement::addEvent(new ChangeAnimEvent(0, 0, vStatueFlashTwice->size(), vStatueFlashTwice, statue1, false, 20)));
+	std::vector<unsigned char>* vDoorOpen = new std::vector<unsigned char>;
+	vDoorOpen->push_back(1);
+	vDoorOpen->push_back(2);
+	vDoorOpen->push_back(0);
+	EventManagement::delEvent(EventManagement::addEvent(new ChangeAnimEvent(0, 0, vDoorOpen->size(), vDoorOpen, door, false, 20)));
+	
+	//EventManagement::delEvent(EventManagement::addEvent(new StateMachineTriggerEvent((char)0, (char)0, 4, 1), false));
+}
+void MapDungeonScript2::exit() {
+	printf("mapDungeon script 2 exit\n");
+}
+void MapDungeonScript2::handleEvents() {
+	printf("mapDungeon script 2 handleEvents\n");
+}
 const MapData mapDungeonData = {
 	"tilesetDungeon.bmp", 24, mapDungeonhoehe, mapDungeonbreite, mapDungeontiledata, mapDungeonwalkdata, new MapDungeonScript1(),
 	{ { -1,0,0 },{ -1,0,0 },{ -1,0,0 },{ -1,0,0 } }, mapDungeonborder, 0,
