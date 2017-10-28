@@ -22,8 +22,8 @@ void ChangeTimeEvent::handleCollision(Sprite* s) {
 std::list<Event*> EventManagement::lEvents;
 std::queue<EventManagement::ActivatedEvent*> EventManagement::lEventActivationQueues[4];
 
-unsigned int StateMachineTriggerEvent::mapEventFlagBitmap[3];
-StateMachineTriggerEvent::MapScriptState* StateMachineTriggerEvent::MapScriptState::mapScriptStates[3];
+unsigned int StateMachineTriggerEvent::mapEventFlagBitmap[10];
+StateMachineTriggerEvent::MapScriptState* StateMachineTriggerEvent::MapScriptState::mapScriptStates[10];
 
 /*void Event::checkCollision(Sprite* s) {
 	Sprite* sTmp;

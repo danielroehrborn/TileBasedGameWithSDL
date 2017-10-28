@@ -3,10 +3,10 @@
 #include <SDL.h>
 #include "Sprite.h"
 extern unsigned char curMapID;
-unsigned char bgTiles[];
+//unsigned char bgTiles[];
 class Event {
 public:
-	Event(char x, char y, unsigned char w = 0, unsigned char h = 0, char wBefore = 0, char wAfter = 0) {
+	Event(char x, char y, unsigned char w = 1, unsigned char h = 1, char wBefore = 0, char wAfter = 0) {
 		uniquePos = { x,y,w,h };
 		gridPos = &uniquePos;
 		assignedSprite = NULL;
@@ -58,18 +58,18 @@ public:
 			sTmp = (*it)->assignedSprite;
 			if (
 				(sTmp != NULL && sTmp != s &&
-				((s->mapPos.x >= sTmp->mapPos.x - sTmp->mapPos.w / 2) && (s->mapPos.x <= sTmp->mapPos.x + sTmp->mapPos.w / 2)) &&
+				/*((s->mapPos.x >= sTmp->mapPos.x - sTmp->mapPos.w / 2) && (s->mapPos.x <= sTmp->mapPos.x + sTmp->mapPos.w / 2)) &&
 					((s->mapPos.y + s->mapPos.h / 2 > sTmp->mapPos.y - sTmp->mapPos.h / 2) && (s->mapPos.y <= sTmp->mapPos.y + sTmp->mapPos.h)))
 				||
 				(sTmp == NULL &&
-				((s->mapPos.x >= (*it)->uniquePos.x - (*it)->uniquePos.w / 2) && (s->mapPos.x <= (*it)->uniquePos.x + (*it)->uniquePos.w / 2)) &&
-					((s->mapPos.y >= (*it)->uniquePos.y - (*it)->uniquePos.h / 2) && (s->mapPos.y <= (*it)->uniquePos.y + (*it)->uniquePos.h / 2)))
-				)
-				/*(s->gridPos.x == sTmp->gridPos.x || s->gridPos.x == sTmp->gridPos.x - 1) &&
+				((s->gridPos.x >= (*it)->uniquePos.x - (*it)->uniquePos.w / 2) && (s->gridPos.x <= (*it)->uniquePos.x + (*it)->uniquePos.w / 2)) &&
+					((s->gridPos.y >= (*it)->uniquePos.y - (*it)->uniquePos.h / 2) && (s->gridPos.y <= (*it)->uniquePos.y + (*it)->uniquePos.h / 2)))
+				)*/
+				(s->gridPos.x == sTmp->gridPos.x || s->gridPos.x == sTmp->gridPos.x - 1) &&
 				(s->gridPos.y == sTmp->gridPos.y || s->gridPos.y == sTmp->gridPos.y - 1)) ||
 				(sTmp == NULL &&
 				(s->gridPos.x == (*it)->uniquePos.x || s->gridPos.x == (*it)->uniquePos.x - 1) &&
-				(s->gridPos.y == (*it)->uniquePos.y || s->gridPos.y == (*it)->uniquePos.y - 1)))*/
+				(s->gridPos.y == (*it)->uniquePos.y || s->gridPos.y == (*it)->uniquePos.y - 1)))
 				activateEvent(*it, s);
 		}
 	}
@@ -141,7 +141,7 @@ private:
 };
 class ChangeAnimEvent :public Event {
 public:
-	ChangeAnimEvent(char x, char y, unsigned char numAnims, std::vector<unsigned char>* anims, Sprite* movingSprite = NULL, bool autoDel = false, char wBefore = 0, char wAfter = 0) :Event(x, y, 0, 0, wBefore, wAfter) {
+	ChangeAnimEvent(char x, char y, unsigned char numAnims, std::vector<unsigned char>* anims, Sprite* movingSprite = NULL, bool autoDel = false, char wBefore = 0, char wAfter = 0) :Event(x, y, 1, 1, wBefore, wAfter) {
 		this->movingSprite = movingSprite;
 		setAutoDel = autoDel;
 		this->numAnims = numAnims;
@@ -223,16 +223,24 @@ private:
 class ChangeBGTileEvent :public Event {
 public:
 	ChangeBGTileEvent(unsigned char bgGridX, unsigned char bgGridY, unsigned char bgTileGridX, unsigned char bgTileGridY, unsigned char tileData, unsigned char walkData) :Event(bgGridX, bgGridY) {
+		init(bgTileGridX, bgTileGridY, tileData, walkData);
+	}
+	ChangeBGTileEvent(Sprite* s, unsigned char bgTileGridX, unsigned char bgTileGridY, unsigned char tileData, unsigned char walkData) :Event(s, 0, 0) {
+		init(bgTileGridX, bgTileGridY, tileData, walkData);
+	}
+	void handleCollision(Sprite* s);
+	ChangeBGTileEvent* clone() const {
+		if (assignedSprite != NULL)
+			return new ChangeBGTileEvent(assignedSprite, tileGridX, tileGridY, tileData, walkData);
+		return new ChangeBGTileEvent(uniquePos.x, uniquePos.y, tileGridX, tileGridY, tileData, walkData);
+	}
+private:
+	void init(unsigned char bgTileGridX, unsigned char bgTileGridY, unsigned char tileData, unsigned char walkData) {
 		tileGridX = bgTileGridX;
 		tileGridY = bgTileGridY;
 		this->tileData = tileData;
 		this->walkData = walkData;
 	}
-	void handleCollision(Sprite* s);
-	ChangeBGTileEvent* clone() const {
-		return new ChangeBGTileEvent(gridPos->x, gridPos->y, tileGridX, tileGridY, tileData, walkData);
-	}
-private:
 	unsigned char tileGridX;
 	unsigned char tileGridY;
 	unsigned char tileData;
