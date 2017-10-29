@@ -346,20 +346,20 @@ unsigned char mapDungeonwalkdata[mapDungeonbreite*mapDungeonhoehe] = {
 class MapDungeonScript1 :public StateMachineTriggerEvent::MapScriptState {
 public://protected:
 	Event* animStatueGlowEvent, *animSwitchOnEvent, *animDoorOpenEvent, *animIronDoorOpenCloseEvent, *animStepBackFromDoorEvent,
-		*Bit1SwitchStateDoorOpenEvent;
+		*Bit1SwitchDoorOpenEvent, *Bit2SwitchDoorCloseEvent;
 	Sprite* statue1, *door, *doorswitch, *ironDoor, *woodDoor;
 public:
 	void init();
 	void exit();
 	void handleEvents();
 };
-class MapDungeonScript2 :public MapDungeonScript1 {
+/*class MapDungeonScript2 :public MapDungeonScript1 {
 public:
 	MapDungeonScript2(MapDungeonScript1* parent);
 	void init();
 	void exit();
 	void handleEvents();
-};
+};*/
 void MapDungeonScript1::init() {
 	printf("mapDungeon script 1 init\n");
 	statue1 = new Sprite(&DungeonStatue1, false);
@@ -371,6 +371,7 @@ void MapDungeonScript1::init() {
 	door->setPos(216, 164);
 	door->pushAnim((unsigned char)1);
 	vSprites.push_back(door);
+	EventManagement::delEvent(EventManagement::addEvent(new ChangeBGTileEvent(0, 0, 5, 2, 30, 224)));
 
 	ironDoor = new Sprite(&DungeonIronDoor, false);
 	ironDoor->setPos(312, 168);
@@ -384,7 +385,7 @@ void MapDungeonScript1::init() {
 
 	doorswitch = new Sprite(&DungeonSwitch, false);
 	doorswitch->setPos((6 + 8) * 16, (6 + 8) * 16);
-	doorswitch->pushAnim((unsigned char)0);
+	doorswitch->pushAnim((unsigned char)1);
 	vSprites.push_back(doorswitch);
 
 	/*EventManagement::delEvent(EventManagement::addEvent(new ChangeBGTileEvent(0, 0, 5, 2, 30, 224)));
@@ -413,22 +414,59 @@ void MapDungeonScript1::init() {
 	vStepBack->push_back(0);
 	animStepBackFromDoorEvent = EventManagement::addEvent(new ChangeAnimEvent(11, 3, vStepBack->size(), vStepBack), false);
 
-	Bit1SwitchStateDoorOpenEvent = EventManagement::addEvent(new StateMachineTriggerEvent(6, 6, 3, 1), false);
+	Bit1SwitchDoorOpenEvent = EventManagement::addEvent(new StateMachineTriggerEvent(6, 6, 3, 1), false);
 }
 void MapDungeonScript1::exit() {
 	printf("mapDungeon script 1 exit\n");
 }
 void MapDungeonScript1::handleEvents() {
 	printf("mapDungeon script 1 handleEvents\n");
-	if (StateMachineTriggerEvent::mapEventFlagBitmap[3] & 1 << 1) {
-		if (Bit1SwitchStateDoorOpenEvent != NULL) {//mehrfachaufruf, nicht nötig bei state change
-			EventManagement::delEvent(Bit1SwitchStateDoorOpenEvent);
-			Bit1SwitchStateDoorOpenEvent = NULL;
+	if (StateMachineTriggerEvent::mapEventFlagBitmap[3] & 1 << 1) { //door open anim
+		if (Bit1SwitchDoorOpenEvent != NULL) {
+			EventManagement::delEvent(Bit1SwitchDoorOpenEvent);
+			Bit1SwitchDoorOpenEvent = NULL;
 		}
-		StateMachineTriggerEvent::MapScriptState::changeState(3, new MapDungeonScript2(this));
+		std::vector<unsigned char>* vSwitchAndStayOn = new std::vector<unsigned char>;
+		vSwitchAndStayOn->push_back(1);
+		vSwitchAndStayOn->push_back(2);
+		vSwitchAndStayOn->push_back(0);
+		EventManagement::delEvent(EventManagement::addEvent(new ChangeAnimEvent(0, 0, vSwitchAndStayOn->size(), vSwitchAndStayOn, doorswitch)));
+		std::vector<unsigned char>* vStatueFlashGreen = new std::vector<unsigned char>;
+		vStatueFlashGreen->push_back(0);
+		vStatueFlashGreen->push_back(9);
+		vStatueFlashGreen->push_back(10);
+		vStatueFlashGreen->push_back(12);
+		EventManagement::delEvent(EventManagement::addEvent(new ChangeAnimEvent(0, 0, vStatueFlashGreen->size(), vStatueFlashGreen, statue1, false, 20)));
+		std::vector<unsigned char>* vDoorOpen = new std::vector<unsigned char>;
+		vDoorOpen->push_back(1);
+		vDoorOpen->push_back(2);
+		vDoorOpen->push_back(0);
+		EventManagement::delEvent(EventManagement::addEvent(new ChangeAnimEvent(0, 0, vDoorOpen->size(), vDoorOpen, door, false, 50, 20)));
+		EventManagement::delEvent(EventManagement::addEvent(new ChangeBGTileEvent(0, 0, 5, 2, 54, 0)));
+
+		StateMachineTriggerEvent::mapEventFlagBitmap[3] = 0;
+		EventManagement::delEvent(EventManagement::addEvent(new StateMachineTriggerEvent(0, 0, 3, 2, 250, 0), true, 0, 1));//close flag with delay
+	}
+	if (StateMachineTriggerEvent::mapEventFlagBitmap[3] & 1 << 2) { //door close anim
+		StateMachineTriggerEvent::mapEventFlagBitmap[3] = 0;
+		Bit1SwitchDoorOpenEvent = EventManagement::addEvent(new StateMachineTriggerEvent(6, 6, 3, 1), false);//reactivate switch
+		std::vector<unsigned char>* vSwitchAndStayOff = new std::vector<unsigned char>;
+		vSwitchAndStayOff->push_back(3);
+		vSwitchAndStayOff->push_back(1);
+		EventManagement::delEvent(EventManagement::addEvent(new ChangeAnimEvent(0, 0, vSwitchAndStayOff->size(), vSwitchAndStayOff, doorswitch)));
+		std::vector<unsigned char>* vStatueFlashRed = new std::vector<unsigned char>;
+		vStatueFlashRed->push_back(11);
+		vStatueFlashRed->push_back(5);
+		vStatueFlashRed->push_back(0);
+		EventManagement::delEvent(EventManagement::addEvent(new ChangeAnimEvent(0, 0, vStatueFlashRed->size(), vStatueFlashRed, statue1, false)));
+		std::vector<unsigned char>* vDoorClose = new std::vector<unsigned char>;
+		vDoorClose->push_back(3);
+		vDoorClose->push_back(1);
+		EventManagement::delEvent(EventManagement::addEvent(new ChangeAnimEvent(0, 0, vDoorClose->size(), vDoorClose, door, false, 0, 20)));
+		EventManagement::delEvent(EventManagement::addEvent(new ChangeBGTileEvent(0, 0, 5, 2, 30, 224)));
 	}
 }
-MapDungeonScript2::MapDungeonScript2(MapDungeonScript1* parent) {
+/*MapDungeonScript2::MapDungeonScript2(MapDungeonScript1* parent) {
 	animStatueGlowEvent = parent->animStatueGlowEvent;
 	animSwitchOnEvent = parent->animSwitchOnEvent;
 	animDoorOpenEvent = parent->animDoorOpenEvent;
@@ -462,7 +500,7 @@ void MapDungeonScript2::init() {
 	vDoorOpen->push_back(2);
 	vDoorOpen->push_back(0);
 	EventManagement::delEvent(EventManagement::addEvent(new ChangeAnimEvent(0, 0, vDoorOpen->size(), vDoorOpen, door, false, 20)));
-	
+
 	//EventManagement::delEvent(EventManagement::addEvent(new StateMachineTriggerEvent((char)0, (char)0, 4, 1), false));
 }
 void MapDungeonScript2::exit() {
@@ -470,7 +508,7 @@ void MapDungeonScript2::exit() {
 }
 void MapDungeonScript2::handleEvents() {
 	printf("mapDungeon script 2 handleEvents\n");
-}
+}*/
 const MapData mapDungeonData = {
 	"tilesetDungeon.bmp", 24, mapDungeonhoehe, mapDungeonbreite, mapDungeontiledata, mapDungeonwalkdata, new MapDungeonScript1(),
 	{ { -1,0,0 },{ -1,0,0 },{ -1,0,0 },{ -1,0,0 } }, mapDungeonborder, 0,

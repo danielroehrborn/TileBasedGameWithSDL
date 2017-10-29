@@ -6,7 +6,7 @@ extern unsigned char curMapID;
 //unsigned char bgTiles[];
 class Event {
 public:
-	Event(char x, char y, unsigned char w = 1, unsigned char h = 1, char wBefore = 0, char wAfter = 0) {
+	Event(char x, char y, unsigned char w = 1, unsigned char h = 1, /*char*/ int wBefore = 0, /*char*/ int wAfter = 0) {
 		uniquePos = { x,y,w,h };
 		gridPos = &uniquePos;
 		assignedSprite = NULL;
@@ -14,7 +14,7 @@ public:
 		waitAfter = wAfter;
 		//bgTiles[gridPos->x + 8 + (gridPos->y + 8) * 100] = 0;
 	}
-	Event(Sprite* s, char wBefore = 0, char wAfter = 0) {
+	Event(Sprite* s, int wBefore = 0, int wAfter = 0) {
 		gridPos = &s->gridPos;
 		assignedSprite = s;
 		waitBefore = wBefore;
@@ -27,7 +27,7 @@ public:
 	SDL_Rect* gridPos;
 	SDL_Rect uniquePos;
 	Sprite* assignedSprite;
-	char waitBefore, waitAfter;
+	int waitBefore, waitAfter;
 };
 
 class EventManagement {
@@ -58,18 +58,18 @@ public:
 			sTmp = (*it)->assignedSprite;
 			if (
 				(sTmp != NULL && sTmp != s &&
-				/*((s->mapPos.x >= sTmp->mapPos.x - sTmp->mapPos.w / 2) && (s->mapPos.x <= sTmp->mapPos.x + sTmp->mapPos.w / 2)) &&
-					((s->mapPos.y + s->mapPos.h / 2 > sTmp->mapPos.y - sTmp->mapPos.h / 2) && (s->mapPos.y <= sTmp->mapPos.y + sTmp->mapPos.h)))
-				||
-				(sTmp == NULL &&
-				((s->gridPos.x >= (*it)->uniquePos.x - (*it)->uniquePos.w / 2) && (s->gridPos.x <= (*it)->uniquePos.x + (*it)->uniquePos.w / 2)) &&
-					((s->gridPos.y >= (*it)->uniquePos.y - (*it)->uniquePos.h / 2) && (s->gridPos.y <= (*it)->uniquePos.y + (*it)->uniquePos.h / 2)))
-				)*/
+					/*((s->mapPos.x >= sTmp->mapPos.x - sTmp->mapPos.w / 2) && (s->mapPos.x <= sTmp->mapPos.x + sTmp->mapPos.w / 2)) &&
+						((s->mapPos.y + s->mapPos.h / 2 > sTmp->mapPos.y - sTmp->mapPos.h / 2) && (s->mapPos.y <= sTmp->mapPos.y + sTmp->mapPos.h)))
+					||
+					(sTmp == NULL &&
+					((s->gridPos.x >= (*it)->uniquePos.x - (*it)->uniquePos.w / 2) && (s->gridPos.x <= (*it)->uniquePos.x + (*it)->uniquePos.w / 2)) &&
+						((s->gridPos.y >= (*it)->uniquePos.y - (*it)->uniquePos.h / 2) && (s->gridPos.y <= (*it)->uniquePos.y + (*it)->uniquePos.h / 2)))
+					)*/
 				(s->gridPos.x == sTmp->gridPos.x || s->gridPos.x == sTmp->gridPos.x - 1) &&
-				(s->gridPos.y == sTmp->gridPos.y || s->gridPos.y == sTmp->gridPos.y - 1)) ||
-				(sTmp == NULL &&
+					(s->gridPos.y == sTmp->gridPos.y || s->gridPos.y == sTmp->gridPos.y - 1)) ||
+					(sTmp == NULL &&
 				(s->gridPos.x == (*it)->uniquePos.x || s->gridPos.x == (*it)->uniquePos.x - 1) &&
-				(s->gridPos.y == (*it)->uniquePos.y || s->gridPos.y == (*it)->uniquePos.y - 1)))
+						(s->gridPos.y == (*it)->uniquePos.y || s->gridPos.y == (*it)->uniquePos.y - 1)))
 				activateEvent(*it, s);
 		}
 	}
@@ -115,11 +115,11 @@ extern void WarpSprite(Sprite* s, unsigned char destMapID, char destX, char dest
 class WarpEvent :public Event {
 public:
 	WarpEvent(char x, char y, unsigned char w, unsigned char h,
-		unsigned char destMapID, char destX, char destY, char wBefore = 0, char wAfter = 0) :Event(x, y, w, h, wBefore, wAfter) {
+		unsigned char destMapID, char destX, char destY, int wBefore = 0, int wAfter = 0) :Event(x, y, w, h, wBefore, wAfter) {
 		this->destMapID = destMapID;
 		destPos = { destX,destY,0,0 };
 	}
-	WarpEvent(Sprite* s, unsigned char destMapID, char destX, char destY, char wBefore = 0, char wAfter = 0) :Event(s, wBefore, wAfter) {
+	WarpEvent(Sprite* s, unsigned char destMapID, char destX, char destY, int wBefore = 0, int wAfter = 0) :Event(s, wBefore, wAfter) {
 		this->destMapID = destMapID;
 		destPos = { destX,destY,0,0 };
 	}
@@ -141,13 +141,13 @@ private:
 };
 class ChangeAnimEvent :public Event {
 public:
-	ChangeAnimEvent(char x, char y, unsigned char numAnims, std::vector<unsigned char>* anims, Sprite* movingSprite = NULL, bool autoDel = false, char wBefore = 0, char wAfter = 0) :Event(x, y, 1, 1, wBefore, wAfter) {
+	ChangeAnimEvent(char x, char y, unsigned char numAnims, std::vector<unsigned char>* anims, Sprite* movingSprite = NULL, bool autoDel = false, int wBefore = 0, int wAfter = 0) :Event(x, y, 1, 1, wBefore, wAfter) {
 		this->movingSprite = movingSprite;
 		setAutoDel = autoDel;
 		this->numAnims = numAnims;
 		this->anims = anims;
 	}
-	ChangeAnimEvent(Sprite* s, unsigned char numAnims, std::vector<unsigned char>* anims, Sprite* movingSprite = NULL, bool autoDel = false, char wBefore = 0, char wAfter = 0) :Event(s, wBefore, wAfter) {
+	ChangeAnimEvent(Sprite* s, unsigned char numAnims, std::vector<unsigned char>* anims, Sprite* movingSprite = NULL, bool autoDel = false, int wBefore = 0, int wAfter = 0) :Event(s, wBefore, wAfter) {
 		this->movingSprite = movingSprite;
 		setAutoDel = autoDel;
 		this->numAnims = numAnims;
@@ -194,11 +194,11 @@ public:
 		}
 		static MapScriptState* mapScriptStates[];
 	};
-	StateMachineTriggerEvent(char x, char y, unsigned char mapID, unsigned char eventFlagBitIndex, char wBefore = 0, char wAfter = 0) :Event(x, y, 0, 0, wBefore, wAfter) {
+	StateMachineTriggerEvent(char x, char y, unsigned char mapID, unsigned char eventFlagBitIndex, int wBefore = 0, int wAfter = 0) :Event(x, y, 0, 0, wBefore, wAfter) {
 		this->eventFlagBitIndex = eventFlagBitIndex;
 		this->mapID = mapID;
 	}
-	StateMachineTriggerEvent(Sprite* s, unsigned char mapID, unsigned char eventFlagBitIndex, char wBefore = 0, char wAfter = 0) :Event(s, wBefore, wAfter) {
+	StateMachineTriggerEvent(Sprite* s, unsigned char mapID, unsigned char eventFlagBitIndex, int wBefore = 0, int wAfter = 0) :Event(s, wBefore, wAfter) {
 		this->eventFlagBitIndex = eventFlagBitIndex;
 		this->mapID = mapID;
 	}
@@ -249,7 +249,7 @@ private:
 
 class ChangeTimeEvent :public Event {
 public:
-	ChangeTimeEvent(unsigned char x, unsigned char y, unsigned char colRed, unsigned char colGreen, unsigned char colBlue, char wBefore = 0, char wAfter = 0) :Event(x, y, 0, 0, wBefore, wAfter) {
+	ChangeTimeEvent(unsigned char x, unsigned char y, unsigned char colRed, unsigned char colGreen, unsigned char colBlue, int wBefore = 0, int wAfter = 0) :Event(x, y, 0, 0, wBefore, wAfter) {
 		this->colRed = colRed;
 		this->colGreen = colGreen;
 		this->colBlue = colBlue;
