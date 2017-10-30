@@ -45,33 +45,35 @@ public:
 		Sprite* param;
 		bool executed = false;
 	};
-	static Event* addEvent(Event* newEvent, bool runNow = true, Sprite* param = NULL, unsigned char queueID = 0, bool checkCollisionNow = false);/* {
+	static Event* addEvent(Event* newEvent, bool runNow = true, Sprite* param = NULL, unsigned char queueID = 0, bool checkCollisionNow = false) {
 		lEvents.push_back(newEvent);
 		if (runNow) {
 			activateEvent(newEvent, param, queueID);
 		}
+		if (checkCollisionNow) {
+			checkCollision(newEvent);
+
+		}
 		return newEvent;
-	}*/
-	static bool checkCollision(Sprite* s, Event* e) {
+	}
+	static void checkCollision(Sprite* s, Event* e) {
 		SDL_Rect* sPos = &s->gridPos, *ePos = 0;
 		if (e->assignedSprite != NULL) {
-			if (e->assignedSprite == s) return false;
+			if (e->assignedSprite == s) return;
 			ePos = &e->assignedSprite->gridPos;
 		}
 		else if (e->assignedSprite == NULL)
 			ePos = &e->uniquePos;
 		if ((sPos->x == ePos->x || sPos->x == ePos->x - 1) &&
 			(sPos->y == ePos->y || sPos->y == ePos->y - 1))
-			return true;
-		return false;
+			activateEvent(e, s);
+		return;
 	}
 	static void checkCollision(Sprite* s) {
-		Sprite* sTmp;
 		for (std::list<Event*>::iterator it = lEvents.begin(); it != lEvents.end(); ++it) {
-			if (checkCollision(s, *it))
-				activateEvent(*it, s);
+			checkCollision(s, *it);
 		}
-	}
+	}static void checkCollision(Event* e);
 	/*static void checkCollision(Sprite* s) {
 		Sprite* sTmp;
 		for (std::list<Event*>::iterator it = lEvents.begin(); it != lEvents.end(); ++it) {

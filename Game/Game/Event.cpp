@@ -52,16 +52,7 @@ void Event::handleCollision(Sprite* s) {
 }*/
 
 extern std::vector<Sprite*> vSprites;
-Event* EventManagement::addEvent(Event* newEvent, bool runNow, Sprite* param, unsigned char queueID, bool checkCollisionNow) {
-	lEvents.push_back(newEvent);
-	if (runNow) {
-		activateEvent(newEvent, param, queueID);
-	}
-	if (checkCollisionNow) {
-		for (std::vector<Sprite*>::iterator it = vSprites.begin(); it != vSprites.end(); ++it) {
-			if (checkCollision(*it, newEvent))
-				activateEvent(newEvent, *it);
-		}
-	}
-	return newEvent;
+void EventManagement::checkCollision(Event* e) {
+	for (std::vector<Sprite*>::iterator it = vSprites.begin(); it != vSprites.end(); ++it)
+		checkCollision(*it, e);
 }
