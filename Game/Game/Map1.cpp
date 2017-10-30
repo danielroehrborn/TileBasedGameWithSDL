@@ -348,7 +348,7 @@ unsigned char mapDungeonwalkdata[mapDungeonbreite*mapDungeonhoehe] = {
 class MapDungeonScript1 :public StateMachineTriggerEvent::MapScriptState {
 public://protected:
 	Event* animStatueGlowEvent, *animSwitchOnEvent, *animDoorOpenEvent, *animIronDoorOpenCloseEvent, *animStepBackFromDoorEvent,
-		*animStepBackFromDoorEvent2, *Bit1SwitchDoorOpenEvent, *Bit2SwitchDoorCloseEvent, *WarpOutOfClosingDoor;
+		*animStepBackFromDoorEvent2, *Bit1SwitchDoorOpenEvent, *Bit2SwitchDoorCloseEvent, *WarpOutOfClosingDoor, *WarpBackToOverworld;
 	Sprite* statue1, *door, *doorswitch, *ironDoor, *woodDoor;
 public:
 	void init();
@@ -453,12 +453,17 @@ void MapDungeonScript1::handleEvents() {
 		EventManagement::delEvent(EventManagement::addEvent(new ChangeAnimEvent(0, 0, vDoorOpen->size(), vDoorOpen, door, false, 50, 20)));
 		EventManagement::delEvent(EventManagement::addEvent(new ChangeBGTileEvent(0, 0, 5, 2, 54, 0)));
 
+		WarpBackToOverworld = EventManagement::addEvent(new WarpEvent(5, 1, 16, 16, 0, 10, 5), false);
+
 		StateMachineTriggerEvent::mapEventFlagBitmap[3] = 0;
 		EventManagement::delEvent(EventManagement::addEvent(new StateMachineTriggerEvent(0, 0, 3, 2, 250, 0), true, 0, 1));//close flag with delay
 	}
 	if (StateMachineTriggerEvent::mapEventFlagBitmap[3] & 1 << 2) { //door close anim
 		StateMachineTriggerEvent::mapEventFlagBitmap[3] = 0;
-		//WarpOutOfClosingDoor = EventManagement::addEvent(new WarpEvent(5, 2, 16, 16, 3, 5, 3), false, 0, 0, true);
+		if (WarpBackToOverworld != NULL) {
+			EventManagement::delEvent(WarpBackToOverworld);
+			WarpBackToOverworld = NULL;
+		}
 		WarpOutOfClosingDoor = EventManagement::addEvent(new WarpEvent(door, 3, 5, 3), false, 0, 0, true);
 		Bit1SwitchDoorOpenEvent = EventManagement::addEvent(new StateMachineTriggerEvent(6, 6, 3, 1), false);//reactivate switch
 		std::vector<unsigned char>* vSwitchAndStayOff = new std::vector<unsigned char>;

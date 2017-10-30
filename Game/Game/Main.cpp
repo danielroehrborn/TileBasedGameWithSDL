@@ -249,14 +249,11 @@ void checkAndDoMapTransition(Sprite* s) {
 	}
 }
 /*void FadeBlack() {
-	unsigned char red = curColorRed, green = curColorGreen, blue = curColorBlue;
-	while (red || green || blue) {
-		SDL_SetTextureColorMod(tilemapTexture, red, green, blue);
-		SDL_Delay(2);
-		//EventManagement::delEvent(EventManagement::addEvent(new ChangeTimeEvent(0, 0, red, green, blue, 2), true, 0, 1));
-		red /= 2;
-		green /= 2;
-		blue /= 2;
+	int ret=SDL_SetWindowBrightness(window, 1.0);
+	float test = SDL_GetWindowBrightness(window);
+	while (SDL_GetWindowBrightness(window)>0.1) {
+		SDL_Delay(20);
+		SDL_SetWindowBrightness(window, SDL_GetWindowBrightness(window)/2);
 	}
 }*/
 void WarpSprite(Sprite* s, unsigned char destMapID, char destX, char destY) {
@@ -287,26 +284,6 @@ void WarpSprite(Sprite* s, unsigned char destMapID, char destX, char destY) {
 
 int main(int argc, char* args[])
 {
-	/*Event* e1 = EventManagement::addEvent(new WarpEvent(0, 0, 0, 0, 0, 0, 0, 10, 10));
-	Event* e2 = EventManagement::addEvent(new WarpEvent(1, 1, 1, 1, 1, 1, 1, 11, 11));
-	Event* e3 = EventManagement::addEvent(new WarpEvent(2, 2, 2, 2, 2, 2, 2, 12, 12));
-	Event* e4 = EventManagement::addEvent(new WarpEvent(3, 3, 3, 3, 3, 3, 3, 13, 13));
-	e1->waitBefore = 1; e1->waitAfter = 1;
-	e2->waitBefore = 2; e2->waitAfter = 2;
-	e3->waitBefore = 5; e3->waitAfter = 5;
-	e4->waitBefore = 10; e4->waitAfter = 10;
-	EventManagement::activateEvent(e1, NULL);
-	EventManagement::activateEvent(e2, NULL);
-	EventManagement::activateEvent(e3, NULL, 2);
-	EventManagement::activateEvent(e4, NULL, 2);*/
-	//EventManagement::delEvent(EventManagement::addEvent(new WarpEvent(0, 0, 0, 0, 0, 0, 0, 10, 10)));
-	//for(int i=0;i<100;i++)
-		//EventManagement::RunNextEvent();
-	/*EventManagement::delEvent(e3);
-	EventManagement::delAllEvents();*/
-	//return 0;
-
-
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
 		printf("SDL could not initialize! SDL Error: %s\n", SDL_GetError()); return -1;
 	}
