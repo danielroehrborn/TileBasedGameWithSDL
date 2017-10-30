@@ -99,12 +99,17 @@ const SDL_Rect& Sprite::getFrameCoord() {
 			else {
 				if (newPos.x != mapPos.x) {
 					newPos.x = mapPos.x;
+					//newPos.x = newPos.x % 16 > 7 && newPos.x % 16 < 15 ? newPos.x + 1 : newPos.x % 16 > 1 && newPos.x % 16 < 7 ? newPos.x - 1 : mapPos.x;
 					newPos.y = newPos.y % 16 > 7 ? newPos.y + 1 : newPos.y % 16 > 0 ? newPos.y - 1 : newPos.y;
 				}
 				else if (newPos.y != mapPos.y) {
 					newPos.y = mapPos.y;
+					//newPos.y = newPos.y % 16 > 7 ? newPos.y + 1 : newPos.y % 16 > 0 ? newPos.y - 1 : newPos.y;
 					newPos.x = (newPos.x + newPos.w / 4) % 16 > 8 ? newPos.x + 1 : (newPos.x + newPos.w / 4) % 16 > 0 ? newPos.x - 1 : newPos.x;
 				}
+				//newPos.y = newPos.y % 16 > 7 ? newPos.y + 1 : newPos.y % 16 > 0 ? newPos.y - 1 : newPos.y;
+				//newPos.x = (newPos.x + newPos.w / 4) % 16 > 8 ? newPos.x + 1 : (newPos.x + newPos.w / 4) % 16 > 0 ? newPos.x - 1 : newPos.x;
+				//newPos.y = newPos.y % 16 > 7 ? newPos.y + 1 : newPos.y % 16 > 0 ? newPos.y - 1 : newPos.y;
 			}
 		}
 	} while (doSpriteSlide--);
@@ -158,8 +163,12 @@ void Sprite::pushAnim(unsigned char index) {
 	for (int i = 0; i < num; i++)
 		animList.push((*data)[i]);
 }*/
-void Sprite::pushAnim(std::vector<unsigned char>* data) {
-	for (int i = 0; i < (*data).size(); i++)
+void Sprite::pushAnim(std::vector<unsigned char>* data, bool overwrite) {
+	int i = 0;
+	if (overwrite) {
+		pushAnim((*data)[i++]);
+	}
+	for (; i < (*data).size(); i++)
 		animList.push((*data)[i]);
 }
 

@@ -45,6 +45,7 @@ unsigned char bgTiles[bghoehe*bgbreite] = {};
 unsigned char bgWalk[bghoehe*bgbreite] = {};
 unsigned char curMapID = 0;
 unsigned char lastMapID = 0;
+unsigned char curColorRed = 255, curColorGreen = 255, curColorBlue = 255;
 
 Sprite* newSprite = NULL;
 void loadMap(unsigned const char& newMapID) {
@@ -247,11 +248,21 @@ void checkAndDoMapTransition(Sprite* s) {
 			0), true, s));
 	}
 }
+/*void FadeBlack() {
+	unsigned char red = curColorRed, green = curColorGreen, blue = curColorBlue;
+	while (red || green || blue) {
+		SDL_SetTextureColorMod(tilemapTexture, red, green, blue);
+		SDL_Delay(2);
+		//EventManagement::delEvent(EventManagement::addEvent(new ChangeTimeEvent(0, 0, red, green, blue, 2), true, 0, 1));
+		red /= 2;
+		green /= 2;
+		blue /= 2;
+	}
+}*/
 void WarpSprite(Sprite* s, unsigned char destMapID, char destX, char destY) {
 	if (std::find(vSprites.begin(), vSprites.end(), s) == vSprites.end()) {
 		printf("Warpevent failed, Sprite schon gelöscht\n"); return;
 	}
-
 	if (mapIDs[destMapID] == curMap) {
 		s->mapPos.y = (8 + destY) * 16 + s->mapPos.y % 16;
 		s->mapPos.x = (8 + destX) * 16 + s->mapPos.x % 16;
@@ -265,7 +276,11 @@ void WarpSprite(Sprite* s, unsigned char destMapID, char destX, char destY) {
 			pData->curMapID = destMapID;
 			pData->curAnim = s->animList.front();
 			pData->sData = s->sData;
-			if (s == curSprite) loadMap(destMapID);
+			if (s == curSprite) {
+				//FadeBlack();
+				loadMap(destMapID);
+				//SDL_SetTextureColorMod(tilemapTexture, curColorRed, curColorGreen, curColorBlue);
+			}
 		}
 	}
 }
@@ -316,7 +331,6 @@ int main(int argc, char* args[])
 
 	loadMap(0);
 
-	unsigned char colred = 255, colgreen = 255, colblue = 255;
 	char i, j;
 	bool quit = 0;
 	SDL_Event e;
@@ -380,24 +394,18 @@ int main(int argc, char* args[])
 		}
 		else if (keystates[SDL_SCANCODE_KP_8]) {
 			//loadMap(0);
-			colred = 255;
-			colgreen = 197;
-			colblue = 157;
-			SDL_SetTextureColorMod(tilemapTexture, colred, colgreen, colblue);
+			curColorRed = 255; curColorGreen = 197; curColorBlue = 157;
+			SDL_SetTextureColorMod(tilemapTexture, curColorRed, curColorGreen, curColorBlue);
 		}
 		else if (keystates[SDL_SCANCODE_KP_4]) {
 			//loadMap(1);
-			colred = 255;
-			colgreen = 255;
-			colblue = 255;
-			SDL_SetTextureColorMod(tilemapTexture, colred, colgreen, colblue);
+			curColorRed = 255; curColorGreen = 255; curColorBlue = 255;
+			SDL_SetTextureColorMod(tilemapTexture, curColorRed, curColorGreen, curColorBlue);
 		}
 		else if (keystates[SDL_SCANCODE_KP_9]) {
 			//--colblue;
-			colred = 60;
-			colgreen = 50;
-			colblue = 135;
-			SDL_SetTextureColorMod(tilemapTexture, colred, colgreen, colblue);
+			curColorRed = 60; curColorGreen = 50; curColorBlue = 135;
+			SDL_SetTextureColorMod(tilemapTexture, curColorRed, curColorGreen, curColorBlue);
 		}
 		else if (keystates[SDL_SCANCODE_Q]) {
 			detachedCamera = true;

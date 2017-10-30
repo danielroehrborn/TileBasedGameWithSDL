@@ -45,26 +45,46 @@ public:
 		Sprite* param;
 		bool executed = false;
 	};
-	static Event* addEvent(Event* newEvent, bool runNow = true, Sprite* param = NULL, unsigned char queueID = 0) {
+	static Event* addEvent(Event* newEvent, bool runNow = true, Sprite* param = NULL, unsigned char queueID = 0, bool checkCollisionNow = false);/* {
 		lEvents.push_back(newEvent);
 		if (runNow) {
 			activateEvent(newEvent, param, queueID);
 		}
 		return newEvent;
+	}*/
+	static bool checkCollision(Sprite* s, Event* e) {
+		SDL_Rect* sPos = &s->gridPos, *ePos = 0;
+		if (e->assignedSprite != NULL) {
+			if (e->assignedSprite == s) return false;
+			ePos = &e->assignedSprite->gridPos;
+		}
+		else if (e->assignedSprite == NULL)
+			ePos = &e->uniquePos;
+		if ((sPos->x == ePos->x || sPos->x == ePos->x - 1) &&
+			(sPos->y == ePos->y || sPos->y == ePos->y - 1))
+			return true;
+		return false;
 	}
 	static void checkCollision(Sprite* s) {
+		Sprite* sTmp;
+		for (std::list<Event*>::iterator it = lEvents.begin(); it != lEvents.end(); ++it) {
+			if (checkCollision(s, *it))
+				activateEvent(*it, s);
+		}
+	}
+	/*static void checkCollision(Sprite* s) {
 		Sprite* sTmp;
 		for (std::list<Event*>::iterator it = lEvents.begin(); it != lEvents.end(); ++it) {
 			sTmp = (*it)->assignedSprite;
 			if (
 				(sTmp != NULL && sTmp != s &&
-					/*((s->mapPos.x >= sTmp->mapPos.x - sTmp->mapPos.w / 2) && (s->mapPos.x <= sTmp->mapPos.x + sTmp->mapPos.w / 2)) &&
-						((s->mapPos.y + s->mapPos.h / 2 > sTmp->mapPos.y - sTmp->mapPos.h / 2) && (s->mapPos.y <= sTmp->mapPos.y + sTmp->mapPos.h)))
-					||
-					(sTmp == NULL &&
-					((s->gridPos.x >= (*it)->uniquePos.x - (*it)->uniquePos.w / 2) && (s->gridPos.x <= (*it)->uniquePos.x + (*it)->uniquePos.w / 2)) &&
-						((s->gridPos.y >= (*it)->uniquePos.y - (*it)->uniquePos.h / 2) && (s->gridPos.y <= (*it)->uniquePos.y + (*it)->uniquePos.h / 2)))
-					)*/
+					//((s->mapPos.x >= sTmp->mapPos.x - sTmp->mapPos.w / 2) && (s->mapPos.x <= sTmp->mapPos.x + sTmp->mapPos.w / 2)) &&
+					//((s->mapPos.y + s->mapPos.h / 2 > sTmp->mapPos.y - sTmp->mapPos.h / 2) && (s->mapPos.y <= sTmp->mapPos.y + sTmp->mapPos.h)))
+					//||
+					//(sTmp == NULL &&
+					//((s->gridPos.x >= (*it)->uniquePos.x - (*it)->uniquePos.w / 2) && (s->gridPos.x <= (*it)->uniquePos.x + (*it)->uniquePos.w / 2)) &&
+					//((s->gridPos.y >= (*it)->uniquePos.y - (*it)->uniquePos.h / 2) && (s->gridPos.y <= (*it)->uniquePos.y + (*it)->uniquePos.h / 2)))
+					//)
 				(s->gridPos.x == sTmp->gridPos.x || s->gridPos.x == sTmp->gridPos.x - 1) &&
 					(s->gridPos.y == sTmp->gridPos.y || s->gridPos.y == sTmp->gridPos.y - 1)) ||
 					(sTmp == NULL &&
@@ -72,7 +92,7 @@ public:
 						(s->gridPos.y == (*it)->uniquePos.y || s->gridPos.y == (*it)->uniquePos.y - 1)))
 				activateEvent(*it, s);
 		}
-	}
+	}*/
 	static void activateEvent(Event* e, Sprite* s, unsigned char queueID = 0) {
 		lEventActivationQueues[queueID].push(new ActivatedEvent(e, s));
 	}
@@ -157,8 +177,9 @@ public:
 		if (movingSprite != NULL) s = movingSprite;
 		if (numAnims == 1)
 			s->pushAnim((*anims)[0]);
-		else
-			s->pushAnim(/*numAnims, */anims);
+		else {
+			s->pushAnim(/*numAnims, */anims, true);
+		}
 		s->autoDelete = setAutoDel;
 	}
 	ChangeAnimEvent* clone() const {

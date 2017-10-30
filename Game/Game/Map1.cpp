@@ -99,6 +99,7 @@ public:
 		}
 	}
 };
+extern unsigned char curColorRed, curColorGreen, curColorBlue;
 class Map1SwitchSpriteScript :public StateMachineTriggerEvent::MapScriptState {
 	Sprite* switchSprite, *warpSwitchSprite;
 	Event* spriteTriggerBit30;
@@ -176,6 +177,7 @@ public:
 				EventManagement::delEvent(EventManagement::addEvent(new ChangeTimeEvent(0, 0, 255, 222, 198, 15), true, 0, 1));
 				EventManagement::delEvent(EventManagement::addEvent(new ChangeTimeEvent(0, 0, 255, 211, 179, 15), true, 0, 1));
 				EventManagement::delEvent(EventManagement::addEvent(new ChangeTimeEvent(0, 0, 255, 197, 157, 15), true, 0, 1));
+				curColorRed = 255; curColorGreen = 197; curColorBlue = 157;
 			}
 			//EventManagement::delEvent(EventManagement::addEvent(new ChangeTimeEvent(0, 0, 255, 197, 157, 150), true));
 			//weitere dunkelheitsstufen
@@ -346,7 +348,7 @@ unsigned char mapDungeonwalkdata[mapDungeonbreite*mapDungeonhoehe] = {
 class MapDungeonScript1 :public StateMachineTriggerEvent::MapScriptState {
 public://protected:
 	Event* animStatueGlowEvent, *animSwitchOnEvent, *animDoorOpenEvent, *animIronDoorOpenCloseEvent, *animStepBackFromDoorEvent,
-		*Bit1SwitchDoorOpenEvent, *Bit2SwitchDoorCloseEvent;
+		*animStepBackFromDoorEvent2, *Bit1SwitchDoorOpenEvent, *Bit2SwitchDoorCloseEvent, *WarpOutOfClosingDoor;
 	Sprite* statue1, *door, *doorswitch, *ironDoor, *woodDoor;
 public:
 	void init();
@@ -408,11 +410,14 @@ void MapDungeonScript1::init() {
 	animIronDoorOpenCloseEvent = EventManagement::addEvent(new ChangeAnimEvent(11, 3, vIronDoorOpenClose->size(), vIronDoorOpenClose, ironDoor), false);
 	std::vector<unsigned char>* vStepBack = new std::vector<unsigned char>;
 	vStepBack->push_back(1);
-	vStepBack->push_back(2);
-	vStepBack->push_back(1);
-	vStepBack->push_back(2);
-	vStepBack->push_back(0);
+	/*vStepBack->push_back(2);
+	vStepBack->push_back(0);*/
 	animStepBackFromDoorEvent = EventManagement::addEvent(new ChangeAnimEvent(11, 3, vStepBack->size(), vStepBack), false);
+	std::vector<unsigned char>* vStepBack2 = new std::vector<unsigned char>;
+	vStepBack2->push_back(2);
+	vStepBack2->push_back(1);
+	vStepBack2->push_back(0);
+	animStepBackFromDoorEvent2 = EventManagement::addEvent(new ChangeAnimEvent(11, 3, vStepBack2->size(), vStepBack2, 0, false, 50), false);
 
 	Bit1SwitchDoorOpenEvent = EventManagement::addEvent(new StateMachineTriggerEvent(6, 6, 3, 1), false);
 }
@@ -425,6 +430,10 @@ void MapDungeonScript1::handleEvents() {
 		if (Bit1SwitchDoorOpenEvent != NULL) {
 			EventManagement::delEvent(Bit1SwitchDoorOpenEvent);
 			Bit1SwitchDoorOpenEvent = NULL;
+		}
+		if (WarpOutOfClosingDoor != NULL) {
+			EventManagement::delEvent(WarpOutOfClosingDoor);
+			WarpOutOfClosingDoor = NULL;
 		}
 		std::vector<unsigned char>* vSwitchAndStayOn = new std::vector<unsigned char>;
 		vSwitchAndStayOn->push_back(1);
@@ -449,6 +458,8 @@ void MapDungeonScript1::handleEvents() {
 	}
 	if (StateMachineTriggerEvent::mapEventFlagBitmap[3] & 1 << 2) { //door close anim
 		StateMachineTriggerEvent::mapEventFlagBitmap[3] = 0;
+		//WarpOutOfClosingDoor = EventManagement::addEvent(new WarpEvent(5, 2, 16, 16, 3, 5, 3), false, 0, 0, true);
+		WarpOutOfClosingDoor = EventManagement::addEvent(new WarpEvent(door, 3, 5, 3), false, 0, 0, true);
 		Bit1SwitchDoorOpenEvent = EventManagement::addEvent(new StateMachineTriggerEvent(6, 6, 3, 1), false);//reactivate switch
 		std::vector<unsigned char>* vSwitchAndStayOff = new std::vector<unsigned char>;
 		vSwitchAndStayOff->push_back(3);
