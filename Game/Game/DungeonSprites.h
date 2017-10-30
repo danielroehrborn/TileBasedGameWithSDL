@@ -25,7 +25,7 @@ const SpriteData::AnimAndTimingList DoorOpen = { 1,{ { { 192,137,48,22 },{ 0,0 }
 const SpriteData::AnimAndTimingList DoorClosed = { 1,{ { { 0,137,48,22 },{ 0,0 },16 } } };
 const SpriteData::AnimAndTimingList DoorGoOpen = { 4,{ { { 48,137,48,22 },{ 0,0 },5 },{ { 96,137,48,22 },{ 0,0 },5 },{ { 144,137,48,22 },{ 0,0 },5 },{ { 192,137,48,22 },{ 0,0 },9 } } };
 const SpriteData::AnimAndTimingList DoorGoClosed = { 4,{ { { 144,137,48,22 },{ 0,0 },5 },{ { 96,137,48,22 },{ 0,0 },5 },{ { 48,137,48,22 },{ 0,0 },5 },{ { 0,137,48,22 },{ 0,0 },9 } } };
-const SpriteData::AnimAndTimingList DoorGoOpenClosed = { 8,{ 
+const SpriteData::AnimAndTimingList DoorGoOpenClosed = { 8,{
 	{ { 144,137,48,22 },{ 0,0 },4 },
 	{ { 96,137,48,22 },{ 0,0 },5 },
 	{ { 48,137,48,22 },{ 0,0 },6 },
@@ -44,7 +44,7 @@ const SpriteData::AnimAndTimingList SwitchOn = { 1,{ { { 0,82,16,13 },{ 0,0 },16
 const SpriteData::AnimAndTimingList SwitchOff = { 1,{ { { 96,82,16,13 },{ 0,0 },16 } } };
 const SpriteData::AnimAndTimingList SwitchGoOn = { 6,{ { { 80,82,16,13 },{ 0,0 },4 },{ { 64,82,16,13 },{ 0,0 },4 },{ { 48,82,16,13 },{ 0,0 },5 },{ { 32,82,16,13 },{ 0,0 },6 },{ { 16,82,16,13 },{ 0,0 },7 },{ { 0,82,16,13 },{ 0,0 },9 } } };
 const SpriteData::AnimAndTimingList SwitchGoOff = { 6,{ { { 16,82,16,13 },{ 0,0 },4 },{ { 32,82,16,13 },{ 0,0 },4 },{ { 48,82,16,13 },{ 0,0 },5 },{ { 64,82,16,13 },{ 0,0 },6 },{ { 80,82,16,13 },{ 0,0 },7 },{ { 96,82,16,13 },{ 0,0 },9 } } };
-const SpriteData::AnimAndTimingList SwitchGoOnOff = { 12,{ 
+const SpriteData::AnimAndTimingList SwitchGoOnOff = { 12,{
 	{ { 16,82,16,13 },{ 0,0 },4 },
 	{ { 32,82,16,13 },{ 0,0 },4 },
 	{ { 48,82,16,13 },{ 0,0 },5 },
@@ -94,4 +94,25 @@ const SpriteData::AnimAndTimingList WoodDoorGoOpenClosed = { 6,{
 } };
 const SpriteData DungeonWoodDoor = {
 	10,"DungeonSprites.png",5,{ &WoodDoorOpen, &WoodDoorClosed, &WoodDoorGoOpen, &WoodDoorGoClosed, &WoodDoorGoOpenClosed }
+};
+
+const SpriteData::AnimAndTimingList StoneSmallNormal = { 1,{ { { 86,101,6,6 },{ 0,0 },16 } } };
+const SpriteData::AnimAndTimingList StoneSmallGoOnOffBlue = { 4,{ { { 102,101,6,6 },{ 0,0 },5 },{ { 118,101,6,6 },{ 0,0 },9 },{ { 102,101,6,6 },{ 0,0 },5 },{ { 86,101,6,6 },{ 0,0 },9 } } };
+const SpriteData::AnimAndTimingList StoneSmallGoOnBlue = { 2,{ { { 102,101,6,6 },{ 0,0 },5 },{ { 118,101,6,6 },{ 0,0 },9 } } };
+const SpriteData::AnimAndTimingList StoneSmallGoOffBlue = { 2,{ { { 102,101,6,6 },{ 0,0 },5 },{ { 86,101,6,6 },{ 0,0 },9 } } };
+const SpriteData::AnimAndTimingList StoneSmallOnBlue = { 1,{ { { 118,101,6,6 },{ 0,0 },16 } } };
+
+const SpriteData::AnimAndTimingList StoneSmallGoOnOffOrange = { 4,{ { { 182,101,6,6 },{ 0,0 },5 },{ { 198,101,6,6 },{ 0,0 },9 },{ { 182,101,6,6 },{ 0,0 },5 },{ { 86,101,6,6 },{ 0,0 },9 } } };
+const SpriteData::AnimAndTimingList StoneSmallGoOnOrange = { 2,{ { { 182,101,6,6 },{ 0,0 },5 },{ { 198,101,6,6 },{ 0,0 },9 } } };
+const SpriteData::AnimAndTimingList StoneSmallGoOffOrange = { 2,{ { { 182,101,6,6 },{ 0,0 },5 },{ { 86,101,6,6 },{ 0,0 },9 } } };
+const SpriteData::AnimAndTimingList StoneSmallOnOrange = { 1,{ { { 198,101,6,6 },{ 0,0 },9 } } };
+
+const SpriteData::AnimAndTimingList StoneSmallGoOnOffGreen = { 4,{ { { 246,101,6,6 },{ 0,0 },5 },{ { 262,101,6,6 },{ 0,0 },9 },{ { 246,101,6,6 },{ 0,0 },5 },{ { 86,101,6,6 },{ 0,0 },9 } } };
+const SpriteData::AnimAndTimingList StoneSmallGoOnGreen = { 2,{ { { 246,101,6,6 },{ 0,0 },5 },{ { 262,101,6,6 },{ 0,0 },9 } } };
+const SpriteData::AnimAndTimingList StoneSmallGoOffGreen = { 2,{ { { 246,101,6,6 },{ 0,0 },5 },{ { 86,101,6,6 },{ 0,0 },9 } } };
+const SpriteData::AnimAndTimingList StoneSmallOnGreen = { 1,{ { { 262,101,6,6 },{ 0,0 },9 } } };
+const SpriteData DungeonStoneSmall = {
+	10,"DungeonSprites.png",13,{ &StoneSmallNormal, &StoneSmallGoOnOffBlue, &StoneSmallGoOnBlue, &StoneSmallGoOffBlue, &StoneSmallOnBlue,
+													&StoneSmallGoOnOffOrange, &StoneSmallGoOnOrange, &StoneSmallGoOffOrange, &StoneSmallOnOrange,
+													&StoneSmallGoOnOffGreen, &StoneSmallGoOnGreen, &StoneSmallGoOffGreen, &StoneSmallOnGreen }
 };

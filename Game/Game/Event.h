@@ -227,7 +227,7 @@ public:
 	}
 	void handleCollision(Sprite* s) {
 		printf("Event\n");
-		if (assignedSprite != NULL) assignedSprite->autoDelete = true;//assignedSprite->objectInUse = false;
+		//if (assignedSprite != NULL) assignedSprite->autoDelete = true;
 		mapEventFlagBitmap[mapID] |= 1 << eventFlagBitIndex;
 		if (mapID == curMapID && MapScriptState::mapScriptStates[mapID] != NULL)
 			MapScriptState::mapScriptStates[mapID]->handleEvents();
