@@ -139,7 +139,7 @@ public:
 		vSwitchDisappear->push_back(1);//switch weg
 		vSwitchDisappear->push_back(0);//switch normal
 		EventManagement::addEvent(new ChangeAnimEvent(warpSwitchSprite, vSwitchDisappear->size(), vSwitchDisappear, warpSwitchSprite, false), false);
-		EventManagement::addEvent(new WarpEvent(warpSwitchSprite, 3, 7, 7, 145), false);
+		EventManagement::addEvent(new WarpEvent(warpSwitchSprite, 3, 4, 5, 145), false);
 
 
 		std::vector<unsigned char>* vAnim_Angel_WalkUp = new std::vector<unsigned char>;
@@ -346,12 +346,14 @@ unsigned char mapDungeonwalkdata[mapDungeonbreite*mapDungeonhoehe] = {
 	000,000,000,000,000,000,000,000,000,000,000,000,000,000
 };
 class MapDungeonScript1 :public StateMachineTriggerEvent::MapScriptState {
-public://protected:
 	Event* animStatueGlowEvent, *animSwitchOnEvent, *animDoorOpenEvent, *animIronDoorOpenCloseEvent, *animStepBackFromDoorEvent,
 		*animStepBackFromDoorEvent2, *Bit1SwitchDoorOpenEvent, *Bit2SwitchDoorCloseEvent, *WarpOutOfClosingDoor, *WarpBackToOverworld,
 		*stoneSmall1Triggered, *stoneSmall2Triggered, *stoneSmall3Triggered, *stoneSmall4Triggered,
-		*Bit4StoneSmall1Activated, *Bit5StoneSmall2Activated, *Bit6StoneSmall3Activated, *Bit7StoneSmall4Activated;
-	Sprite* statue1, *door, *doorswitch, *ironDoor, *woodDoor, *stoneSmall1, *stoneSmall2, *stoneSmall3, *stoneSmall4;
+		*Bit4StoneSmall1Activated, *Bit5stoneSmall2Activated, *Bit6StoneSmall3Activated, *Bit7StoneSmall4Activated;
+	Sprite* statue1, *door, *doorswitch, *ironDoor, *woodDoor;
+	Sprite* stoneSmall[4];
+	enum StoneTriggerState { NotTouched, GreenActivated, RedActivated };
+	StoneTriggerState smallStoneStates[4] = { NotTouched };
 public:
 	void init();
 	void exit();
@@ -392,33 +394,37 @@ void MapDungeonScript1::init() {
 	doorswitch->pushAnim((unsigned char)1);
 	vSprites.push_back(doorswitch);
 
-	stoneSmall1 = new Sprite(&DungeonStoneSmall, false);
-	stoneSmall1->setPos((8 + 8) * 16, (8 + 8) * 16);
-	stoneSmall1->pushAnim((unsigned char)0);
-	vSprites.push_back(stoneSmall1);
-	stoneSmall2 = new Sprite(&DungeonStoneSmall, false);
-	stoneSmall2->setPos((11 + 8) * 16, (8 + 8) * 16);
-	stoneSmall2->pushAnim((unsigned char)0);
-	vSprites.push_back(stoneSmall2);
-	stoneSmall3 = new Sprite(&DungeonStoneSmall, false);
-	stoneSmall3->setPos((8 + 8) * 16, (10 + 8) * 16);
-	stoneSmall3->pushAnim((unsigned char)0);
-	vSprites.push_back(stoneSmall3);
-	stoneSmall4 = new Sprite(&DungeonStoneSmall, false);
-	stoneSmall4->setPos((11 + 8) * 16, (10 + 8) * 16);
-	stoneSmall4->pushAnim((unsigned char)0);
-	vSprites.push_back(stoneSmall4);
+	stoneSmall[0] = new Sprite(&DungeonStoneSmall, false);
+	stoneSmall[0]->setPos((8 + 8) * 16, (8 + 8) * 16);
+	stoneSmall[0]->pushAnim((unsigned char)0);
+	vSprites.push_back(stoneSmall[0]);
+	stoneSmall[1] = new Sprite(&DungeonStoneSmall, false);
+	stoneSmall[1]->setPos((11 + 8) * 16, (8 + 8) * 16);
+	stoneSmall[1]->pushAnim((unsigned char)0);
+	vSprites.push_back(stoneSmall[1]);
+	stoneSmall[2] = new Sprite(&DungeonStoneSmall, false);
+	stoneSmall[2]->setPos((8 + 8) * 16, (10 + 8) * 16);
+	stoneSmall[2]->pushAnim((unsigned char)0);
+	vSprites.push_back(stoneSmall[2]);
+	stoneSmall[3] = new Sprite(&DungeonStoneSmall, false);
+	stoneSmall[3]->setPos((11 + 8) * 16, (10 + 8) * 16);
+	stoneSmall[3]->pushAnim((unsigned char)0);
+	vSprites.push_back(stoneSmall[3]);
 	std::vector<unsigned char>* vStoneTriggeredAnim = new std::vector<unsigned char>;
 	vStoneTriggeredAnim->push_back(1);
 	vStoneTriggeredAnim->push_back(0);
-	stoneSmall1Triggered = EventManagement::addEvent(new ChangeAnimEvent(stoneSmall1, vStoneTriggeredAnim->size(), vStoneTriggeredAnim, stoneSmall1), false);
-	stoneSmall2Triggered = EventManagement::addEvent(new ChangeAnimEvent(stoneSmall2, vStoneTriggeredAnim->size(), vStoneTriggeredAnim, stoneSmall2), false);
-	stoneSmall3Triggered = EventManagement::addEvent(new ChangeAnimEvent(stoneSmall3, vStoneTriggeredAnim->size(), vStoneTriggeredAnim, stoneSmall3), false);
-	stoneSmall4Triggered = EventManagement::addEvent(new ChangeAnimEvent(stoneSmall4, vStoneTriggeredAnim->size(), vStoneTriggeredAnim, stoneSmall4), false);
-	Bit4StoneSmall1Activated = EventManagement::addEvent(new StateMachineTriggerEvent(stoneSmall1, 3, 4), false);
-	Bit5StoneSmall2Activated = EventManagement::addEvent(new StateMachineTriggerEvent(stoneSmall2, 3, 5), false);
-	Bit6StoneSmall3Activated = EventManagement::addEvent(new StateMachineTriggerEvent(stoneSmall3, 3, 6), false);
-	Bit7StoneSmall4Activated = EventManagement::addEvent(new StateMachineTriggerEvent(stoneSmall4, 3, 7), false);
+	stoneSmall1Triggered = EventManagement::addEvent(new ChangeAnimEvent(stoneSmall[0], vStoneTriggeredAnim->size(), vStoneTriggeredAnim, stoneSmall[0]), false);
+	stoneSmall2Triggered = EventManagement::addEvent(new ChangeAnimEvent(stoneSmall[1], vStoneTriggeredAnim->size(), vStoneTriggeredAnim, stoneSmall[1]), false);
+	stoneSmall3Triggered = EventManagement::addEvent(new ChangeAnimEvent(stoneSmall[2], vStoneTriggeredAnim->size(), vStoneTriggeredAnim, stoneSmall[2]), false);
+	stoneSmall4Triggered = EventManagement::addEvent(new ChangeAnimEvent(stoneSmall[3], vStoneTriggeredAnim->size(), vStoneTriggeredAnim, stoneSmall[3]), false);
+	Bit4StoneSmall1Activated = EventManagement::addEvent(new StateMachineTriggerEvent(stoneSmall[0], 3, 4), false);
+	Bit5stoneSmall2Activated = EventManagement::addEvent(new StateMachineTriggerEvent(stoneSmall[1], 3, 5), false);
+	Bit6StoneSmall3Activated = EventManagement::addEvent(new StateMachineTriggerEvent(stoneSmall[2], 3, 6), false);
+	Bit7StoneSmall4Activated = EventManagement::addEvent(new StateMachineTriggerEvent(stoneSmall[3], 3, 7), false);
+	smallStoneStates[0] = NotTouched;
+	smallStoneStates[1] = NotTouched;
+	smallStoneStates[2] = NotTouched;
+	smallStoneStates[3] = NotTouched;
 
 	/*EventManagement::delEvent(EventManagement::addEvent(new ChangeBGTileEvent(0, 0, 5, 2, 30, 224)));
 	std::vector<unsigned char>* vSwitchOffAtBeginning = new std::vector<unsigned char>;
@@ -465,28 +471,69 @@ void MapDungeonScript1::handleEvents() {
 			EventManagement::delEvent(WarpOutOfClosingDoor);
 			WarpOutOfClosingDoor = NULL;
 		}
+
 		std::vector<unsigned char>* vSwitchAndStayOn = new std::vector<unsigned char>;
 		vSwitchAndStayOn->push_back(1);
 		vSwitchAndStayOn->push_back(2);
 		vSwitchAndStayOn->push_back(0);
-		EventManagement::delEvent(EventManagement::addEvent(new ChangeAnimEvent(0, 0, vSwitchAndStayOn->size(), vSwitchAndStayOn, doorswitch)));
-		std::vector<unsigned char>* vStatueFlashGreen = new std::vector<unsigned char>;
-		vStatueFlashGreen->push_back(0);
-		vStatueFlashGreen->push_back(9);
-		vStatueFlashGreen->push_back(10);
-		vStatueFlashGreen->push_back(12);
-		EventManagement::delEvent(EventManagement::addEvent(new ChangeAnimEvent(0, 0, vStatueFlashGreen->size(), vStatueFlashGreen, statue1, false, 20)));
-		std::vector<unsigned char>* vDoorOpen = new std::vector<unsigned char>;
-		vDoorOpen->push_back(1);
-		vDoorOpen->push_back(2);
-		vDoorOpen->push_back(0);
-		EventManagement::delEvent(EventManagement::addEvent(new ChangeAnimEvent(0, 0, vDoorOpen->size(), vDoorOpen, door, false, 50, 20)));
-		EventManagement::delEvent(EventManagement::addEvent(new ChangeBGTileEvent(0, 0, 5, 2, 54, 0)));
+		EventManagement::delEvent(EventManagement::addEvent(new ChangeAnimEvent(0, 0, vSwitchAndStayOn->size(), vSwitchAndStayOn, doorswitch, false, 0, 30)));
 
-		WarpBackToOverworld = EventManagement::addEvent(new WarpEvent(5, 1, 16, 16, 0, 10, 5), false);
+		std::vector<unsigned char>* vStoneSmallGreenToOff = new std::vector<unsigned char>;
+		vStoneSmallGreenToOff->push_back(11);
+		vStoneSmallGreenToOff->push_back(9);
+		vStoneSmallGreenToOff->push_back(9);
+		vStoneSmallGreenToOff->push_back(0);
+		std::vector<unsigned char>* vStoneSmallRedToOff = new std::vector<unsigned char>;
+		vStoneSmallRedToOff->push_back(7);
+		vStoneSmallRedToOff->push_back(5);
+		vStoneSmallRedToOff->push_back(5);
+		vStoneSmallRedToOff->push_back(0);
+		for (unsigned char i = 0; i < 4; ++i) {
+			if (smallStoneStates[i] == GreenActivated)
+				EventManagement::delEvent(EventManagement::addEvent(new ChangeAnimEvent(0, 0, vStoneSmallGreenToOff->size(), vStoneSmallGreenToOff, stoneSmall[i])));
+			else if (smallStoneStates[i] == RedActivated)
+				EventManagement::delEvent(EventManagement::addEvent(new ChangeAnimEvent(0, 0, vStoneSmallRedToOff->size(), vStoneSmallRedToOff, stoneSmall[i])));
+		}
+		if (smallStoneStates[0] != GreenActivated || smallStoneStates[1] != GreenActivated ||
+			smallStoneStates[2] != GreenActivated || smallStoneStates[3] != GreenActivated) {
+			std::vector<unsigned char>* vSwitchOff = new std::vector<unsigned char>;
+			vSwitchOff->push_back(0);
+			vSwitchOff->push_back(3);
+			vSwitchOff->push_back(1);
+			EventManagement::delEvent(EventManagement::addEvent(new ChangeAnimEvent(0, 0, vSwitchOff->size(), vSwitchOff, doorswitch, false, 0, 30)));
+			std::vector<unsigned char>* vStatueFlashRed = new std::vector<unsigned char>;
+			vStatueFlashRed->push_back(5);
+			vStatueFlashRed->push_back(5);
+			vStatueFlashRed->push_back(5);
+			vStatueFlashRed->push_back(0);
+			EventManagement::delEvent(EventManagement::addEvent(new ChangeAnimEvent(0, 0, vStatueFlashRed->size(), vStatueFlashRed, statue1, false, 20)));
+			std::vector<unsigned char>* vSmallStoneFlashWhite = new std::vector<unsigned char>;
+			vSmallStoneFlashWhite->push_back(1);
+			vSmallStoneFlashWhite->push_back(0);
+			EventManagement::delEvent(EventManagement::addEvent(new ChangeAnimEvent(0, 0, vSmallStoneFlashWhite->size(), vSmallStoneFlashWhite, stoneSmall[0], false, 20)));
+			EventManagement::delEvent(EventManagement::addEvent(new ChangeAnimEvent(0, 0, vSmallStoneFlashWhite->size(), vSmallStoneFlashWhite, stoneSmall[1], false, 20)));
+			EventManagement::delEvent(EventManagement::addEvent(new ChangeAnimEvent(0, 0, vSmallStoneFlashWhite->size(), vSmallStoneFlashWhite, stoneSmall[2], false, 20)));
+			EventManagement::delEvent(EventManagement::addEvent(new ChangeAnimEvent(0, 0, vSmallStoneFlashWhite->size(), vSmallStoneFlashWhite, stoneSmall[3], false, 20)));
 
+		}
+		else {
+			std::vector<unsigned char>* vStatueFlashGreen = new std::vector<unsigned char>;
+			vStatueFlashGreen->push_back(0);
+			vStatueFlashGreen->push_back(9);
+			vStatueFlashGreen->push_back(10);
+			vStatueFlashGreen->push_back(12);
+			EventManagement::delEvent(EventManagement::addEvent(new ChangeAnimEvent(0, 0, vStatueFlashGreen->size(), vStatueFlashGreen, statue1, false, 20)));
+			std::vector<unsigned char>* vDoorOpen = new std::vector<unsigned char>;
+			vDoorOpen->push_back(1);
+			vDoorOpen->push_back(2);
+			vDoorOpen->push_back(0);
+			EventManagement::delEvent(EventManagement::addEvent(new ChangeAnimEvent(0, 0, vDoorOpen->size(), vDoorOpen, door, false, 50, 20)));
+
+			EventManagement::delEvent(EventManagement::addEvent(new ChangeBGTileEvent(0, 0, 5, 2, 54, 0)));
+			WarpBackToOverworld = EventManagement::addEvent(new WarpEvent(5, 1, 16, 16, 0, 10, 5), false);
+			EventManagement::delEvent(EventManagement::addEvent(new StateMachineTriggerEvent(0, 0, 3, 2, 250, 0), true, 0, 1));//close flag with delay
+		}
 		StateMachineTriggerEvent::mapEventFlagBitmap[3] = 0;
-		EventManagement::delEvent(EventManagement::addEvent(new StateMachineTriggerEvent(0, 0, 3, 2, 250, 0), true, 0, 1));//close flag with delay
 	}
 	if (StateMachineTriggerEvent::mapEventFlagBitmap[3] & 1 << 2) { //door close anim
 		StateMachineTriggerEvent::mapEventFlagBitmap[3] = 0;
@@ -527,15 +574,16 @@ void MapDungeonScript1::handleEvents() {
 			EventManagement::delEvent(Bit4StoneSmall1Activated);
 			Bit4StoneSmall1Activated = NULL;
 		}
-		if ((StateMachineTriggerEvent::mapEventFlagBitmap[3] & 1 << 9) ||
-			(StateMachineTriggerEvent::mapEventFlagBitmap[3] & 1 << 10) ||
-			(StateMachineTriggerEvent::mapEventFlagBitmap[3] & 1 << 11)) {
-			StateMachineTriggerEvent::mapEventFlagBitmap[3] = StateMachineTriggerEvent::mapEventFlagBitmap[3] & ~(1 << 8);
-			EventManagement::delEvent(EventManagement::addEvent(new ChangeAnimEvent(0, 0, vStoneSmallRed->size(), vStoneSmallRed, stoneSmall1)));
+		if (smallStoneStates[0] == NotTouched &&
+			smallStoneStates[1] == NotTouched &&
+			smallStoneStates[2] == NotTouched &&
+			smallStoneStates[3] == NotTouched) {
+			EventManagement::delEvent(EventManagement::addEvent(new ChangeAnimEvent(0, 0, vStoneSmallGreen->size(), vStoneSmallGreen, stoneSmall[0])));
+			smallStoneStates[0] = GreenActivated;
 		}
 		else {
-			StateMachineTriggerEvent::mapEventFlagBitmap[3] = StateMachineTriggerEvent::mapEventFlagBitmap[3] | (1 << 8);
-			EventManagement::delEvent(EventManagement::addEvent(new ChangeAnimEvent(0, 0, vStoneSmallGreen->size(), vStoneSmallGreen, stoneSmall1)));
+			EventManagement::delEvent(EventManagement::addEvent(new ChangeAnimEvent(0, 0, vStoneSmallRed->size(), vStoneSmallRed, stoneSmall[0])));
+			smallStoneStates[0] = RedActivated;
 		}
 	}
 	if (StateMachineTriggerEvent::mapEventFlagBitmap[3] & 1 << 5) {
@@ -544,19 +592,20 @@ void MapDungeonScript1::handleEvents() {
 			EventManagement::delEvent(stoneSmall2Triggered);
 			stoneSmall2Triggered = NULL;
 		}
-		if (Bit5StoneSmall2Activated != NULL) {
-			EventManagement::delEvent(Bit5StoneSmall2Activated);
-			Bit5StoneSmall2Activated = NULL;
+		if (Bit5stoneSmall2Activated != NULL) {
+			EventManagement::delEvent(Bit5stoneSmall2Activated);
+			Bit5stoneSmall2Activated = NULL;
 		}
-		if (!(StateMachineTriggerEvent::mapEventFlagBitmap[3] & 1 << 8) ||
-			(StateMachineTriggerEvent::mapEventFlagBitmap[3] & 1 << 10) ||
-			(StateMachineTriggerEvent::mapEventFlagBitmap[3] & 1 << 11)) {
-			StateMachineTriggerEvent::mapEventFlagBitmap[3] = StateMachineTriggerEvent::mapEventFlagBitmap[3] & ~(1 << 9);
-			EventManagement::delEvent(EventManagement::addEvent(new ChangeAnimEvent(0, 0, vStoneSmallRed->size(), vStoneSmallRed, stoneSmall2)));
+		if (smallStoneStates[0] == GreenActivated &&
+			smallStoneStates[1] == NotTouched &&
+			smallStoneStates[2] == NotTouched &&
+			smallStoneStates[3] == NotTouched) {
+			EventManagement::delEvent(EventManagement::addEvent(new ChangeAnimEvent(0, 0, vStoneSmallGreen->size(), vStoneSmallGreen, stoneSmall[1])));
+			smallStoneStates[1] = GreenActivated;
 		}
 		else {
-			StateMachineTriggerEvent::mapEventFlagBitmap[3] = StateMachineTriggerEvent::mapEventFlagBitmap[3] | (1 << 9);
-			EventManagement::delEvent(EventManagement::addEvent(new ChangeAnimEvent(0, 0, vStoneSmallGreen->size(), vStoneSmallGreen, stoneSmall2)));
+			EventManagement::delEvent(EventManagement::addEvent(new ChangeAnimEvent(0, 0, vStoneSmallRed->size(), vStoneSmallRed, stoneSmall[1])));
+			smallStoneStates[1] = RedActivated;
 		}
 	}
 	if (StateMachineTriggerEvent::mapEventFlagBitmap[3] & 1 << 6) {
@@ -569,15 +618,16 @@ void MapDungeonScript1::handleEvents() {
 			EventManagement::delEvent(Bit6StoneSmall3Activated);
 			Bit6StoneSmall3Activated = NULL;
 		}
-		if (!(StateMachineTriggerEvent::mapEventFlagBitmap[3] & 1 << 8) ||
-			!(StateMachineTriggerEvent::mapEventFlagBitmap[3] & 1 << 9) ||
-			(StateMachineTriggerEvent::mapEventFlagBitmap[3] & 1 << 11)) {
-			StateMachineTriggerEvent::mapEventFlagBitmap[3] = StateMachineTriggerEvent::mapEventFlagBitmap[3] & ~(1 << 10);
-			EventManagement::delEvent(EventManagement::addEvent(new ChangeAnimEvent(0, 0, vStoneSmallRed->size(), vStoneSmallRed, stoneSmall3)));
+		if (smallStoneStates[0] == GreenActivated &&
+			smallStoneStates[1] == GreenActivated &&
+			smallStoneStates[2] == NotTouched &&
+			smallStoneStates[3] == NotTouched) {
+			EventManagement::delEvent(EventManagement::addEvent(new ChangeAnimEvent(0, 0, vStoneSmallGreen->size(), vStoneSmallGreen, stoneSmall[2])));
+			smallStoneStates[2] = GreenActivated;
 		}
 		else {
-			StateMachineTriggerEvent::mapEventFlagBitmap[3] = StateMachineTriggerEvent::mapEventFlagBitmap[3] | (1 << 10);
-			EventManagement::delEvent(EventManagement::addEvent(new ChangeAnimEvent(0, 0, vStoneSmallGreen->size(), vStoneSmallGreen, stoneSmall3)));
+			EventManagement::delEvent(EventManagement::addEvent(new ChangeAnimEvent(0, 0, vStoneSmallRed->size(), vStoneSmallRed, stoneSmall[2])));
+			smallStoneStates[2] = RedActivated;
 		}
 	}
 	if (StateMachineTriggerEvent::mapEventFlagBitmap[3] & 1 << 7) {
@@ -590,15 +640,16 @@ void MapDungeonScript1::handleEvents() {
 			EventManagement::delEvent(Bit7StoneSmall4Activated);
 			Bit7StoneSmall4Activated = NULL;
 		}
-		if (!(StateMachineTriggerEvent::mapEventFlagBitmap[3] & 1 << 8) ||
-			!(StateMachineTriggerEvent::mapEventFlagBitmap[3] & 1 << 9) ||
-			!(StateMachineTriggerEvent::mapEventFlagBitmap[3] & 1 << 10)) {
-			StateMachineTriggerEvent::mapEventFlagBitmap[3] = StateMachineTriggerEvent::mapEventFlagBitmap[3] & ~(1 << 11);
-			EventManagement::delEvent(EventManagement::addEvent(new ChangeAnimEvent(0, 0, vStoneSmallRed->size(), vStoneSmallRed, stoneSmall4)));
+		if (smallStoneStates[0] == GreenActivated &&
+			smallStoneStates[1] == GreenActivated &&
+			smallStoneStates[2] == GreenActivated &&
+			smallStoneStates[3] == NotTouched) {
+			EventManagement::delEvent(EventManagement::addEvent(new ChangeAnimEvent(0, 0, vStoneSmallGreen->size(), vStoneSmallGreen, stoneSmall[3])));
+			smallStoneStates[3] = GreenActivated;
 		}
 		else {
-			StateMachineTriggerEvent::mapEventFlagBitmap[3] = StateMachineTriggerEvent::mapEventFlagBitmap[3] | (1 << 11);
-			EventManagement::delEvent(EventManagement::addEvent(new ChangeAnimEvent(0, 0, vStoneSmallGreen->size(), vStoneSmallGreen, stoneSmall4)));
+			EventManagement::delEvent(EventManagement::addEvent(new ChangeAnimEvent(0, 0, vStoneSmallRed->size(), vStoneSmallRed, stoneSmall[3])));
+			smallStoneStates[3] = RedActivated;
 		}
 	}
 }
